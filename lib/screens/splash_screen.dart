@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               Center(
                 child: SpinKitThreeBounce(
-                  size: 30.0,
+                  size: 20.0,
                   itemBuilder: (BuildContext context, int index) {
                     List<Color> colors = [
                       Color.fromARGB(255, 231, 82, 119),

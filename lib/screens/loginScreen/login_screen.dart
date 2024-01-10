@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
 import 'package:poralekha_app/common/button.dart';
 import 'package:poralekha_app/common/text_filed.dart';
 import 'package:poralekha_app/screens/forgetPasswordScreen/forgetPass_screen.dart';
-import 'package:poralekha_app/screens/homeScreen/home_screen.dart';
+import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
 import 'package:poralekha_app/screens/signUpScreen/signUp_screen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/social_button.dart';
@@ -123,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomeScreen(),
+                          builder: (context) => BottomNavBar(),
                         ),
                       );
                     }),
