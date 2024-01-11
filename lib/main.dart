@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
+
 import 'package:poralekha_app/screens/splash_screen.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }
