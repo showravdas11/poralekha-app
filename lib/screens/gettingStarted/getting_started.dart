@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:poralekha_app/common/button.dart';
+import 'package:poralekha_app/components/cheack_user.dart';
 import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
@@ -93,7 +94,7 @@ class GettingStartedScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginScreen()),
+                                builder: (context) => CheckUser()),
                           );
                         }),
                   ],

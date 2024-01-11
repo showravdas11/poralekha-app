@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "525587181466",
+    "project_id": "poralekha-b0a61",
+    "storage_bucket": "poralekha-b0a61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525587181466:android:d2faf041fe802bd8171423",
+        "android_client_info": {
+          "package_name": "com.example.poralekha_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6Yn0aeO_HPCpDvyNPz4dj6-hApPqbF5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

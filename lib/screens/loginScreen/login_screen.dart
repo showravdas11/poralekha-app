@@ -1,3 +1,5 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
 import 'package:poralekha_app/common/button.dart';
@@ -21,6 +23,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // final _formKey = GlobalKey<FormState>();
   bool isChecked = false;
+
+  login(String email, String password) async {
+    if (email == '' && password == '') {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.info,
+        animType: AnimType.rightSlide,
+        title: 'Enter Required Fields',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      )..show();
+    } else {
+      UserCredential? usercredential;
+      try {
+        usercredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password)
+            .then((value) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+        });
+      } on FirebaseAuthException catch (ex) {
+        return AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.rightSlide,
+          title: ex.code.toString(),
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        )..show();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,12 +155,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     title: "Login",
                     width: 250,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BottomNavBar(),
-                        ),
-                      );
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.success,
+                        animType: AnimType.rightSlide,
+                        title: 'Login successFully',
+                      )..show();
+                      login(emailController.text.toString(),
+                          passwordController.text.toString());
                     }),
                 SizedBox(height: 20),
                 SocialButton(text: "-or sign in with-"),

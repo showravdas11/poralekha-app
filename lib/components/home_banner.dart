@@ -3,8 +3,8 @@ import 'package:iconsax/iconsax.dart';
 
 class HomeBanner extends StatefulWidget {
   const HomeBanner({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomeBanner> createState() => _HomeBannerState();
@@ -80,8 +80,8 @@ class _HomeBannerState extends State<HomeBanner> {
 
 class BannerSearchBar extends StatelessWidget {
   const BannerSearchBar({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
