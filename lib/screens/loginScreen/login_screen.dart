@@ -5,10 +5,8 @@ import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
 import 'package:poralekha_app/common/button.dart';
 import 'package:poralekha_app/common/text_filed.dart';
 import 'package:poralekha_app/screens/forgetPasswordScreen/forgotPass_screen.dart';
-import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
 import 'package:poralekha_app/screens/signUpScreen/signUp_screen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
-import 'package:poralekha_app/widgets/social_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
