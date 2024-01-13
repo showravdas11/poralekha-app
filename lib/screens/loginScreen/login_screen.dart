@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
 import 'package:poralekha_app/common/button.dart';
 import 'package:poralekha_app/common/text_filed.dart';
-import 'package:poralekha_app/screens/forgetPasswordScreen/forgetPass_screen.dart';
+import 'package:poralekha_app/screens/forgetPasswordScreen/forgotPass_screen.dart';
 import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
 import 'package:poralekha_app/screens/signUpScreen/signUp_screen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 TextFormFiledCommon(
                   controller: emailController,
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 TextFormFiledCommon(
                   controller: passwordController,
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text(
-                        "Forget Password ?",
+                        "Forgot Password ?",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF375FBE)),
@@ -155,17 +155,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     title: "Login",
                     width: 250,
                     onTap: () {
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.success,
-                        animType: AnimType.rightSlide,
-                        title: 'Login successFully',
-                      )..show();
                       login(emailController.text.toString(),
                           passwordController.text.toString());
                     }),
-                SizedBox(height: 20),
-                SocialButton(text: "-or sign in with-"),
+                // SizedBox(height: 20),
+                // SocialButton(text: "-or sign in with-"),
                 SizedBox(
                   height: 20,
                 ),

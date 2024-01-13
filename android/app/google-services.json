@@ -12,7 +12,20 @@
           "package_name": "com.example.poralekha_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "525587181466-gu6fpaf3mqp3fbj0katvfbmhtnlkeurk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.poralekha_app",
+            "certificate_hash": "028fbcf4de0ad3bdf6a8b6f0afbcdb23ca5cc1eb"
+          }
+        },
+        {
+          "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD6Yn0aeO_HPCpDvyNPz4dj6-hApPqbF5o"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
