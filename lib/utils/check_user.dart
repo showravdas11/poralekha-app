@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
-import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
-import 'package:poralekha_app/screens/select_class.dart';
+import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 
 class CheckUser extends StatefulWidget {
   const CheckUser({super.key});

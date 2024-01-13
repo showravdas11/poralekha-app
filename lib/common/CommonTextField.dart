@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TextFormFiledCommon extends StatelessWidget {
-  const TextFormFiledCommon(
+class CommonTextField extends StatelessWidget {
+  const CommonTextField(
       {super.key,
       required this.controller,
       required this.text,

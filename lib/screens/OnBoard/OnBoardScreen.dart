@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:poralekha_app/common/button.dart';
-import 'package:poralekha_app/components/cheack_user.dart';
-import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
+import 'package:poralekha_app/common/RoundedButton.dart';
+import 'package:poralekha_app/utils/check_user.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
-class GettingStartedScreen extends StatelessWidget {
-  const GettingStartedScreen({super.key});
+class OnBoardScreen extends StatelessWidget {
+  const OnBoardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

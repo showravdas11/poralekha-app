@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class BookScreen extends StatelessWidget {
+class BookListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       // Your book screen content goes here
       child: Center(
-        child: Text("Book Screen"),
+        child: Text("Book List Screen"),
       ),
     );
   }

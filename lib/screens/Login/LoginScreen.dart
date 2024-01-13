@@ -1,11 +1,11 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
-import 'package:poralekha_app/common/button.dart';
-import 'package:poralekha_app/common/text_filed.dart';
-import 'package:poralekha_app/screens/forgetPasswordScreen/forgotPass_screen.dart';
-import 'package:poralekha_app/screens/signUpScreen/signUp_screen.dart';
+import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:poralekha_app/common/RoundedButton.dart';
+import 'package:poralekha_app/common/CommonTextField.dart';
+import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
+import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 40,
                 ),
-                TextFormFiledCommon(
+                CommonTextField(
                   controller: emailController,
                   text: "Email",
                   obscure: false,
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 40,
                 ),
-                TextFormFiledCommon(
+                CommonTextField(
                   controller: passwordController,
                   text: "Password",
                   obscure: true,

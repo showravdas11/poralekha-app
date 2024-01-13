@@ -1,10 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
-import 'package:poralekha_app/common/button.dart';
-import 'package:poralekha_app/common/text_filed.dart';
-import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
+import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:poralekha_app/common/RoundedButton.dart';
+import 'package:poralekha_app/common/CommonTextField.dart';
+import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 40,
                 ),
                 //Name Field
-                TextFormFiledCommon(
+                CommonTextField(
                   controller: nameController,
                   text: "Name",
                   obscure: false,
@@ -90,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 40,
                 ),
                 //Email Field
-                TextFormFiledCommon(
+                CommonTextField(
                   controller: emailController,
                   text: "Email",
                   obscure: false,
@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 40,
                 ),
                 //Password Field
-                TextFormFiledCommon(
+                CommonTextField(
                   controller: passwordController,
                   text: "Password",
                   obscure: true,

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
+import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

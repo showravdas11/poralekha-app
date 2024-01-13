@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SelectClassScreen extends StatefulWidget {
-  const SelectClassScreen({super.key});
+class ClassListScreen extends StatefulWidget {
+  const ClassListScreen({super.key});
 
   @override
-  State<SelectClassScreen> createState() => _SelectClassScreenState();
+  State<ClassListScreen> createState() => _ClassListScreenState();
 }
 
-class _SelectClassScreenState extends State<SelectClassScreen> {
+class _ClassListScreenState extends State<ClassListScreen> {
   List imgData = [
     "assets/images/HSC.png",
     "assets/images/ten.png",

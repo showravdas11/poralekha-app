@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:poralekha_app/screens/gettingStarted/getting_started.dart';
+import 'package:poralekha_app/screens/OnBoard/OnBoardScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(seconds: 1), () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const GettingStartedScreen()),
+          MaterialPageRoute(builder: (context) => const OnBoardScreen()),
         );
       });
     });

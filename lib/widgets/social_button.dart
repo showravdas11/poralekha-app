@@ -1,6 +1,6 @@
 // import 'package:awesome_dialog/awesome_dialog.dart';
 // import 'package:flutter/material.dart';
-// import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
+// import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
 // import 'package:poralekha_app/googlesignin/user_controller.dart';
 // import 'package:poralekha_app/theme/myTheme.dart';
 

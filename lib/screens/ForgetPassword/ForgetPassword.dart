@@ -2,8 +2,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:poralekha_app/common/button.dart';
-import 'package:poralekha_app/common/text_filed.dart';
+import 'package:poralekha_app/common/RoundedButton.dart';
+import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -76,7 +76,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               const SizedBox(
                 height: 32 * 2,
               ),
-              TextFormFiledCommon(
+              CommonTextField(
                   controller: emailController,
                   text: "E-mail",
                   textInputType: TextInputType.emailAddress,
