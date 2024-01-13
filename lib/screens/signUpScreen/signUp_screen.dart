@@ -2,13 +2,10 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/bottomNavBar/bottom_nav_bar.dart';
-import 'package:poralekha_app/common/aleartdialog.dart';
 import 'package:poralekha_app/common/button.dart';
 import 'package:poralekha_app/common/text_filed.dart';
 import 'package:poralekha_app/screens/loginScreen/login_screen.dart';
-import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
-import 'package:poralekha_app/widgets/social_button.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

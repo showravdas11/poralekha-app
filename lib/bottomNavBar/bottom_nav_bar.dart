@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
-
-import 'package:poralekha_app/components/home_banner.dart';
+import 'package:poralekha_app/screens/select_class.dart';
 
 import 'package:poralekha_app/screens/tabscreen/book_screen.dart';
 import 'package:poralekha_app/screens/tabscreen/chat_screen.dart';
-import 'package:poralekha_app/screens/tabscreen/home_screen.dart';
 import 'package:poralekha_app/screens/tabscreen/profile_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -20,7 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
+    SelectClassScreen(),
     ChatScreen(),
     BookScreen(),
     ProfileScreen(),
