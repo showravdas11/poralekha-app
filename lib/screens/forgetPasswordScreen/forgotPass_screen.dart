@@ -1,7 +1,10 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:poralekha_app/common/button.dart';
 import 'package:poralekha_app/common/text_filed.dart';
+import 'package:poralekha_app/theme/myTheme.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -12,6 +15,29 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final emailController = TextEditingController();
+
+  forgotPassword(String email) async {
+    if (email == '') {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.info,
+        animType: AnimType.rightSlide,
+        title: 'Enter an email to reset password',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      )..show();
+    } else {
+      FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'Email sent successFully',
+        btnOkOnPress: () {},
+      )..show();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +86,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               ),
               Center(
                   child: RoundedButton(
-                      title: "Reset Password", onTap: () {}, width: 250))
+                      title: "Reset Password",
+                      onTap: () {
+                        forgotPassword(emailController.text.toString());
+                      },
+                      width: 250))
             ],
           ),
         ),

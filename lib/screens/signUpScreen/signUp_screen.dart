@@ -79,7 +79,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 //Name Field
                 TextFormFiledCommon(
@@ -90,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 //Email Field
                 TextFormFiledCommon(
@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 //Password Field
                 TextFormFiledCommon(
@@ -112,25 +112,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 40,
                 ),
                 RoundedButton(
                     title: "Sign Up",
                     width: 250,
                     onTap: () {
-                      AwesomeDialog(
-                        context: context,
-                        dialogType: DialogType.success,
-                        animType: AnimType.rightSlide,
-                        title: 'Sign Up successFully',
-                      )..show();
                       signUp(
-                          nameController.text.toString(),
-                          emailController.text.toString(),
-                          passwordController.text.toString());
+                        nameController.text.toString(),
+                        emailController.text.toString(),
+                        passwordController.text.toString(),
+                      );
                     }),
-                SizedBox(height: 20),
-                SocialButton(text: "-or sign up with-"),
+                // SizedBox(height: 20),
+                // SocialButton(text: "-or sign up with-"),
                 SizedBox(
                   height: 20,
                 ),
