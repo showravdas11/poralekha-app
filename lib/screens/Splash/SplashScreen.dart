@@ -46,20 +46,20 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                "assets/images/poralekha-splash.png",
-                width: 120,
+                "assets/images/poralekha-splash-screen-logo.png",
+                width: 160,
               ),
               const SizedBox(
                 height: 20,
               ),
               Center(
                 child: SpinKitThreeBounce(
-                  size: 20.0,
+                  size: 30.0,
                   itemBuilder: (BuildContext context, int index) {
                     List<Color> colors = [
-                      Color.fromARGB(255, 231, 82, 119),
-                      Color.fromARGB(255, 69, 90, 181),
-                      Color.fromARGB(255, 60, 183, 244),
+                      Color(0xFF5CB3FF),
+                      Color(0xFF7E59FD),
+                      Color.fromARGB(255, 0, 0, 0),
                     ];
 
                     return DecoratedBox(
