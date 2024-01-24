@@ -20,7 +20,7 @@ class DemoHomePage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Text(
-                'Welcome to the Poralekha Demo',
+                'Welcome to the Poralekha',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.grey,
