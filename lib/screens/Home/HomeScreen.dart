@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/screens/Home/BookList.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BookListScreen();
+    return Container(
+      // Your chat screen content goes here
+      child: const Center(
+        child: Text("Home Screen"),
+      ),
+    );
   }
 }
