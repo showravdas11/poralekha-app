@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
@@ -17,7 +18,12 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController roleController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  String? selectedRole;
 
   signUp(String name, String email, String password) async {
     if (email == "" && password == "") {
@@ -28,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: 'Enter Required Fields',
         btnOkColor: MyTheme.buttonColor,
         btnOkOnPress: () {},
-      )..show();
+      ).show();
     } else {
       UserCredential? usercredential;
       try {
@@ -49,47 +55,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
         )..show();
       }
     }
+
+    addUserDetails(
+      nameController.text.trim(),
+      emailController.text.trim(),
+      addressController.text.trim(),
+      int.parse(
+        ageController.text.trim(),
+      ),
+      roleController.text.trim(),
+    );
+  }
+
+  Future addUserDetails(
+      String name, String email, String address, int age, String role) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'name': name,
+      'email': email,
+      'address': address,
+      'age': age,
+      'role': selectedRole,
+      'isAdmin': false,
+      'isApproved': false,
+      'class': ''
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyTheme.WhiteColor,
+      backgroundColor: MyTheme.canvousColor,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                      wordSpacing: 2,
-                      color: Color(0xFF375FBE),
-                    ),
-                  ),
+                Image.asset(
+                  "assets/images/poralekha-splash-screen-logo.png",
+                  width: 160,
                 ),
-                SizedBox(
-                  height: 40,
-                ),
-                //Name Field
+                SizedBox(height: 40),
                 CommonTextField(
                   controller: nameController,
                   text: "Name",
                   obscure: false,
                   suffixIcon: Icon(Icons.person),
-                  textInputType: TextInputType.emailAddress,
+                  textInputType: TextInputType.name,
                 ),
-                SizedBox(
-                  height: 40,
-                ),
-                //Email Field
+                SizedBox(height: 20),
                 CommonTextField(
                   controller: emailController,
                   text: "Email",
@@ -97,10 +113,55 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: Icon(Icons.email),
                   textInputType: TextInputType.emailAddress,
                 ),
-                SizedBox(
-                  height: 40,
+                SizedBox(height: 20),
+                CommonTextField(
+                  controller: addressController,
+                  text: "Address",
+                  obscure: false,
+                  suffixIcon: Icon(Icons.location_on),
+                  textInputType: TextInputType.streetAddress,
                 ),
-                //Password Field
+                SizedBox(height: 20),
+                CommonTextField(
+                  controller: ageController,
+                  text: "Age",
+                  obscure: false,
+                  suffixIcon: Icon(Icons.calendar_today),
+                  textInputType: TextInputType.number,
+                ),
+                SizedBox(height: 20),
+                Container(
+                  height: 55,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1), blurRadius: 2)
+                      ]),
+                  child: DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedRole = newValue;
+                      });
+                    },
+                    items: ['Student', 'Teacher']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Role',
+                      // suffixIcon: Icon(Icons.arrow_drop_down),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
                 CommonTextField(
                   controller: passwordController,
                   text: "Password",
@@ -108,50 +169,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: Icon(Icons.remove_red_eye),
                   textInputType: TextInputType.text,
                 ),
-                SizedBox(
-                  height: 40,
-                ),
+                SizedBox(height: 30),
                 RoundedButton(
-                    title: "Sign Up",
-                    width: 250,
-                    onTap: () {
-                      signUp(
-                        nameController.text.toString(),
-                        emailController.text.toString(),
-                        passwordController.text.toString(),
-                      );
-                    }),
-                // SizedBox(height: 20),
-                // SocialButton(text: "-or sign up with-"),
-                SizedBox(
-                  height: 20,
+                  title: "Sign Up",
+                  width: 250,
+                  onTap: () {
+                    signUp(
+                      nameController.text.trim(),
+                      emailController.text.trim(),
+                      passwordController.text.trim(),
+                    );
+                  },
                 ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      " have an account?",
+                      "Already have an account?",
                       style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Colors.black.withOpacity(0.5)),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
                     ),
                     TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Sign In",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              color: Color(0xFF375FBE)),
-                        ))
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Color(0xFF7E59FD),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],

@@ -14,10 +14,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp (
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+          useMaterial3: true,
           appBarTheme: const AppBarTheme(
             color: Color.fromARGB(255, 240, 248, 255),
           ),
