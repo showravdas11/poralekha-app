@@ -9,7 +9,7 @@ class OnBoardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyTheme.WhiteColor,
+      backgroundColor: MyTheme.canvousColor,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -28,7 +28,7 @@ class OnBoardScreen extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height / 1.6,
                   decoration: BoxDecoration(
-                      color: Color(0xFF375FBE),
+                      color: Color(0xFF7E59FD),
                       borderRadius:
                           BorderRadius.only(bottomRight: Radius.circular(70))),
                   child: Center(
@@ -46,7 +46,7 @@ class OnBoardScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 2.666,
                 decoration: BoxDecoration(
-                  color: Color(0xFF375FBE),
+                  color: Color(0xFF7E59FD),
                 ),
               ),
             ),

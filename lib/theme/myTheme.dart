@@ -4,7 +4,7 @@ class MyTheme {
   static ThemeData lightTheme(BuildContext context) => ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // fontFamily: GoogleFonts.lato().fontFamily,
-        canvasColor: WhiteColor,
+        canvasColor: canvousColor,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
             // backgroundColor: darkBluishColor,
             ),
@@ -20,7 +20,7 @@ class MyTheme {
 
   // colors
 
-  static Color WhiteColor = Color.fromARGB(255, 255, 255, 255);
-  static Color buttonColor = Color(0xFF375FBE);
+  static Color canvousColor = Color(0xFFF0F8FF);
+  static Color buttonColor = Color(0xFF7E59FD);
   static Color lightBluishColor = const Color.fromRGBO(99, 102, 241, 1);
 }

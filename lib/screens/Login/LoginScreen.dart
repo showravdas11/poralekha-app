@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyTheme.WhiteColor,
+      backgroundColor: MyTheme.canvousColor,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
@@ -66,17 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
             child: Column(
               children: [
-                Center(
-                  child: Text(
-                    "Login",
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                      wordSpacing: 2,
-                      color: Color(0xFF375FBE),
-                    ),
-                  ),
+                Image.asset(
+                  "assets/images/poralekha-splash-screen-logo.png",
+                  width: 160,
                 ),
                 SizedBox(
                   height: 40,
@@ -89,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(
-                  height: 40,
+                  height: 30,
                 ),
                 CommonTextField(
                   controller: passwordController,
@@ -124,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           "Remember me",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF375FBE)),
+                              color: Color(0xFF7E59FD)),
                         ),
                       ],
                     ),
@@ -141,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Forgot Password ?",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF375FBE)),
+                            color: Color(0xFF7E59FD)),
                       ),
                     )
                   ],
@@ -185,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 18,
-                              color: Color(0xFF375FBE)),
+                              color: Color(0xFF7E59FD)),
                         ))
                   ],
                 ),
