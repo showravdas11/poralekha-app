@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
             color: Color.fromARGB(255, 240, 248, 255),
           ),
           scaffoldBackgroundColor: const Color.fromARGB(255, 240, 246, 255),
-          useMaterial3: true,
           primaryColor: const Color.fromARGB(255, 240, 248, 255)),
       home: const SplashScreen(),
     );
