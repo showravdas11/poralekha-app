@@ -15,7 +15,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late Stream<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    _usersStream = FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user?.email)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,132 +43,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("users").snapshots(),
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            ClipPath(
-                              clipper: BottomCurveClipper(),
-                              child: Container(
-                                width: double.infinity,
-                                height: 220,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topRight,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Color(0xFF5CB3FF),
-                                      Color(0xFF7E59FD)
-                                    ], // Example gradient colors
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                height: 120, // Adjust the height as needed
-                                width: 120, // Adjust the width as needed
-                                child: CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage("assets/images/user.png"),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: HeadingSection(title: "Personal Information"),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ProfileMenu(
-                          title: "Name",
-                          subTitle: "${snapshot.data!.docs[index]["name"]}",
-                          icon: Icons.person,
-                        ),
-                        ProfileMenu(
-                          title: "E-mail",
-                          subTitle: "${snapshot.data!.docs[index]["email"]}",
-                          icon: Icons.email,
-                        ),
-                        ProfileMenu(
-                          title: "Address",
-                          subTitle: "${snapshot.data!.docs[index]["address"]}",
-                          icon: Icons.location_city,
-                        ),
-                        ProfileMenu(
-                          title: "Age",
-                          subTitle: "${snapshot.data!.docs[index]["age"]}",
-                          icon: Icons.calendar_month,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: HeadingSection(
-                            title: "Utilities",
-                            showActionButton: false,
+        stream: _usersStream,
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Something Went Wrong"),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text("No Data Found"),
+            );
+          }
+
+          var userData =
+              snapshot.data!.docs.first.data() as Map<String, dynamic>;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    ClipPath(
+                      clipper: BottomCurveClipper(),
+                      child: Container(
+                        width: double.infinity,
+                        height: 220,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0xFF5CB3FF),
+                              Color(0xFF7E59FD)
+                            ], // Example gradient colors
                           ),
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        UtilitiesSection(
-                          title: "Language",
-                          subTitle: "English",
-                          icon: Iconsax.language_square5,
-                          onPressed: () {
-                            print("HEloos");
-                          },
-                        ),
-                        UtilitiesSection(
-                          title: "Log Out",
-                          subTitle: "Logout",
-                          icon: Iconsax.logout,
-                          onPressed: () {
-                            auth.signOut().then((value) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            });
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text("${snapshot.error}"),
-              );
-            } else {
-              return Center(
-                child: Text("No Data Found"),
-              );
-            }
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        }),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 120, // Adjust the height as needed
+                        width: 120, // Adjust the width as needed
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage("assets/images/user.png"),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: HeadingSection(title: "Personal Information"),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ProfileMenu(
+                  title: "Name",
+                  subTitle: userData['name'],
+                  icon: Icons.person,
+                ),
+                ProfileMenu(
+                  title: "E-mail",
+                  subTitle: userData['email'],
+                  icon: Icons.email,
+                ),
+                ProfileMenu(
+                  title: "Address",
+                  subTitle: userData['address'],
+                  icon: Icons.email,
+                ),
+                ProfileMenu(
+                  title: "Age",
+                  subTitle: userData['age'].toString(),
+                  icon: Icons.email,
+                ),
+                // Add other ProfileMenu widgets as needed
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: HeadingSection(
+                    title: "Utilities",
+                    showActionButton: false,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                UtilitiesSection(
+                  title: "Language",
+                  subTitle:
+                      "English", // You can populate this from Firestore if needed
+                  icon: Iconsax.language_square5,
+                  onPressed: () {
+                    print("Hello");
+                  },
+                ),
+                UtilitiesSection(
+                  title: "Log Out",
+                  subTitle: "Logout",
+                  icon: Iconsax.logout,
+                  onPressed: () {
+                    auth.signOut().then((value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    });
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
