@@ -16,14 +16,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final auth = FirebaseAuth.instance;
-  late Stream<QuerySnapshot> _userDataStream;
-
-  @override
-  void initState() {
-    super.initState();
-    _userDataStream =
-        FirebaseFirestore.instance.collection("users").snapshots();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +32,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: StreamBuilder(
-        stream: _userDataStream,
+        stream: FirebaseFirestore.instance.collection("users").snapshots(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  var userData = snapshot.data!.docs[index].data()
-                      as Map<dynamic, dynamic>;
                   return SingleChildScrollView(
                     child: Column(
                       children: [
@@ -98,22 +88,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         ProfileMenu(
                           title: "Name",
-                          subTitle: userData["name"] ?? "N/A",
+                          subTitle: "${snapshot.data!.docs[index]["name"]}",
                           icon: Icons.person,
                         ),
                         ProfileMenu(
                           title: "E-mail",
-                          subTitle: userData["email"] ?? "N/A",
+                          subTitle: "${snapshot.data!.docs[index]["email"]}",
                           icon: Icons.email,
                         ),
                         ProfileMenu(
                           title: "Address",
-                          subTitle: userData["address"] ?? "N/A",
+                          subTitle: "${snapshot.data!.docs[index]["address"]}",
                           icon: Icons.location_city,
                         ),
                         ProfileMenu(
                           title: "Age",
-                          subTitle: userData["age"].tos ?? "N/A",
+                          subTitle: "${snapshot.data!.docs[index]["age"]}",
                           icon: Icons.calendar_month,
                         ),
                         SizedBox(
@@ -134,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           subTitle: "English",
                           icon: Iconsax.language_square5,
                           onPressed: () {
-                            print("Hello");
+                            print("HEloos");
                           },
                         ),
                         UtilitiesSection(
@@ -144,11 +134,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () {
                             auth.signOut().then((value) {
                               Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
-                                ),
-                              );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()));
                             });
                           },
                         ),
