@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
-import 'package:poralekha_app/screens/Profile/widget/ProfileHeadingSection.dart';
-import 'package:poralekha_app/screens/Profile/widget/ProfileMenu.dart';
-import 'package:poralekha_app/screens/Profile/widget/UtilitiesSection.dart';
+import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
+import 'package:poralekha_app/widgets/ProfileHeadingSection.dart';
+import 'package:poralekha_app/widgets/ProfileMenu.dart';
+import 'package:poralekha_app/widgets/UtilitiesSection.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -107,7 +108,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: HeadingSection(title: "Personal Information"),
+                  child: HeadingSection(
+                    title: "Personal Information",
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdateProfileScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(
                   height: 10,
