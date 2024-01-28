@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
+
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
 
@@ -10,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [
+        actions: [
           Row(
             children: [
               Column(
@@ -22,7 +23,7 @@ class HomeScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    'Class Five',
+                    'Class Five'.tr,
                     style: TextStyle(fontSize: 12),
                   ),
                 ],
@@ -82,6 +83,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       drawer: const Drawer(
+        backgroundColor: Color.fromARGB(255, 240, 248, 255),
         child: SingleChildScrollView(
           child: Column(
             children: [

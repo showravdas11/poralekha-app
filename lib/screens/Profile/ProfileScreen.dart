@@ -9,6 +9,8 @@ import 'package:poralekha_app/screens/Profile/widget/ProfileMenu.dart';
 import 'package:poralekha_app/screens/Profile/widget/UtilitiesSection.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
+import '../Language/Language_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -22,13 +24,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text("Profile".tr),
         backgroundColor: MyTheme.canvousColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Iconsax.arrow_left),
+          icon: const Icon(Iconsax.arrow_left),
         ),
       ),
       body: StreamBuilder(
@@ -68,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Container(
                                 height: 120, // Adjust the height as needed
                                 width: 120, // Adjust the width as needed
-                                child: CircleAvatar(
+                                child: const CircleAvatar(
                                   backgroundImage:
                                       AssetImage("assets/images/user.png"),
                                 ),
@@ -76,14 +78,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: HeadingSection(title: "Personal Information"),
+                          padding: EdgeInsets.all(10.0),
+                          child:
+                              HeadingSection(title: 'Personal Information'.tr),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         ProfileMenu(
@@ -106,25 +109,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           subTitle: "${snapshot.data!.docs[index]["age"]}",
                           icon: Icons.calendar_month,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
+                        const Padding(
+                          padding: EdgeInsets.all(10.0),
                           child: HeadingSection(
                             title: "Utilities",
                             showActionButton: false,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         UtilitiesSection(
-                          title: "Language",
-                          subTitle: "English",
+                          title: "Language".tr,
+                          subTitle: Get.locale?.languageCode == 'en'
+                              ? 'English'
+                              : 'বাংলা',
                           icon: Iconsax.language_square5,
                           onPressed: () {
-                            print("HEloos");
+                            Get.bottomSheet(
+                              LanguageScreen(),
+                            );
                           },
                         ),
                         UtilitiesSection(
@@ -136,7 +143,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
+                                      builder: (context) =>
+                                          const LoginScreen()));
                             });
                           },
                         ),
@@ -150,12 +158,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Text("${snapshot.error}"),
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text("No Data Found"),
               );
             }
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         }),
       ),
