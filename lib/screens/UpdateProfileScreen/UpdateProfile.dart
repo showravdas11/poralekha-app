@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
@@ -15,7 +17,70 @@ class UpdateProfileScreen extends StatefulWidget {
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
   File? _selectedImage;
+
+  late Stream<QuerySnapshot> _usersStream;
+  final auth = FirebaseAuth.instance;
+
+//-----------------data fetching---------------------//
+  @override
+  void initState() {
+    super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    _usersStream = FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user?.email)
+        .snapshots();
+  }
+
+//-----------------update user profile function--------------------//
+  Future<void> _updateUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .where('email', isEqualTo: user.email)
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          querySnapshot.docs.forEach((doc) {
+            doc.reference.update({
+              'name': nameController.text,
+              'email': emailController.text,
+              'address': addressController.text,
+              'age': ageController.text,
+            });
+          });
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User data updated successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not logged in')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating user data: $error')),
+      );
+    }
+  }
+
+//------------------image select form gallery----------------------//
+
+  Future<void> _picImageFormGallery() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,41 +169,78 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  CommonTextField(
-                    controller: nameController,
-                    text: "Name",
-                    textInputType: TextInputType.text,
-                    obscure: false,
-                    suffixIcon: Icon(Icons.person),
-                  ),
-                  SizedBox(height: 15),
-                  CommonTextField(
-                    controller: nameController,
-                    text: "E-mail",
-                    textInputType: TextInputType.text,
-                    obscure: false,
-                    suffixIcon: Icon(Icons.email),
-                  ),
-                  SizedBox(height: 15),
-                  CommonTextField(
-                    controller: nameController,
-                    text: "Address",
-                    textInputType: TextInputType.text,
-                    obscure: false,
-                    suffixIcon: Icon(Icons.location_on),
-                  ),
-                  SizedBox(height: 15),
-                  CommonTextField(
-                    controller: nameController,
-                    text: "Age",
-                    textInputType: TextInputType.text,
-                    obscure: false,
-                    suffixIcon: Icon(Icons.calendar_today),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: _usersStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text("Something Went Wrong"),
+                        );
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Center(
+                          child: Text("No Data Found"),
+                        );
+                      }
+
+                      var userData = snapshot.data!.docs.first.data()
+                          as Map<String, dynamic>;
+
+                      nameController.text = userData['name'] ?? 'N/A';
+                      emailController.text = userData['email'] ?? 'N/A';
+                      addressController.text = userData['address'] ?? 'N/A';
+                      ageController.text = userData['age'].toString() ?? 'N/A';
+
+                      return Column(
+                        children: [
+                          CommonTextField(
+                            controller: nameController,
+                            text: "Name",
+                            textInputType: TextInputType.text,
+                            obscure: false,
+                            suffixIcon: Icon(Icons.person),
+                          ),
+                          SizedBox(height: 15),
+                          CommonTextField(
+                            controller: emailController,
+                            text: "E-mail",
+                            textInputType: TextInputType.text,
+                            obscure: false,
+                            suffixIcon: Icon(Icons.email),
+                          ),
+                          SizedBox(height: 15),
+                          CommonTextField(
+                            controller: addressController,
+                            text: "Address",
+                            textInputType: TextInputType.text,
+                            obscure: false,
+                            suffixIcon: Icon(Icons.location_on),
+                          ),
+                          SizedBox(height: 15),
+                          CommonTextField(
+                            controller: ageController,
+                            text: "Age",
+                            textInputType: TextInputType.text,
+                            obscure: false,
+                            suffixIcon: Icon(Icons.calendar_today),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   SizedBox(height: 20),
                   RoundedButton(
                     title: "Update",
-                    onTap: () {},
+                    onTap: () {
+                      _updateUserData();
+                    },
                     width: 200,
                   ),
                   SizedBox(height: 20),
@@ -149,15 +251,5 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _picImageFormGallery() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _selectedImage = File(pickedImage.path);
-      });
-    }
   }
 }

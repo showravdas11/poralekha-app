@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
-import 'package:poralekha_app/screens/onedesign.dart';
 import 'package:poralekha_app/widgets/ProfileHeadingSection.dart';
 import 'package:poralekha_app/widgets/ProfileMenu.dart';
 import 'package:poralekha_app/widgets/UtilitiesSection.dart';

@@ -1,10 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/utils/check_user.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
-class OnBoardScreen extends StatelessWidget {
+class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({super.key});
+
+  @override
+  State<OnBoardScreen> createState() => _OnBoardScreenState();
+}
+
+class _OnBoardScreenState extends State<OnBoardScreen> {
+  late Stream<QuerySnapshot> _usersStream;
+  final auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    User? user = FirebaseAuth.instance.currentUser;
+    _usersStream = FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: user?.email)
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
