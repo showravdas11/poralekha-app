@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
+import 'package:poralekha_app/screens/onedesign.dart';
 import 'package:poralekha_app/widgets/ProfileHeadingSection.dart';
 import 'package:poralekha_app/widgets/ProfileMenu.dart';
 import 'package:poralekha_app/widgets/UtilitiesSection.dart';
@@ -79,12 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 220,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            begin: Alignment.topRight,
-                            end: Alignment.bottomCenter,
                             colors: [
-                              Color(0xFF5CB3FF),
-                              Color(0xFF7E59FD)
-                            ], // Example gradient colors
+                              Color(0xFF7E59FD),
+                              Color(0xFF5B37B7),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
                           ),
                         ),
                       ),
@@ -94,11 +95,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       left: 0,
                       right: 0,
                       child: Container(
-                        height: 120, // Adjust the height as needed
-                        width: 120, // Adjust the width as needed
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/user.png"),
-                        ),
+                        alignment: Alignment.center,
+                        child: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(60),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 10,
+                                  spreadRadius: 3,
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Image.asset(
+                                "assets/images/user.png",
+                                fit: BoxFit.cover,
+                              ),
+                            )),
                       ),
                     ),
                   ],
