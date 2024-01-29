@@ -7,6 +7,7 @@ class CommonTextField extends StatelessWidget {
       required this.text,
       required this.textInputType,
       required this.obscure,
+      this.label,
       this.suffixIcon});
 
   final TextEditingController controller;
@@ -14,6 +15,7 @@ class CommonTextField extends StatelessWidget {
   final TextInputType textInputType;
   final bool obscure;
   final suffixIcon;
+  final label;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class CommonTextField extends StatelessWidget {
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
           hintText: text,
+          label: label,
           hintStyle: TextStyle(wordSpacing: 2, letterSpacing: 2),
           border: InputBorder.none,
         ),
