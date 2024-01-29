@@ -206,6 +206,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             textInputType: TextInputType.text,
                             obscure: false,
                             suffixIcon: Icon(Icons.person),
+                            // label: "Address",
                           ),
                           SizedBox(height: 15),
                           CommonTextField(
@@ -214,6 +215,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             textInputType: TextInputType.text,
                             obscure: false,
                             suffixIcon: Icon(Icons.email),
+                            // label: "Address",
                           ),
                           SizedBox(height: 15),
                           CommonTextField(
@@ -222,6 +224,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             textInputType: TextInputType.text,
                             obscure: false,
                             suffixIcon: Icon(Icons.location_on),
+                            // label: "Address",
                           ),
                           SizedBox(height: 15),
                           CommonTextField(
@@ -230,6 +233,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             textInputType: TextInputType.text,
                             obscure: false,
                             suffixIcon: Icon(Icons.calendar_today),
+                            label: Text("Address"),
                           ),
                         ],
                       );
