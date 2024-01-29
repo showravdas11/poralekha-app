@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           icon: Iconsax.language_square5,
                           onPressed: () {
                             Get.bottomSheet(
-                              LanguageScreen(),
+                              const LanguageScreen(),
                             );
                           },
                         ),

@@ -36,9 +36,9 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Select Your Class",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        title: Text(
+          "Select Your Class".tr,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(
@@ -86,7 +86,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                             screenWidth * 0.20, // Adjust the factor as needed
                       ),
                       Text(
-                        titles[index],
+                        titles[index].tr,
                         style: TextStyle(
                           fontSize:
                               screenWidth * 0.04, // Adjust the factor as needed
