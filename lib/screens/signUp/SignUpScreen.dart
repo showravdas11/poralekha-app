@@ -2,7 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
@@ -20,52 +20,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
-  final TextEditingController roleController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   String? selectedRole;
-
-  signUp(String name, String email, String password) async {
-    if (email == "" && password == "") {
-      AwesomeDialog(
-        context: context,
-        dialogType: DialogType.info,
-        animType: AnimType.rightSlide,
-        title: 'Enter Required Fields',
-        btnOkColor: MyTheme.buttonColor,
-        btnOkOnPress: () {},
-      ).show();
-    } else {
-      UserCredential? usercredential;
-      try {
-        usercredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password)
-            .then((value) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => BottomNavBar()));
-        });
-      } on FirebaseAuthException catch (ex) {
-        return AwesomeDialog(
-          context: context,
-          dialogType: DialogType.warning,
-          animType: AnimType.rightSlide,
-          title: ex.code.toString(),
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {},
-        )..show();
-      }
-    }
-
-    addUserDetails(
-      nameController.text.trim(),
-      emailController.text.trim(),
-      addressController.text.trim(),
-      int.parse(
-        ageController.text.trim(),
-      ),
-      roleController.text.trim(),
-    );
-  }
+  BuildContext? dialogContext;
 
   Future addUserDetails(
       String name, String email, String address, int age, String role) async {
@@ -79,6 +37,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'isApproved': false,
       'class': ''
     });
+    Navigator.pop(dialogContext!);
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.rightSlide,
+      title: 'Please check your email and verify',
+      btnOkColor: MyTheme.buttonColor,
+      btnOkOnPress: () {
+        Navigator.pop(context);
+      },
+    ).show();
+  }
+
+  signUp(String name, String email, String password, String address, int age,
+      String role) async {
+    UserCredential? userCredential;
+
+    try {
+      userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) {
+        addUserDetails(name, email, address, age, role);
+      });
+    } on FirebaseAuthException catch (ex) {
+      Navigator.pop(dialogContext!);
+      return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: ex.message.toString(),
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      )..show();
+    }
   }
 
   @override
@@ -89,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: SafeArea(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -97,44 +89,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "assets/images/poralekha-splash-screen-logo.png",
                   width: 160,
                 ),
-                SizedBox(height: 40),
+                const SizedBox(height: 40),
                 CommonTextField(
                   controller: nameController,
                   text: "Name",
                   obscure: false,
-                  suffixIcon: Icon(Icons.person),
+                  suffixIcon: const Icon(Icons.person),
                   textInputType: TextInputType.name,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CommonTextField(
                   controller: emailController,
                   text: "Email",
                   obscure: false,
-                  suffixIcon: Icon(Icons.email),
+                  suffixIcon: const Icon(Icons.email),
                   textInputType: TextInputType.emailAddress,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CommonTextField(
                   controller: addressController,
                   text: "Address",
                   obscure: false,
-                  suffixIcon: Icon(Icons.location_on),
+                  suffixIcon: const Icon(Icons.location_on),
                   textInputType: TextInputType.streetAddress,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CommonTextField(
                   controller: ageController,
                   text: "Age",
                   obscure: false,
-                  suffixIcon: Icon(Icons.calendar_today),
+                  suffixIcon: const Icon(Icons.calendar_today),
                   textInputType: TextInputType.number,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   height: 55,
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 255, 255, 255),
+                      color: const Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.circular(6),
                       boxShadow: [
                         BoxShadow(
@@ -154,34 +146,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Text(value),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       labelText: 'Role',
                       // suffixIcon: Icon(Icons.arrow_drop_down),
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 CommonTextField(
                   controller: passwordController,
                   text: "Password",
                   obscure: true,
-                  suffixIcon: Icon(Icons.remove_red_eye),
+                  suffixIcon: const Icon(Icons.remove_red_eye),
                   textInputType: TextInputType.text,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 RoundedButton(
                   title: "Sign Up",
                   width: 250,
                   onTap: () {
-                    signUp(
-                      nameController.text.trim(),
-                      emailController.text.trim(),
-                      passwordController.text.trim(),
-                    );
+                    if (nameController.text.trim().isEmpty ||
+                        emailController.text.trim().isEmpty ||
+                        passwordController.text.trim().isEmpty ||
+                        addressController.text.trim().isEmpty ||
+                        ageController.text.trim().isEmpty ||
+                        selectedRole == null) {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.info,
+                        animType: AnimType.rightSlide,
+                        title: 'Enter Required Fields',
+                        btnOkColor: MyTheme.buttonColor,
+                        btnOkOnPress: () {},
+                      ).show();
+                    } else {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          dialogContext = context;
+                          return const AlertDialog(
+                            backgroundColor: Colors.transparent,
+                            content: SpinKitCircle(color: Colors.white, size: 50.0),
+                          );
+                        },
+                      );
+                      signUp(
+                          nameController.text.trim(),
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                          addressController.text.trim(),
+                          int.parse(ageController.text.trim()),
+                          selectedRole ?? "Student");
+                    }
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -202,7 +223,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Sign In",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
@@ -219,5 +240,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void _showLoadingDialog(BuildContext context, isLoading) {
+    if (isLoading) {
+      ;
+    }
   }
 }
