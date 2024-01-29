@@ -10,6 +10,8 @@ import 'package:poralekha_app/widgets/ProfileMenu.dart';
 import 'package:poralekha_app/widgets/UtilitiesSection.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
+import '../Language/Language_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -34,13 +36,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
       appBar: AppBar(
-        title: Text("Profile"),
+        title: Text("Profile".tr),
         backgroundColor: MyTheme.canvousColor,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Iconsax.arrow_left),
+          icon: const Icon(Iconsax.arrow_left),
         ),
       ),
       body: StreamBuilder(
