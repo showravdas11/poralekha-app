@@ -24,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   String? selectedRole;
   BuildContext? dialogContext;
+  String? selectGender;
 
   Future addUserDetails(
       String name, String email, String address, int age, String role) async {
@@ -33,6 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'address': address,
       'age': age,
       'role': selectedRole,
+      'gender': selectGender,
       'isAdmin': false,
       'isApproved': false,
       'class': ''
@@ -133,6 +135,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Colors.black.withOpacity(0.1), blurRadius: 2)
                       ]),
                   child: DropdownButtonFormField<String>(
+                    value: selectGender,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectGender = newValue;
+                      });
+                    },
+                    items: ['Male', 'Female', "Other"]
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Gender',
+                      // suffixIcon: Icon(Icons.arrow_drop_down),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  height: 55,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 255, 255),
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1), blurRadius: 2)
+                      ]),
+                  child: DropdownButtonFormField<String>(
                     value: selectedRole,
                     onChanged: (String? newValue) {
                       setState(() {
@@ -171,7 +205,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         passwordController.text.trim().isEmpty ||
                         addressController.text.trim().isEmpty ||
                         ageController.text.trim().isEmpty ||
-                        selectedRole == null) {
+                        selectedRole == null ||
+                        selectGender == null) {
                       AwesomeDialog(
                         context: context,
                         dialogType: DialogType.info,
@@ -188,7 +223,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           dialogContext = context;
                           return const AlertDialog(
                             backgroundColor: Colors.transparent,
-                            content: SpinKitCircle(color: Colors.white, size: 50.0),
+                            content:
+                                SpinKitCircle(color: Colors.white, size: 50.0),
                           );
                         },
                       );
