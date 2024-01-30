@@ -17,9 +17,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
+    const HomeScreen(),
     ChatScreen(),
-    ClassListScreen(),
+    const ClassListScreen(),
     ProfileScreen(),
   ];
 

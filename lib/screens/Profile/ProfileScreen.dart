@@ -49,19 +49,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         stream: _usersStream,
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text("Something Went Wrong"),
             );
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(
+            return const Center(
               child: Text("No Data Found"),
             );
           }
@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Container(
                         width: double.infinity,
                         height: 220,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
                               Color(0xFF7E59FD),
@@ -122,78 +122,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: HeadingSection(
-                    title: "Personal Information",
+                    title: "Personal Information".tr,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UpdateProfileScreen(),
+                          builder: (context) => const UpdateProfileScreen(),
                         ),
                       );
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 ProfileMenu(
-                  title: "Name",
+                  title: "Name".tr,
                   subTitle: userData['name'],
                   icon: Icons.person,
                 ),
                 ProfileMenu(
-                  title: "E-mail",
+                  title: "E-mail".tr,
                   subTitle: userData['email'],
                   icon: Icons.email,
                 ),
                 ProfileMenu(
-                  title: "Address",
+                  title: "Address".tr,
                   subTitle: userData['address'],
                   icon: Icons.email,
                 ),
                 ProfileMenu(
-                  title: "Age",
+                  title: "Age".tr,
                   subTitle: userData['age'].toString(),
                   icon: Icons.email,
                 ),
                 // Add other ProfileMenu widgets as needed
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: HeadingSection(
-                    title: "Utilities",
+                    title: "Utilities".tr,
                     showActionButton: false,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 UtilitiesSection(
-                  title: "Language",
+                  title: "Language".tr,
                   subTitle:
-                      "English", // You can populate this from Firestore if needed
+                      Get.locale?.languageCode == 'en' ? 'English' : 'বাংলা',
                   icon: Iconsax.language_square5,
                   onPressed: () {
-                    print("Hello");
+                    Get.bottomSheet(
+                      const LanguageScreen(),
+                    );
                   },
                 ),
+
                 UtilitiesSection(
-                  title: "Log Out",
-                  subTitle: "Logout",
+                  title: "Log Out".tr,
+                  subTitle: "Logout".tr,
                   icon: Iconsax.logout,
                   onPressed: () {
                     auth.signOut().then((value) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
                       );
                     });
                   },
