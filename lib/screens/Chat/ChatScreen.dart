@@ -16,7 +16,16 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       // Your chat screen content goes here
       child: Center(
-        child: Text("Chat Screen"),
+        child: TextButton(
+            onPressed: () {
+              auth.signOut().then((value) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              });
+            },
+            child: Text("Logout")),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
@@ -155,12 +156,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileMenu(
                   title: "Address".tr,
                   subTitle: userData['address'],
-                  icon: Icons.email,
+                  icon: Icons.location_on,
+                ),
+                ProfileMenu(
+                  title: "Gender".tr,
+                  subTitle: userData['gender'],
+                  icon: Icons.male,
                 ),
                 ProfileMenu(
                   title: "Age".tr,
                   subTitle: userData['age'].toString(),
-                  icon: Icons.email,
+                  icon: Icons.calendar_today,
                 ),
                 // Add other ProfileMenu widgets as needed
                 const SizedBox(
