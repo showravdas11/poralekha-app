@@ -4,10 +4,18 @@ class Languages extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
         'en_US': {
-          'Name': 'Name',
+          //Profile Screen
           'Profil': 'Profile',
           'Personal Informatio': 'Personal Information',
+          'Name': 'Name',
+          'E-mail': 'E-mail',
+          'Address': 'Address',
+          'Age': 'Age',
+          'Utilities': 'Utilities',
           'Language': 'Language',
+          'Log Out': 'Log Out',
+          'Logout': 'Logout',
+          //Select class screen
           'Class Five': 'Class Five',
           'Class Six': 'Class Six',
           'Class Seven': 'Class Seven',
@@ -18,10 +26,18 @@ class Languages extends Translations {
           'Select Your Class': 'Select Your Class',
         },
         'bd_BAN': {
-          'Name': 'নাম',
+          //Profile Screen
           'Profile': 'প্রোফাইল',
           'Personal Information': 'ব্যক্তিগত তথ্যসমূহ',
+          'Name': 'নাম',
+          'E-mail': 'ই-মেইল',
+          'Address': 'ঠিকানা',
+          'Age': 'বয়স',
+          'Utilities': 'ইউটিলিটিস',
           'Language': 'ভাষা',
+          'Log Out': 'লগ আউট',
+          'Logout': 'লগআউট',
+          //Select class screen
           'Class Five': 'পঞ্চম শ্রেণি',
           'Class Six': 'ষষ্ঠ শ্রেণি',
           'Class Seven': 'সপ্তম শ্রেণি',
