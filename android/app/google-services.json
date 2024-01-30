@@ -1,26 +1,19 @@
 {
   "project_info": {
     "project_number": "525587181466",
+    "firebase_url": "https://poralekha-b0a61-default-rtdb.firebaseio.com",
     "project_id": "poralekha-b0a61",
     "storage_bucket": "poralekha-b0a61.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:525587181466:android:d2faf041fe802bd8171423",
+        "mobilesdk_app_id": "1:525587181466:android:1ef675ee215ddc2a171423",
         "android_client_info": {
-          "package_name": "com.example.poralekha_app"
+          "package_name": "com.poralekha.app"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "525587181466-gu6fpaf3mqp3fbj0katvfbmhtnlkeurk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.poralekha_app",
-            "certificate_hash": "028fbcf4de0ad3bdf6a8b6f0afbcdb23ca5cc1eb"
-          }
-        },
         {
           "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
           "client_type": 3
@@ -43,5 +36,5 @@
       }
     }
   ],
-  "configuration_version": "1"
+  "configuration_version":"1"
 }
