@@ -7,20 +7,21 @@ class CommonTextField extends StatelessWidget {
       required this.text,
       required this.textInputType,
       required this.obscure,
-      this.label,
-      this.suffixIcon});
+      this.labelText,
+      this.suffixIcon,
+      InputDecoration? decoration});
 
   final TextEditingController controller;
   final String text;
   final TextInputType textInputType;
   final bool obscure;
   final suffixIcon;
-  final label;
+  final labelText;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55,
+      height: 45,
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 10),
       decoration: BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),
@@ -35,7 +36,7 @@ class CommonTextField extends StatelessWidget {
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
           hintText: text,
-          label: label,
+          label: labelText,
           hintStyle: TextStyle(wordSpacing: 2, letterSpacing: 2),
           border: InputBorder.none,
         ),
