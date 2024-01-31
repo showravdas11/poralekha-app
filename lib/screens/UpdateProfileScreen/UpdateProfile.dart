@@ -178,10 +178,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 bottom: 0, right: 0), // Adjust margin as needed
                             child: GestureDetector(
                               onTap: _picImageFormGallery,
-                              child: const Icon(
-                                Icons.camera_alt_outlined,
-                                size: 40, // Adjust icon size as needed
-                                color: Color(0xFF7E59FD),
+                              child: const CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 25, // Adjust icon size as needed
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                ),
                               ),
                             ),
                           ),
@@ -229,7 +232,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                       return Column(
                         children: [
-                          Align(
+                          const Align(
                               alignment: Alignment.topLeft,
                               child: Text(
                                 "Name",
@@ -238,16 +241,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     fontSize: 17,
                                     fontWeight: FontWeight.w500),
                               )),
+                          const SizedBox(
+                            height: 6,
+                          ),
                           CommonTextField(
                             controller: nameController,
                             text: "Name",
                             textInputType: TextInputType.text,
                             obscure: false,
-                            suffixIcon: const Icon(Icons.person),
+                            suffixIcon: const Icon(
+                              Icons.person,
+                              color: Color(0xFF7E59FD),
+                            ),
                             // label: "Address",
                           ),
-                          const SizedBox(height: 15),
-                          Align(
+                          const SizedBox(height: 6),
+                          const Align(
                               alignment: Alignment.topLeft,
                               child: Text(
                                 "Gender",
@@ -256,8 +265,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     fontSize: 17,
                                     fontWeight: FontWeight.w500),
                               )),
+                          const SizedBox(
+                            height: 6,
+                          ),
                           Container(
-                            height: 55,
+                            height: 45,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                                 color: const Color.fromARGB(255, 255, 255, 255),
@@ -297,11 +309,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               decoration: const InputDecoration(
                                   border: InputBorder.none,
                                   // labelText: 'Gender'
-                                  alignLabelWithHint: true),
+                                  alignLabelWithHint: true,
+                                  iconColor: Color(0xFF7E59FD)),
                             ),
                           ),
-                          const SizedBox(height: 15),
-                          Align(
+                          const SizedBox(height: 6),
+                          const Align(
                               alignment: Alignment.topLeft,
                               child: Text(
                                 "Address",
@@ -310,16 +323,20 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     fontSize: 17,
                                     fontWeight: FontWeight.w500),
                               )),
+                          const SizedBox(
+                            height: 6,
+                          ),
                           CommonTextField(
                             controller: addressController,
                             text: "Address",
                             textInputType: TextInputType.text,
                             obscure: false,
-                            suffixIcon: const Icon(Icons.location_on),
+                            suffixIcon: const Icon(Icons.location_on,
+                                color: Color(0xFF7E59FD)),
                             // label: "Address",
                           ),
-                          const SizedBox(height: 15),
-                          Align(
+                          const SizedBox(height: 6),
+                          const Align(
                               alignment: Alignment.topLeft,
                               child: Text(
                                 "Age",
@@ -328,12 +345,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     fontSize: 17,
                                     fontWeight: FontWeight.w500),
                               )),
+                          const SizedBox(
+                            height: 6,
+                          ),
                           CommonTextField(
                             controller: ageController,
                             text: "Age",
-                            textInputType: TextInputType.text,
+                            textInputType: TextInputType.number,
                             obscure: false,
-                            suffixIcon: const Icon(Icons.calendar_today),
+                            suffixIcon: const Icon(Icons.calendar_today,
+                                color: Color(0xFF7E59FD)),
                           ),
                         ],
                       );
@@ -343,7 +364,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   RoundedButton(
                     title: "Update",
                     onTap: () {
-                      print(" Gennnnn ${selectGender}");
+                      // print(" Gennnnn ${selectGender}");
                       if (nameController.text.trim().isEmpty ||
                           addressController.text.trim().isEmpty ||
                           ageController.text.trim().isEmpty ||

@@ -21,7 +21,7 @@ class CommonTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55,
+      height: 45,
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 10),
       decoration: BoxDecoration(
           color: Color.fromARGB(255, 255, 255, 255),

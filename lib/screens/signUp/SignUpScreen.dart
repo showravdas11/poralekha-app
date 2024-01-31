@@ -125,7 +125,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 Container(
-                  height: 55,
+                  height: 45,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
@@ -149,15 +149,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     }).toList(),
                     decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Gender',
-                      // suffixIcon: Icon(Icons.arrow_drop_down),
-                    ),
+                        border: InputBorder.none,
+                        // labelText: 'Genderss',
+                        hintText: "Gender"
+                        // suffixIcon: Icon(Icons.arrow_drop_down),
+                        ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 Container(
-                  height: 55,
+                  height: 45,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
@@ -182,8 +183,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     }).toList(),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
-                      labelText: 'Role',
-                      // suffixIcon: Icon(Icons.arrow_drop_down),
+                      hintText: "Role",
                     ),
                   ),
                 ),
