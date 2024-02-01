@@ -1,25 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
 
-class HomeClassCard extends StatefulWidget {
-  const HomeClassCard({
+class LectureCard extends StatefulWidget {
+  const LectureCard({
     super.key,
-    required this.name,
-    required this.Class,
-    required this.teacherName,
-    required this.linkType,
-    required this.link,
-    this.icon,
+    required this.lectureData,
   });
 
-  final IconData? icon;
-  final String name, Class, teacherName, linkType, link;
+  final Map<String, dynamic> lectureData;
 
   @override
-  State<HomeClassCard> createState() => _HomeClassCardState();
+  State<LectureCard> createState() => _LectureCardState();
 }
 
-class _HomeClassCardState extends State<HomeClassCard> {
+class _LectureCardState extends State<LectureCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -54,37 +49,51 @@ class _HomeClassCardState extends State<HomeClassCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Topic Name: ${widget.name}",
+                        "Topic Name: ${widget.lectureData["topic"]}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                           fontFamily: "FontMain",
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
+                      SizedBox(height: 5),
                       Text(
-                        "Class Name: ${widget.Class}",
+                        "Class Name: ${widget.lectureData["class"]}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                           fontFamily: "FontMain",
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
+                      SizedBox(height: 5),
                       Text(
-                        "Teacher Name: ${widget.teacherName}",
+                        "Teacher Name: ${widget.lectureData["teacherName"]}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                           fontFamily: "FontMain",
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Class Time: ${widget.lectureData["startTime"]} - ${widget.lectureData["endTime"]}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontFamily: "FontMain",
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -95,14 +104,14 @@ class _HomeClassCardState extends State<HomeClassCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image.asset(
-                          widget.linkType == "meet"
+                          widget.lectureData["linkType"] == "meet"
                               ? "assets/images/google-meet.png"
                               : "assets/images/zoom.png",
                           width: 30,
                         ),
                         Link(
                           target: LinkTarget.blank,
-                          uri: Uri.parse(widget.link),
+                          uri: Uri.parse(widget.lectureData["link"]),
                           builder: (context, classLink) => ElevatedButton(
                             onPressed: classLink,
                             style: ElevatedButton.styleFrom(

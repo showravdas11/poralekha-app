@@ -7,7 +7,8 @@ import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
-import 'package:poralekha_app/widgets/HomeCard.dart';
+import 'package:poralekha_app/widgets/LecturesCard.dart';
+import 'package:poralekha_app/widgets/HomeUpcoming.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
@@ -166,16 +167,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       final lectureData = snapshot.data!.docs[index].data()
                           as Map<String, dynamic>;
 
-                      return Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: HomeClassCard(
-                          name: lectureData["topic"],
-                          Class: lectureData["class"],
-                          teacherName: lectureData["teacherName"],
-                          linkType: lectureData["linkType"],
-                          link: lectureData["link"],
-                        ),
-                      );
+                      final String state = lectureData["state"];
+                      Text(" hellooo ${lectureData["state"]}");
+
+                      return isRunningSelected
+                          ? Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: LectureCard(
+                                lectureData: lectureData,
+                              ),
+                            )
+                          : null;
                     },
                   );
                 },
