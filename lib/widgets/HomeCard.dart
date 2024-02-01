@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/link.dart';
 
-class HomeClassCard extends StatelessWidget {
+class HomeClassCard extends StatefulWidget {
   const HomeClassCard({
     super.key,
     required this.name,
     required this.Class,
     required this.teacherName,
+    required this.linkType,
+    required this.link,
     this.icon,
   });
 
   final IconData? icon;
-  final String name, Class, teacherName;
+  final String name, Class, teacherName, linkType, link;
+
+  @override
+  State<HomeClassCard> createState() => _HomeClassCardState();
+}
+
+class _HomeClassCardState extends State<HomeClassCard> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,73 +43,90 @@ class HomeClassCard extends StatelessWidget {
                 end: Alignment.bottomCenter,
               ),
             ),
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
-                  flex: 2,
+                  flex: 3,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Topic Name: ${name}",
+                        "Topic Name: ${widget.name}",
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white,
+                          fontFamily: "FontMain",
                         ),
                       ),
-                      Text(
-                        "Class Name: ${Class}",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                      SizedBox(
+                        height: 5,
                       ),
                       Text(
-                        "Teacher Name: ${teacherName}",
+                        "Class Name: ${widget.Class}",
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white,
+                          fontFamily: "FontMain",
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(
+                        height: 5,
+                      ),
                       Text(
-                        'Link',
+                        "Teacher Name: ${widget.teacherName}",
                         style: TextStyle(
                           fontSize: 16,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white,
+                          fontFamily: "FontMain",
                         ),
                       ),
                     ],
                   ),
                 ),
                 Flexible(
-                    flex: 1,
+                    flex: 2,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Image.asset(
-                              "assets/images/google-meet.png",
-                              width: 30,
-                            ),
-                            Image.asset(
-                              "assets/images/zoom.png",
-                              width: 30,
-                            ),
-                          ],
+                        Image.asset(
+                          widget.linkType == "meet"
+                              ? "assets/images/google-meet.png"
+                              : "assets/images/zoom.png",
+                          width: 30,
                         ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Join'),
-                        ),
+                        Link(
+                          target: LinkTarget.blank,
+                          uri: Uri.parse(widget.link),
+                          builder: (context, classLink) => ElevatedButton(
+                            onPressed: classLink,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF5B37B7),
+                              foregroundColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              elevation: 5, // elevation
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(5), // rounded corners
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5), // button padding
+                            ),
+                            child: Text(
+                              'Join Now',
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: "FontMain",
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        )
                       ],
                     )),
               ],
