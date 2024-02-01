@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ChapListScreen extends StatelessWidget {
-  ChapListScreen({Key? key});
+  ChapListScreen({
+    Key? key,
+  });
 
   List<String> chaps = [
     "Chapter 1",

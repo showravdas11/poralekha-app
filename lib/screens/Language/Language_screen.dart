@@ -17,7 +17,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height * 0.25,
+      height: Get.height * 0.27,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(

@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SubjectListScreen extends StatelessWidget {
-  SubjectListScreen({Key? key});
+  final String classId;
+  final String className;
 
-  List<String> subs = [
-    "Bangla 1st",
-    "Bangla 2nd",
-    "English",
-    "English Grammar",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-  ];
+  const SubjectListScreen(
+      {super.key, required this.classId, required this.className});
 
   @override
   Widget build(BuildContext context) {
@@ -26,51 +19,74 @@ class SubjectListScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: ListView.builder(
-          itemCount: subs.length,
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChapListScreen(),
+        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          // Fetch subjects from Firestore based on the passed classId using a Stream
+          stream: FirebaseFirestore.instance
+              .collection('classes')
+              .doc(classId)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            // You can use the fetched data to build your subject list
+            List<String> subjects =
+                (snapshot.data!.data()?['subjects'] as List<dynamic>?)
+                        ?.map((subject) => subject.toString())
+                        .toList() ??
+                    [];
+
+            return ListView.builder(
+              itemCount: subjects.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    // Handle subject selection
+                  },
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(15),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 126, 89, 253),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: const [
+                        // BoxShadow(
+                        //   color: Colors.grey.withOpacity(0.5),
+                        //   spreadRadius: 1,
+                        //   blurRadius: 10,
+                        // ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          subjects[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
-              child: Container(
-                height: 60,
-                width: double.infinity,
-                padding: const EdgeInsets.all(15),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 126, 89, 253),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    // BoxShadow(
-                    //   color: Colors.grey.withOpacity(0.5),
-                    //   spreadRadius: 1,
-                    //   blurRadius: 10,
-                    // ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      subs[index],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
             );
           },
         ),
