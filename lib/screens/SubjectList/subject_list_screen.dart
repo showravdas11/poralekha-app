@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SubjectListScreen extends StatelessWidget {
-  final String classId;
-  final String className;
+class SubjectListScreen extends StatefulWidget {
+  const SubjectListScreen({Key? key}) : super(key: key);
 
-  const SubjectListScreen(
-      {super.key, required this.classId, required this.className});
+  @override
+  _SubjectListScreenState createState() => _SubjectListScreenState();
+}
+
+class _SubjectListScreenState extends State<SubjectListScreen> {
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _subjectsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _subjectsStream = FirebaseFirestore.instance
+        .collection("subjects")
+        .where('class', isEqualTo: 'Class Ten')
+        //.orderBy('class')
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +32,8 @@ class SubjectListScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          // Fetch subjects from Firestore based on the passed classId using a Stream
-          stream: FirebaseFirestore.instance
-              .collection('classes')
-              .doc(classId)
-              .snapshots(),
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: _subjectsStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -38,19 +47,17 @@ class SubjectListScreen extends StatelessWidget {
               );
             }
 
-            // You can use the fetched data to build your subject list
-            List<String> subjects =
-                (snapshot.data!.data()?['subjects'] as List<dynamic>?)
-                        ?.map((subject) => subject.toString())
-                        .toList() ??
-                    [];
+            List<String> subjects = snapshot.data!.docs
+                .map((doc) => doc['name'] as String)
+                .toList();
 
             return ListView.builder(
               itemCount: subjects.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    // Handle subject selection
+                    // Handle the onTap event
+                    // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => ChapterListScreen(classId: widget.classId, className: widget.className)));
                   },
                   child: Container(
                     height: 60,

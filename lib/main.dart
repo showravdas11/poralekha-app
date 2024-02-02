@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      locale: Locale('en', 'US'),
+      locale: const Locale('en', 'US'),
       translations: Languages(),
       title: 'Flutter Demo',
       theme: ThemeData(

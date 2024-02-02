@@ -16,8 +16,10 @@ class _ClassListScreenState extends State<ClassListScreen> {
   @override
   void initState() {
     super.initState();
-    _classesStream =
-        FirebaseFirestore.instance.collection("classes").snapshots();
+    _classesStream = FirebaseFirestore.instance
+        .collection("classes")
+        .orderBy('serial')
+        .snapshots();
   }
 
   @override
@@ -46,11 +48,10 @@ class _ClassListScreenState extends State<ClassListScreen> {
             );
           }
 
-          // Extract data from the snapshot
           List<String> imgData =
-              snapshot.data!.docs.map((doc) => doc['image'] as String).toList();
-          List<String> titles =
-              snapshot.data!.docs.map((doc) => doc['title'] as String).toList();
+              snapshot.data!.docs.map((doc) => doc['img'] as String).toList();
+          List<String> name =
+              snapshot.data!.docs.map((doc) => doc['name'] as String).toList();
 
           return Padding(
             padding: const EdgeInsets.all(10),
@@ -65,12 +66,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.to(SubjectListScreen(
-                      classId: snapshot.data!.docs[index]
-                          .id, // Pass the document ID as an example
-                      className: titles[index],
-                    ));
-                    // Pass the class name
+                    Get.to(SubjectListScreen());
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(
@@ -96,7 +92,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
                             width: screenWidth * 0.20,
                           ),
                           Text(
-                            titles[index].tr,
+                            name[index].tr,
                             style: TextStyle(
                               fontSize: screenWidth * 0.04,
                               fontWeight: FontWeight.bold,

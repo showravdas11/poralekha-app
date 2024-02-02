@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/Chat/ChatScreen.dart';
 import 'package:poralekha_app/screens/Home/HomeScreen.dart';
@@ -18,7 +19,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   static List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
-    ChatScreen(),
+    PdfViewer(),
     const ClassListScreen(),
     ProfileScreen(),
   ];
