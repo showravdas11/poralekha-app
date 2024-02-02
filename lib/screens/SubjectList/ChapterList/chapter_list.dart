@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
 
-class ChapterListScreen extends StatelessWidget {
-  final String classId;
-  final String className;
+class ChapterListScreen extends StatefulWidget {
+  const ChapterListScreen({Key? key}) : super(key: key);
 
-  const ChapterListScreen(
-      {super.key, required this.classId, required this.className});
+  @override
+  _ChapterListScreenState createState() => _ChapterListScreenState();
+}
+
+class _ChapterListScreenState extends State<ChapterListScreen> {
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _chaptersStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _chaptersStream = FirebaseFirestore.instance
+        .collection("subjects")
+        .doc(
+            "A3oHaj9vWr36rboPvOrl") // Replace with the actual document ID for the chapter
+        .collection(
+            "chapters") // Change to the name of your "subjects" collection
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Class Subject",
+          "Chapter List",
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance
-              .collection('classes')
-              .doc(classId)
-              .snapshots(),
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: _chaptersStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -37,17 +51,17 @@ class ChapterListScreen extends StatelessWidget {
               );
             }
 
-            List<String> chapters =
-                (snapshot.data!.data()?['chapters'] as List<dynamic>?)
-                        ?.map((chapters) => chapters.toString())
-                        .toList() ??
-                    [];
+            List<String> chapters = snapshot.data!.docs
+                .map((doc) => doc['name'] as String)
+                .toList();
 
             return ListView.builder(
               itemCount: chapters.length,
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(const PdfViewer());
+                  },
                   child: Container(
                     height: 60,
                     width: double.infinity,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
 class SubjectListScreen extends StatefulWidget {
   const SubjectListScreen({Key? key}) : super(key: key);
@@ -57,6 +59,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                 return GestureDetector(
                   onTap: () {
                     // Handle the onTap event
+                    Get.to(const ChapterListScreen());
                     // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => ChapterListScreen(classId: widget.classId, className: widget.className)));
                   },
                   child: Container(
