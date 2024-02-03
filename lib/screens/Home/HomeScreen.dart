@@ -168,7 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           as Map<String, dynamic>;
 
                       final String state = lectureData["state"];
-                      Text(" hellooo ${lectureData["state"]}");
 
                       return isRunningSelected
                           ? Padding(

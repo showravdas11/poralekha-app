@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LectureCard extends StatefulWidget {
   const LectureCard({
@@ -26,7 +27,7 @@ class _LectureCardState extends State<LectureCard> {
           ),
           child: Container(
             width: double.infinity,
-            height: 150,
+            height: 180,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               gradient: LinearGradient(
@@ -69,7 +70,6 @@ class _LectureCardState extends State<LectureCard> {
                           fontFamily: "FontMain",
                         ),
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 5),
                       Text(
@@ -85,7 +85,7 @@ class _LectureCardState extends State<LectureCard> {
                       ),
                       SizedBox(height: 5),
                       Text(
-                        "Class Time: ${widget.lectureData["startTime"]} - ${widget.lectureData["endTime"]}",
+                        "Date: ${widget.lectureData["date"]}",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -93,7 +93,17 @@ class _LectureCardState extends State<LectureCard> {
                           fontFamily: "FontMain",
                         ),
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Class Time: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontFamily: "FontMain",
+                        ),
+                        maxLines: 2,
                       ),
                     ],
                   ),
