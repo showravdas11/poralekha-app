@@ -18,18 +18,18 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
+                  const Text(
                     'Mina',
                     style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
                   ),
                   Text(
                     'Class Five'.tr,
-                    style: TextStyle(fontSize: 12),
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
-              SizedBox(width: 10),
-              Padding(
+              const SizedBox(width: 10),
+              const Padding(
                 padding: EdgeInsets.only(right: 15),
                 child: CircleAvatar(
                   backgroundImage: AssetImage(

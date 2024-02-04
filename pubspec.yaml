@@ -48,6 +48,7 @@ dependencies:
   get: ^4.6.6
   cloud_firestore: ^4.14.0
   image_picker: ^1.0.7
+  syncfusion_flutter_pdfviewer: ^24.2.3
 
 dev_dependencies:
   flutter_test:
