@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
-class SubjectListScreen extends StatelessWidget {
-  SubjectListScreen({Key? key});
+class SubjectListScreen extends StatefulWidget {
+  const SubjectListScreen({Key? key}) : super(key: key);
 
-  List<String> subs = [
-    "Bangla 1st",
-    "Bangla 2nd",
-    "English",
-    "English Grammar",
-    "Mathematics",
-    "Physics",
-    "Chemistry",
-    "Biology",
-  ];
+  @override
+  _SubjectListScreenState createState() => _SubjectListScreenState();
+}
+
+class _SubjectListScreenState extends State<SubjectListScreen> {
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _subjectsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _subjectsStream = FirebaseFirestore.instance
+        .collection("subjects")
+        .where('class', isEqualTo: 'Class Ten')
+        //.orderBy('class')
+        .snapshots();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,51 +34,69 @@ class SubjectListScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
-        child: ListView.builder(
-          itemCount: subs.length,
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChapListScreen(),
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: _subjectsStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            List<String> subjects = snapshot.data!.docs
+                .map((doc) => doc['name'] as String)
+                .toList();
+
+            return ListView.builder(
+              itemCount: subjects.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    // Handle the onTap event
+                    Get.to(const ChapterListScreen());
+                    // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => ChapterListScreen(classId: widget.classId, className: widget.className)));
+                  },
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(15),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 126, 89, 253),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: const [
+                        // BoxShadow(
+                        //   color: Colors.grey.withOpacity(0.5),
+                        //   spreadRadius: 1,
+                        //   blurRadius: 10,
+                        // ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          subjects[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
-              child: Container(
-                height: 60,
-                width: double.infinity,
-                padding: const EdgeInsets.all(15),
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 126, 89, 253),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    // BoxShadow(
-                    //   color: Colors.grey.withOpacity(0.5),
-                    //   spreadRadius: 1,
-                    //   blurRadius: 10,
-                    // ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      subs[index],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-              ),
             );
           },
         ),

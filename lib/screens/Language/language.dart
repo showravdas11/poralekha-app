@@ -20,7 +20,7 @@ class Languages extends Translations {
           'Class Six': 'Class Six',
           'Class Seven': 'Class Seven',
           'Class Eight': 'Class Eight',
-          'Class Nine': 'Class Ten',
+          'Class Nine': 'Class Nine',
           'Class Ten': 'Class Ten',
           'HSC': 'HSC',
           'Select Your Class': 'Select Your Class',
