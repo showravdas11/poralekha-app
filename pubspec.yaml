@@ -48,7 +48,9 @@ dependencies:
   get: ^4.6.6
   cloud_firestore: ^4.14.0
   image_picker: ^1.0.7
+  url_launcher: ^6.2.4
   syncfusion_flutter_pdfviewer: ^24.2.3
+
 
 dev_dependencies:
   flutter_test:
@@ -88,10 +90,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: FontMain
+      fonts:
+        - asset: assets/fonts/DMSans_18pt-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

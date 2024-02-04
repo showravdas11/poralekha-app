@@ -17,8 +17,11 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),
+
+  static List<Widget> _widgetOptions = <Widget>[
+    HomeScreen(),
+
+
     ChatScreen(),
     const ClassListScreen(),
     ProfileScreen(),
