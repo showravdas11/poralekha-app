@@ -105,7 +105,7 @@ class _LectureCardState extends State<LectureCard> {
                                 vertical: screenHeight * 0.01,
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Join Now',
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,

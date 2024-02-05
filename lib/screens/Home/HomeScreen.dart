@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: screenHeight * 0.03),
             Center(
               child: Text(
-                "Lectures",
+                "Class Lectures",
                 style: TextStyle(
                   fontSize: screenWidth * 0.07,
                   fontWeight: FontWeight.bold,
@@ -144,17 +144,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 stream: _usersStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text("Something Went Wrong"),
                     );
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text("No Data Found"),
                     );
                   }
@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      drawer: Drawer(
+      drawer: const Drawer(
         backgroundColor: Color.fromARGB(255, 240, 248, 255),
         child: Column(
           children: [
