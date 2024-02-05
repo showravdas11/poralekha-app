@@ -37,7 +37,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'gender': selectGender,
       'isAdmin': false,
       'isApproved': false,
-      'class': ''
+      'class': '',
+      'timestamp': FieldValue.serverTimestamp()
     });
     Navigator.pop(dialogContext!);
     try {

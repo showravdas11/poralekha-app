@@ -13,10 +13,10 @@ class CheckUser extends StatefulWidget {
 class _CheckUserState extends State<CheckUser> {
   @override
   Widget build(BuildContext context) {
-    return checkuser();
+    return checkUser();
   }
 
-  checkuser() {
+  checkUser() {
     final user = FirebaseAuth.instance.currentUser;
     print("verified ${user?.emailVerified.toString()}");
     if (user != null && user.emailVerified) {
