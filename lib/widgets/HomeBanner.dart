@@ -14,7 +14,7 @@ class HomeBanner extends StatelessWidget {
       height: screenHeight * 0.2,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.amber,
+        // color: Colors.amber,
         image: const DecorationImage(
           image: AssetImage('assets/images/english-banner.jpg'),
           fit: BoxFit.cover,

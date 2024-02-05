@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ? MyTheme.buttonColor
                           : MyTheme.buttonColor.withOpacity(0.6),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
                       ),
                     ),
                     child: Text(
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ? MyTheme.buttonColor.withOpacity(0.6)
                           : MyTheme.buttonColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
                       ),
                     ),
                     child: Text(
@@ -173,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   EdgeInsets.only(top: screenHeight * 0.01),
                               child: LectureCard(
                                 lectureData: lectureData,
+                                screen: "home",
                               ),
                             )
                           : SizedBox();

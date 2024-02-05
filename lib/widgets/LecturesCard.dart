@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:url_launcher/link.dart';
 
 class LectureCard extends StatefulWidget {
   const LectureCard({
     Key? key,
     required this.lectureData,
+    required this.screen,
   }) : super(key: key);
 
   final Map<String, dynamic> lectureData;
+  final String screen;
 
   @override
   State<LectureCard> createState() => _LectureCardState();
@@ -19,9 +22,9 @@ class _LectureCardState extends State<LectureCard> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final cardWidth = screenWidth * 0.9; // Adjust as needed
-    final cardHeight = screenHeight * 0.25; // Adjust as needed
-    final imageWidth = cardHeight * 0.5; // Adjust as needed
+    final cardWidth = screenWidth * 0.9;
+    final cardHeight = screenHeight * 0.25;
+    final imageWidth = cardHeight * 0.5;
 
     return Card(
       // elevation: 3,
@@ -34,11 +37,9 @@ class _LectureCardState extends State<LectureCard> {
         decoration: BoxDecoration(
             color: Color(0xFFFBFBFB),
             borderRadius: BorderRadius.circular(10.0)),
-
         width: cardWidth,
         height: cardHeight,
-        padding: EdgeInsets.all(
-            screenWidth * 0.03), // Adjust padding based on screen width
+        padding: EdgeInsets.all(screenWidth * 0.03),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -54,23 +55,21 @@ class _LectureCardState extends State<LectureCard> {
                     text: "Topic: ${widget.lectureData["topic"]}",
                     screenWidth: screenWidth,
                   ),
-                  SizedBox(
-                      height: screenHeight *
-                          0.01), // Adjust spacing based on screen height
+                  SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.user, // Add your desired icon here
+                    icon: Iconsax.user,
                     text: "Teacher: ${widget.lectureData["teacherName"]}",
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.calendar_add, // Add your desired icon here
+                    icon: Iconsax.calendar_add,
                     text: "Date: ${widget.lectureData["date"]}",
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.watch, // Add your desired icon here
+                    icon: Iconsax.watch,
                     text:
                         "Time: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}",
                     screenWidth: screenWidth,
@@ -81,7 +80,6 @@ class _LectureCardState extends State<LectureCard> {
             Flexible(
               flex: 2,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
                     widget.lectureData["linkType"] == "meet"
@@ -89,35 +87,57 @@ class _LectureCardState extends State<LectureCard> {
                         : "assets/images/zoom.png",
                     width: imageWidth,
                   ),
-                  Link(
-                    target: LinkTarget.blank,
-                    uri: Uri.parse(widget.lectureData["link"]),
-                    builder: (context, classLink) => ElevatedButton(
-                      onPressed: classLink,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF5B37B7), // Set button color
-                        foregroundColor: Colors.white, // Set text color
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
+                  widget.screen == "home"
+                      ? Link(
+                          target: LinkTarget.blank,
+                          uri: Uri.parse(widget.lectureData["link"]),
+                          builder: (context, classLink) => ElevatedButton(
+                            onPressed: classLink,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: MyTheme.buttonColor,
+                              foregroundColor: Colors.white,
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.03,
+                                vertical: screenHeight * 0.01,
+                              ),
+                            ),
+                            child: Text(
+                              'Join Now',
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.04,
+                                fontFamily: "FontMain",
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: MyTheme.buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.03,
+                              vertical: screenHeight * 0.01,
+                            ),
+                          ),
+                          child: Text(
+                            'Edit info',
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.04,
+                              fontFamily: "FontMain",
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth *
-                              0.02, // Adjust padding based on screen width
-                          vertical: screenHeight *
-                              0.01, // Adjust padding based on screen height
-                        ),
-                      ),
-                      child: Text(
-                        'Join Now',
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.04,
-                          fontFamily: "FontMain",
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -138,16 +158,14 @@ class _LectureCardState extends State<LectureCard> {
           icon,
           size: 20,
         ),
-        SizedBox(
-            width: screenWidth * 0.03), // Add spacing between icon and text
+        SizedBox(width: screenWidth * 0.03),
         Flexible(
           child: Text(
             text,
             style: TextStyle(
-              fontSize:
-                  screenWidth * 0.04, // Adjust font size based on screen width
+              fontSize: screenWidth * 0.04,
               fontWeight: FontWeight.w500,
-              color: Colors.black, // Set text color
+              color: Colors.black,
               fontFamily: "FontMain",
             ),
             maxLines: 2,
