@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/ChapterTopicScreen.dart';
 
 class ChapterListScreen extends StatefulWidget {
   const ChapterListScreen({Key? key}) : super(key: key);
@@ -60,7 +61,8 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.to(const PdfViewer());
+                    // Get.to(const PdfViewer());
+                    Get.to(ChapterTopicScreen());
                   },
                   child: Container(
                     height: 60,

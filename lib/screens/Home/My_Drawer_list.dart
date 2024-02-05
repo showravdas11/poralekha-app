@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
 import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
 
@@ -39,7 +40,10 @@ class MyDrawerList extends StatelessWidget {
           ListTile(
             leading: const Icon(Iconsax.lamp),
             title: const Text("All lecture"),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AllLectureScreen()));
+            },
           ),
         ],
       ),

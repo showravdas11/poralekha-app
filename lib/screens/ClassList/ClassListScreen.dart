@@ -66,7 +66,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.to(SubjectListScreen());
+                    Get.to(const SubjectListScreen());
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(
