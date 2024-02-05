@@ -9,10 +9,9 @@ class HomeBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 120,
+      height: 220,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: Colors.amber,
         image: const DecorationImage(
           image: AssetImage('assets/images/english-banner.jpg'),
           fit: BoxFit.cover,

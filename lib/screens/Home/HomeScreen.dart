@@ -66,20 +66,20 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HomeBanner(),
-            SizedBox(height: 30),
-            Center(
+            const HomeBanner(),
+            const SizedBox(height: 10),
+            const Center(
               child: Text(
-                "Lectures",
+                "Class Lectures",
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -99,9 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       },
                       child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 35),
-                        child: Text(
+                        height: 50,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 35),
+                        child: const Text(
                           "Running",
                           style: TextStyle(
                               color: Colors.white,
@@ -124,9 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       },
                       child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 35),
-                        child: Text(
+                        height: 50,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 35),
+                        child: const Text(
                           "Upcoming",
                           style: TextStyle(
                               color: Colors.white,
@@ -140,23 +142,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 10),
             Expanded(
               child: StreamBuilder(
                 stream: _usersStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text("Something Went Wrong"),
                     );
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text("No Data Found"),
                     );
                   }
@@ -185,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      drawer: Drawer(
+      drawer: const Drawer(
         backgroundColor: Color.fromARGB(255, 240, 248, 255),
         child: Column(
           children: [

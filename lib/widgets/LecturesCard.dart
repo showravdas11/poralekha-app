@@ -27,10 +27,10 @@ class _LectureCardState extends State<LectureCard> {
           ),
           child: Container(
             width: double.infinity,
-            height: 180,
+            height: 200,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
                   Color(0xFF7E59FD),
                   Color(0xFF5B37B7),
@@ -39,7 +39,7 @@ class _LectureCardState extends State<LectureCard> {
                 end: Alignment.bottomCenter,
               ),
             ),
-            padding: EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -51,7 +51,7 @@ class _LectureCardState extends State<LectureCard> {
                     children: [
                       Text(
                         "Topic Name: ${widget.lectureData["topic"]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -60,10 +60,10 @@ class _LectureCardState extends State<LectureCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         "Class Name: ${widget.lectureData["class"]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -71,10 +71,10 @@ class _LectureCardState extends State<LectureCard> {
                         ),
                         maxLines: 1,
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         "Teacher Name: ${widget.lectureData["teacherName"]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -83,10 +83,10 @@ class _LectureCardState extends State<LectureCard> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         "Date: ${widget.lectureData["date"]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -94,10 +94,10 @@ class _LectureCardState extends State<LectureCard> {
                         ),
                         maxLines: 1,
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         "Class Time: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
@@ -117,7 +117,10 @@ class _LectureCardState extends State<LectureCard> {
                           widget.lectureData["linkType"] == "meet"
                               ? "assets/images/google-meet.png"
                               : "assets/images/zoom.png",
-                          width: 30,
+                          width: 50,
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         Link(
                           target: LinkTarget.blank,
@@ -125,19 +128,19 @@ class _LectureCardState extends State<LectureCard> {
                           builder: (context, classLink) => ElevatedButton(
                             onPressed: classLink,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF5B37B7),
+                              backgroundColor: const Color(0xFF5B37B7),
                               foregroundColor:
                                   const Color.fromARGB(255, 255, 255, 255),
                               elevation: 5, // elevation
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(5), // rounded corners
+                                borderRadius: BorderRadius.circular(
+                                    100), // rounded corners
                               ),
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: 5), // button padding
                             ),
-                            child: Text(
+                            child: const Text(
                               'Join Now',
                               style: TextStyle(
                                   fontSize: 17,
