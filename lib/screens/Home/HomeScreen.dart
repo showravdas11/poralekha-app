@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
-import 'package:poralekha_app/widgets/HomeUpcoming.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
@@ -29,6 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -67,80 +67,78 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HomeBanner(),
-            SizedBox(height: 30),
+            SizedBox(height: screenHeight * 0.03),
             Center(
               child: Text(
                 "Lectures",
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: screenWidth * 0.07,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.03),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * 0.015,
+                  horizontal: screenWidth * 0.03),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(screenWidth * 0.04),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Material(
-                    color: isRunningSelected
-                        ? MyTheme.buttonColor
-                        : MyTheme.buttonColor.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          isRunningSelected = true;
-                        });
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 35),
-                        child: Text(
-                          "Running",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "FontMain"),
-                        ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isRunningSelected = true;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isRunningSelected
+                          ? MyTheme.buttonColor
+                          : MyTheme.buttonColor.withOpacity(0.6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                      ),
+                    ),
+                    child: Text(
+                      "Running",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  Material(
-                    color: isRunningSelected
-                        ? MyTheme.buttonColor.withOpacity(0.6)
-                        : MyTheme.buttonColor,
-                    borderRadius: BorderRadius.circular(10),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          isRunningSelected = false;
-                        });
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 35),
-                        child: Text(
-                          "Upcoming",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: "FontMain"),
-                        ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isRunningSelected = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isRunningSelected
+                          ? MyTheme.buttonColor.withOpacity(0.6)
+                          : MyTheme.buttonColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                      ),
+                    ),
+                    child: Text(
+                      "Upcoming",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.04),
             Expanded(
               child: StreamBuilder(
                 stream: _usersStream,
@@ -171,12 +169,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       return isRunningSelected
                           ? Padding(
-                              padding: const EdgeInsets.all(0),
+                              padding:
+                                  EdgeInsets.only(top: screenHeight * 0.01),
                               child: LectureCard(
                                 lectureData: lectureData,
+                                screen: "home",
                               ),
                             )
-                          : null;
+                          : SizedBox();
                     },
                   );
                 },
