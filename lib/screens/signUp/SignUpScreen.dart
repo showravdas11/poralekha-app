@@ -27,7 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? selectGender;
 
   Future addUserDetails(String name, String email, String address, int age,
-      String role, String gender) async {
+      String role, String gender, UserCredential? userCredential) async {
     await FirebaseFirestore.instance.collection('users').add({
       'name': name,
       'email': email,
@@ -40,6 +40,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'class': ''
     });
     Navigator.pop(dialogContext!);
+    try {
+      await userCredential?.user?.sendEmailVerification();
+    } catch (e) {
+      print('Error: $e');
+    }
+
     AwesomeDialog(
       context: context,
       dialogType: DialogType.info,
@@ -57,11 +63,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     UserCredential? userCredential;
 
     try {
-      userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) {
-        addUserDetails(name, email, address, age, role, gender);
-      });
+      userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+      addUserDetails(name, email, address, age, role, gender, userCredential);
     } on FirebaseAuthException catch (ex) {
       Navigator.pop(dialogContext!);
       return AwesomeDialog(

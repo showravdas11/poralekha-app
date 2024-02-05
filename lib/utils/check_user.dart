@@ -18,12 +18,12 @@ class _CheckUserState extends State<CheckUser> {
 
   checkuser() {
     final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      return BottomNavBar();
+    print("verified ${user?.emailVerified.toString()}");
+    if (user != null && user.emailVerified) {
+      return const BottomNavBar();
     } else {
       // Return a widget, for example, a Material widget containing LoginScreen
-      return Material(
+      return const Material(
         child: LoginScreen(),
       );
     }

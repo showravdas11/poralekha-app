@@ -33,18 +33,30 @@ class _LoginScreenState extends State<LoginScreen> {
         btnOkOnPress: () {},
       )..show();
     } else {
-      UserCredential? usercredential;
+      UserCredential? userCredential;
       try {
-        usercredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password)
-            .then((value) {
+        userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+        User? user = userCredential.user;
+
+        if (user != null && user.emailVerified) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => BottomNavBar()));
-        });
+              context, MaterialPageRoute(builder: (context) => BottomNavBar())
+          );
+        } else {
+          await userCredential.user?.sendEmailVerification();
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.rightSlide,
+            title: "Please check your email and verify",
+            btnOkColor: MyTheme.buttonColor,
+            btnOkOnPress: () {},
+          )..show();
+        }
       } on FirebaseAuthException catch (ex) {
         return AwesomeDialog(
           context: context,
-          dialogType: DialogType.warning,
+          dialogType: DialogType.error,
           animType: AnimType.rightSlide,
           title: ex.code.toString(),
           btnOkColor: MyTheme.buttonColor,
