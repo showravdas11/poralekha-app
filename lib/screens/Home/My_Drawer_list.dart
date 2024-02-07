@@ -14,7 +14,7 @@ class MyDrawerList extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            leading: const Icon(Iconsax.add_circle),
+            leading: const Icon(Iconsax.user),
             title: const Text("Approve User"),
             onTap: () {
               Navigator.push(context,
@@ -22,7 +22,7 @@ class MyDrawerList extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Iconsax.add_circle),
+            leading: const Icon(Icons.admin_panel_settings_outlined),
             title: const Text("Mange Admin"),
             onTap: () {
               Navigator.push(context,

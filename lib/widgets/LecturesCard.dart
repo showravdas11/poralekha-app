@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/screens/EditLectures/EditLecturs.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:url_launcher/link.dart';
 
 class LectureCard extends StatefulWidget {
-  const LectureCard({
-    Key? key,
-    required this.lectureData,
-    required this.screen,
-  }) : super(key: key);
+  const LectureCard(
+      {Key? key,
+      required this.lectureData,
+      required this.screen,
+      required this.documentId})
+      : super(key: key);
 
   final Map<String, dynamic> lectureData;
+  final String documentId;
   final String screen;
 
   @override
@@ -116,7 +119,17 @@ class _LectureCardState extends State<LectureCard> {
                           ),
                         )
                       : ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditLecturesScreen(
+                                  lectureData: widget.lectureData,
+                                  lectureId: widget.documentId,
+                                ),
+                              ),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: MyTheme.buttonColor,
                             foregroundColor: Colors.white,

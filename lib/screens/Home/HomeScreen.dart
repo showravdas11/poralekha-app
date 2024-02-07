@@ -11,12 +11,16 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState(documentId: '');
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isRunningSelected = true;
   late Stream<QuerySnapshot> _usersStream;
+
+  final String documentId;
+
+  _HomeScreenState({required this.documentId});
 
   @override
   void initState() {
@@ -173,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   EdgeInsets.only(top: screenHeight * 0.01),
                               child: LectureCard(
                                 lectureData: lectureData,
+                                documentId: documentId,
                                 screen: "home",
                               ),
                             )
