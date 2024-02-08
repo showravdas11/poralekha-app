@@ -1,23 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/ImportantTopicsScreen.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoOnline.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoScreen.dart';
 
-class ChapterTopicScreen extends StatelessWidget {
-  ChapterTopicScreen({Key? key}) : super(key: key);
+class ChapterTopicScreen extends StatefulWidget {
+  const ChapterTopicScreen({Key? key}) : super(key: key);
 
-  List<String> topics = [
-    "Topic 1",
-    "Topic 2",
-    "Topic 3",
-  ];
+  @override
+  _ChapterTopicScreenState createState() => _ChapterTopicScreenState();
+}
 
-  List<String> topicstu = [
-    "Online Tutorials 1",
-    "Online Tutorials 2",
-    "Online Tutorials 3",
-  ];
-
+class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,75 +64,7 @@ class ChapterTopicScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Column(
-                children: topics.map((topic) {
-                  return Container(
-                    height: 65,
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          //spreadRadius: 1,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/Bookgif.gif', // Replace with the actual path to your image
-                                width: 40, // Adjust width as needed
-                                height: 40, // Adjust height as needed
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                topic,
-                                style: const TextStyle(
-                                  //color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Get.defaultDialog(
-                              title: 'Animation',
-                              titleStyle: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              titlePadding: const EdgeInsets.only(top: 20),
-                              content: Container(
-                                height: 150,
-                                width: 250,
-                                child: Image.asset(
-                                  'assets/images/chinese-beaver.gif', // Replace with the actual path to your GIF
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            "Click Here",
-                            // style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+              const ImportantTopicScreen(),
               const SizedBox(
                 height: 10,
               ),
@@ -150,60 +78,7 @@ class ChapterTopicScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Column(
-                children: topicstu.map((topictu) {
-                  return Container(
-                    height: 65,
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          //spreadRadius: 1,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                'assets/images/youtubegif.gif', // Replace with the actual path to your image
-                                width: 40, // Adjust width as needed
-                                height: 40, // Adjust height as needed
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                topictu,
-                                style: const TextStyle(
-                                  //color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Get.to(const TutorVideoScreen());
-                          },
-                          child: const Text(
-                            "Watch Now",
-                            // style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
+              TutorVideoOnline(),
             ],
           ),
         ),
