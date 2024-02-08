@@ -1,17 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/ImportantTopicsScreen.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoOnline.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoScreen.dart';
 
-class ChapterTopicScreen extends StatelessWidget {
-  ChapterTopicScreen({Key? key}) : super(key: key);
+class ChapterTopicScreen extends StatefulWidget {
+  const ChapterTopicScreen({Key? key}) : super(key: key);
 
-  List<String> topics = [
-    "Topic 1",
-    "Topic 2",
-    "Topic 3",
-    "Topic 4",
-    "Topic 5",
-  ];
+  @override
+  _ChapterTopicScreenState createState() => _ChapterTopicScreenState();
+}
 
+class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,16 +31,16 @@ class ChapterTopicScreen extends StatelessWidget {
             children: [
               TextButton(
                 onPressed: () {
-                  // Handle button press
+                  Get.to(const PdfViewer());
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 126, 89, 253),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: Container(
-                  width: 180,
+                  width: 150,
                   padding: const EdgeInsets.all(10),
                   child: const Center(
                     child: Text(
@@ -52,82 +54,31 @@ class ChapterTopicScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              const Center(
-                child: Text(
-                  'Important Topics',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const Text(
+                'Important Topics',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Column(
-                children: topics.map((topic) {
-                  return Container(
-                    height: 65,
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 126, 89, 253),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            topic,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Get.defaultDialog(
-                                title: 'Animation',
-                                titleStyle: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                                titlePadding: const EdgeInsets.only(top: 20),
-                                content: Container(
-                                  height: 150,
-                                  width: 250,
-                                  child: Image.asset(
-                                    'assets/images/chinese-beaver.gif', // Replace with the actual path to your GIF
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "See Details",
-                              style: TextStyle(color: Colors.white),
-                            ))
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ),
-              SizedBox(
+              const ImportantTopicScreen(),
+              const SizedBox(
                 height: 10,
               ),
-              const Center(
-                child: Text(
-                  'Our Tutorials',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const Text(
+                'Online Tutorials',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
+              TutorVideoOnline(),
             ],
           ),
         ),
