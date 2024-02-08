@@ -60,6 +60,8 @@ class _AllLectureScreenState extends State<AllLectureScreen> {
                       itemBuilder: (context, index) {
                         final lectureData = snapshot.data!.docs[index].data()
                             as Map<String, dynamic>;
+                        final documentId = snapshot.data!.docs[index].id;
+                        // print("my document id ${documentId}");
 
                         final String state = lectureData["state"];
 
@@ -67,6 +69,7 @@ class _AllLectureScreenState extends State<AllLectureScreen> {
                           padding: EdgeInsets.only(top: screenHeight * 0.01),
                           child: LectureCard(
                             lectureData: lectureData,
+                            documentId: documentId,
                             screen: "admin",
                           ),
                         );

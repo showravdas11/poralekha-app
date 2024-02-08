@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -19,7 +20,6 @@ class UpdateProfileScreen extends StatefulWidget {
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   TextEditingController nameController = TextEditingController();
-  // TextEditingController genderController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   File? _selectedImage;
@@ -29,10 +29,28 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   late Stream<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
-//-----------------data fetching---------------------//
+  late Timer _timer;
+  List<String> quotes = [
+    """"The expert in anything was once a beginner." - Helen Hayes """,
+    """ "The only way to do great work is to love what you do." - Steve Jobs """,
+    """ "The secret of getting ahead is getting started." - Mark Twain """,
+    """ "Success is the sum of small efforts, repeated day in and day out." - Robert Collier """,
+    // Add more quotes here as needed
+  ];
+  int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
+    // Initialize the timer to change the quote every 5 seconds
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      setState(() {
+        // Increment the currentIndex to display the next quote
+        currentIndex = (currentIndex + 1) % quotes.length;
+      });
+    });
+
+    // Fetch user data
     User? user = FirebaseAuth.instance.currentUser;
     _usersStream = FirebaseFirestore.instance
         .collection('users')
@@ -40,7 +58,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         .snapshots();
   }
 
-//-----------------update user profile function--------------------//
+  @override
+  void dispose() {
+    // Cancel the timer to prevent memory leaks
+    _timer.cancel();
+    super.dispose();
+  }
+
+  //-----------------update user profile function--------------------//
   Future<void> _updateUserData() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -82,7 +107,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
   }
 
-//------------------image select form gallery----------------------//
+  //------------------image select form gallery----------------------//
 
   Future<void> _picImageFormGallery() async {
     final pickedImage =
@@ -140,8 +165,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Stack(
-                        alignment: Alignment
-                            .bottomRight, // Aligns the camera icon to the bottom right
+                        alignment: Alignment.bottomRight,
                         children: [
                           Container(
                             width: 120,
@@ -171,18 +195,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       "assets/images/person-placeholder.jpg",
                                       fit: BoxFit.cover,
                                     ),
-                                  ), // Empty container, you can handle this case as per your requirement
+                                  ),
                           ),
                           Container(
-                            margin: const EdgeInsets.only(
-                                bottom: 0, right: 0), // Adjust margin as needed
+                            margin: const EdgeInsets.only(bottom: 0, right: 0),
                             child: GestureDetector(
                               onTap: _picImageFormGallery,
                               child: const CircleAvatar(
                                 backgroundColor: Colors.white,
                                 child: Icon(
                                   Icons.camera_alt_outlined,
-                                  size: 25, // Adjust icon size as needed
+                                  size: 25,
                                   color: Color.fromARGB(255, 0, 0, 0),
                                 ),
                               ),
@@ -196,6 +219,34 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(top: 5, left: 20, right: 20),
+              child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 255, 248, 200),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 10),
+                      child: Text(
+                        quotes[currentIndex],
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "FontMain",
+                            color: const Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -233,14 +284,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       return Column(
                         children: [
                           const Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Name",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Name",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
                           const SizedBox(
                             height: 6,
                           ),
@@ -253,18 +305,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               Icons.person,
                               color: Color(0xFF7E59FD),
                             ),
-                            // label: "Address",
                           ),
                           const SizedBox(height: 6),
                           const Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Gender",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Gender",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
                           const SizedBox(
                             height: 6,
                           ),
@@ -272,13 +324,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             height: 45,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(6),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.1),
-                                      blurRadius: 2)
-                                ]),
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 2)
+                              ],
+                            ),
                             child: DropdownButtonFormField<String>(
                               value: selectGender,
                               onChanged: (String? newValue) {
@@ -308,21 +361,21 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               }).toList(),
                               decoration: const InputDecoration(
                                   border: InputBorder.none,
-                                  // labelText: 'Gender'
                                   alignLabelWithHint: true,
                                   iconColor: Color(0xFF7E59FD)),
                             ),
                           ),
                           const SizedBox(height: 6),
                           const Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Address",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Address",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
                           const SizedBox(
                             height: 6,
                           ),
@@ -333,18 +386,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             obscure: false,
                             suffixIcon: const Icon(Icons.location_on,
                                 color: Color(0xFF7E59FD)),
-                            // label: "Address",
                           ),
                           const SizedBox(height: 6),
                           const Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Age",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w500),
-                              )),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "Age",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
                           const SizedBox(
                             height: 6,
                           ),
@@ -364,7 +417,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   RoundedButton(
                     title: "Update",
                     onTap: () {
-                      // print(" Gennnnn ${selectGender}");
                       if (nameController.text.trim().isEmpty ||
                           addressController.text.trim().isEmpty ||
                           ageController.text.trim().isEmpty ||
@@ -393,8 +445,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                         _updateUserData();
                       }
-
-                      // _updateUserData();
                     },
                     width: 200,
                   ),

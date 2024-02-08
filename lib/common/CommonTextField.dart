@@ -31,10 +31,8 @@ class _CommonTextFieldState extends State<CommonTextField> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      height: screenHeight * 0.06, // Adjust height based on screen height
-      padding: EdgeInsets.symmetric(
-          horizontal:
-              screenWidth * 0.03), // Adjust padding based on screen width
+      height: screenHeight * 0.06,
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
@@ -47,9 +45,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
           obscureText: widget.obscure,
           controller: widget.controller,
           keyboardType: widget.textInputType,
-          style: TextStyle(
-              fontSize:
-                  screenWidth * 0.04), // Adjust font size based on screen width
+          style: TextStyle(fontSize: screenWidth * 0.04),
           decoration: widget.decoration ??
               InputDecoration(
                 suffixIcon: widget.suffixIcon,
