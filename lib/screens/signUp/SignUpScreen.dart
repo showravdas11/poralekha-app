@@ -21,10 +21,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   String? selectedRole;
   BuildContext? dialogContext;
   String? selectGender;
+
+  bool _isPasswordVisible = true;
+  bool _isConPasswordVisible = true;
 
   Future addUserDetails(String name, String email, String address, int age,
       String role, String gender, UserCredential? userCredential) async {
@@ -60,7 +65,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   signUp(String name, String email, String password, String address, int age,
-      String role, String gender) async {
+      String role, String gender, String confirmPassword) async {
+    if (password != confirmPassword) {
+      // Passwords don't match, show alert
+
+      return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: "The password and confirm password do not match.",
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      )..show();
+    } else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          dialogContext = context;
+          return const AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: SpinKitCircle(color: Colors.white, size: 50.0),
+          );
+        },
+      );
+    }
+
     UserCredential? userCredential;
 
     try {
@@ -82,21 +112,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.1, vertical: screenHeight * 0.05),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
                   "assets/images/poralekha-splash-screen-logo.png",
-                  width: 160,
+                  width: screenWidth * 0.4,
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: screenHeight * 0.02),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Name",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 CommonTextField(
                   controller: nameController,
                   text: "Name",
@@ -104,7 +150,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: const Icon(Icons.person),
                   textInputType: TextInputType.name,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Email",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 CommonTextField(
                   controller: emailController,
                   text: "Email",
@@ -112,7 +171,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: const Icon(Icons.email),
                   textInputType: TextInputType.emailAddress,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Address",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 CommonTextField(
                   controller: addressController,
                   text: "Address",
@@ -120,7 +192,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: const Icon(Icons.location_on),
                   textInputType: TextInputType.streetAddress,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Age",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 CommonTextField(
                   controller: ageController,
                   text: "Age",
@@ -128,13 +213,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: const Icon(Icons.calendar_today),
                   textInputType: TextInputType.number,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Gender",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.03),
                   decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width * 0.02),
                       boxShadow: [
                         BoxShadow(
                             color: Colors.black.withOpacity(0.1), blurRadius: 2)
@@ -161,17 +261,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Role",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.03),
                   decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.1), blurRadius: 2)
-                      ]),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * 0.02),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 2,
+                      )
+                    ],
+                  ),
                   child: DropdownButtonFormField<String>(
                     value: selectedRole,
                     onChanged: (String? newValue) {
@@ -186,24 +304,77 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Text(value),
                       );
                     }).toList(),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: "Role",
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Password",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
                 CommonTextField(
                   controller: passwordController,
                   text: "Password",
-                  obscure: true,
-                  suffixIcon: const Icon(Icons.remove_red_eye),
+                  obscure: _isPasswordVisible,
+                  suffixIcon: IconButton(
+                    icon: Icon(_isPasswordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isPasswordVisible = !_isPasswordVisible;
+                      });
+                    },
+                  ),
                   textInputType: TextInputType.text,
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: screenHeight * 0.01),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Confirm Password",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 6,
+                // ),
+                CommonTextField(
+                  controller: confirmPasswordController,
+                  text: "Confirm Password",
+                  obscure: _isConPasswordVisible,
+                  suffixIcon: IconButton(
+                    icon: Icon(_isConPasswordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _isConPasswordVisible = !_isConPasswordVisible;
+                      });
+                    },
+                  ),
+                  textInputType: TextInputType.text,
+                ),
+                SizedBox(height: screenHeight * 0.02),
                 RoundedButton(
                   title: "Sign Up",
-                  width: 250,
+                  width: double.infinity,
                   onTap: () {
                     if (nameController.text.trim().isEmpty ||
                         emailController.text.trim().isEmpty ||
@@ -221,30 +392,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         btnOkOnPress: () {},
                       ).show();
                     } else {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          dialogContext = context;
-                          return const AlertDialog(
-                            backgroundColor: Colors.transparent,
-                            content:
-                                SpinKitCircle(color: Colors.white, size: 50.0),
-                          );
-                        },
-                      );
+                      // showDialog(
+                      //   context: context,
+                      //   barrierDismissible: false,
+                      //   builder: (BuildContext context) {
+                      //     dialogContext = context;
+                      //     return const AlertDialog(
+                      //       backgroundColor: Colors.transparent,
+                      //       content:
+                      //           SpinKitCircle(color: Colors.white, size: 50.0),
+                      //     );
+                      //   },
+                      // );
                       signUp(
-                          nameController.text.trim(),
-                          emailController.text.trim(),
-                          passwordController.text.trim(),
-                          addressController.text.trim(),
-                          int.parse(ageController.text.trim()),
-                          selectedRole ?? "Student",
-                          selectGender ?? "");
+                        nameController.text.trim(),
+                        emailController.text.trim(),
+                        passwordController.text.trim(),
+                        addressController.text.trim(),
+                        int.parse(ageController.text.trim()),
+                        selectedRole ?? "Student",
+                        selectGender ?? "",
+                        confirmPasswordController.text.trim(),
+                      );
                     }
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: screenHeight * 0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -252,7 +425,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       "Already have an account?",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 18,
+                        fontSize: screenWidth * 0.04,
                         color: Colors.black.withOpacity(0.5),
                       ),
                     ),
@@ -265,11 +438,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         "Sign In",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                          fontSize: screenWidth * 0.04,
                           color: Color(0xFF7E59FD),
                         ),
                       ),

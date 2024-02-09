@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // final _formKey = GlobalKey<FormState>();
   bool isChecked = false;
+  bool _isPasswordVisible = true;
 
   login(String email, String password) async {
     if (email == '' && password == '') {
@@ -35,13 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       UserCredential? userCredential;
       try {
-        userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+        userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
         User? user = userCredential.user;
 
         if (user != null && user.emailVerified) {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => BottomNavBar())
-          );
+              context, MaterialPageRoute(builder: (context) => BottomNavBar()));
         } else {
           await userCredential.user?.sendEmailVerification();
           AwesomeDialog(
@@ -68,133 +69,130 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-            child: Column(
-              children: [
-                Image.asset(
-                  "assets/images/poralekha-splash-screen-logo.png",
-                  width: 160,
+      body: SafeArea(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.1, vertical: screenHeight * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                "assets/images/poralekha-splash-screen-logo.png",
+                width: screenWidth * 0.4,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Name",
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: screenWidth * 0.04,
+                      fontWeight: FontWeight.w500),
                 ),
-                SizedBox(
-                  height: 40,
+              ),
+              CommonTextField(
+                controller: emailController,
+                text: "Email",
+                obscure: false,
+                suffixIcon: Icon(Icons.email),
+                textInputType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: screenHeight * 0.01),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Email",
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: screenWidth * 0.04,
+                      fontWeight: FontWeight.w500),
                 ),
-                CommonTextField(
-                  controller: emailController,
-                  text: "Email",
-                  obscure: false,
-                  suffixIcon: Icon(Icons.email),
-                  textInputType: TextInputType.emailAddress,
+              ),
+              CommonTextField(
+                controller: passwordController,
+                text: "Password",
+                obscure: _isPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(_isPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
                 ),
-                SizedBox(
-                  height: 30,
-                ),
-                CommonTextField(
-                  controller: passwordController,
-                  text: "Password",
-                  obscure: true,
-                  suffixIcon: Icon(Icons.remove_red_eye),
-                  textInputType: TextInputType.text,
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Color(0xFFFFFFFF),
-                          activeColor: Color(0xFF375FBE),
-                          value: isChecked,
-                          onChanged: (value) {
-                            setState(() {
-                              isChecked = value!;
-                            });
-                          },
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          visualDensity:
-                              VisualDensity(horizontal: -4.0, vertical: -4.0),
+                textInputType: TextInputType.text,
+              ),
+              SizedBox(height: screenHeight * 0.01),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ForgetPasswordScreen(),
                         ),
-                        Text(
-                          "Remember me",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF7E59FD)),
-                        ),
-                      ],
+                      );
+                    },
+                    child: Text(
+                      "Forgot Password ?",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF7E59FD)),
                     ),
-                    InkWell(
-                      onTap: () {
+                  )
+                ],
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              RoundedButton(
+                  title: "Login",
+                  width: double.infinity,
+                  onTap: () {
+                    login(emailController.text.toString(),
+                        passwordController.text.toString());
+                  }),
+              // SizedBox(height: 20),
+              // SocialButton(text: "-or sign in with-"),
+              SizedBox(height: screenHeight * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account?",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: screenWidth * 0.04,
+                        color: Colors.black.withOpacity(0.5)),
+                  ),
+                  TextButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ForgetPasswordScreen(),
+                            builder: (context) => SignUpScreen(),
                           ),
                         );
                       },
                       child: Text(
-                        "Forgot Password ?",
+                        "Sign Up",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
+                            fontSize: screenWidth * 0.04,
                             color: Color(0xFF7E59FD)),
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                RoundedButton(
-                    title: "Login",
-                    width: 250,
-                    onTap: () {
-                      login(emailController.text.toString(),
-                          passwordController.text.toString());
-                    }),
-                // SizedBox(height: 20),
-                // SocialButton(text: "-or sign in with-"),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account?",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                          color: Colors.black.withOpacity(0.5)),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SignUpScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Sign Up",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              color: Color(0xFF7E59FD)),
-                        ))
-                  ],
-                ),
-              ],
-            ),
+                      ))
+                ],
+              ),
+            ],
           ),
         ),
       ),
