@@ -13,10 +13,10 @@ class HomeBanner extends StatelessWidget {
       width: double.infinity,
       height: screenHeight * 0.2,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(10),
         // color: Colors.amber,
         image: const DecorationImage(
-          image: AssetImage('assets/images/english-banner.jpg'),
+          image: AssetImage('assets/images/Learn from home.jpg'),
           fit: BoxFit.cover,
         ),
       ),
