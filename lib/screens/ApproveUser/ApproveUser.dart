@@ -66,7 +66,6 @@ class ApproveUserList extends StatelessWidget {
       print('Failed to update user approval: $error');
     });
   }
-
 }
 
 class ApproveUserTile extends StatelessWidget {
@@ -102,7 +101,7 @@ class ApproveUserTile extends StatelessWidget {
           onPressed: isApproved ? null : onPressed,
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
+              (Set<MaterialState> states) {
                 if (states.contains(MaterialState.disabled)) {
                   return Colors.grey; // Color when button is disabled
                 }
@@ -110,12 +109,10 @@ class ApproveUserTile extends StatelessWidget {
               },
             ),
           ),
-          child: const Text(
-            'Approve',
-            style: TextStyle(
-              color: Colors.white,
-            )
-          ),
+          child: const Text('Approve',
+              style: TextStyle(
+                color: Colors.white,
+              )),
         ),
         contentPadding: EdgeInsets.all(16.0),
       ),

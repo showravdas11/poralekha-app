@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poralekha_app/common/RoundedButton.dart';
-import 'package:poralekha_app/utils/check_user.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:poralekha_app/utils/check_user.dart';
 
 class OnBoardScreen extends StatefulWidget {
-  const OnBoardScreen({super.key});
+  const OnBoardScreen({Key? key}) : super(key: key);
 
   @override
   State<OnBoardScreen> createState() => _OnBoardScreenState();
@@ -16,8 +16,18 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   late Stream<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
+  late PageController _pageController;
+  int _pageIndex = 0;
+
+  // @override
+  // void initState() {
+
+  //   super.initState();
+  // }
+
   @override
   void initState() {
+    _pageController = PageController(initialPage: 0);
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
     _usersStream = FirebaseFirestore.instance
@@ -27,101 +37,194 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      backgroundColor: MyTheme.canvousColor,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 1.6,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 1.6,
-                  decoration: BoxDecoration(
-                      color: Color(0xFF7E59FD),
-                      borderRadius:
-                          BorderRadius.only(bottomRight: Radius.circular(70))),
-                  child: Center(
-                    child: Image.asset(
-                      "assets/images/book.png",
-                      scale: 0.8,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CheckUser()),
+                      );
+                    },
+                    child: Text(
+                      "Skip",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "FontMain",
+                          color: MyTheme.buttonColor),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 2.666,
-                decoration: BoxDecoration(
-                  color: Color(0xFF7E59FD),
+                ],
+              ),
+              Expanded(
+                child: PageView.builder(
+                  itemCount: demo_data.length,
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _pageIndex = index;
+                    });
+                  },
+                  itemBuilder: (context, index) => OnboardContent(
+                    image: demo_data[index].image,
+                    title: demo_data[index].title,
+                    description: demo_data[index].description,
+                  ),
                 ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 2.666,
-                padding: EdgeInsets.only(top: 40, bottom: 30),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:
-                        BorderRadius.only(topLeft: Radius.circular(70))),
-                child: Column(
-                  children: [
-                    Text(
-                      "Grow with Us",
-                      style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1,
-                          wordSpacing: 2),
+              Row(
+                children: [
+                  ...List.generate(
+                    demo_data.length,
+                    (index) => Padding(
+                      padding: EdgeInsets.only(right: screenWidth * 0.01),
+                      child: DotIndicator(isActive: index == _pageIndex),
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40),
-                      child: Text(
-                        "The expert in anything was once a beginner.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 17, color: Colors.black.withOpacity(0.6)),
+                  ),
+                  Spacer(),
+                  SizedBox(
+                    height: screenHeight * 0.1,
+                    width: screenWidth * 0.18,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        backgroundColor: MyTheme.buttonColor,
+                      ),
+                      onPressed: () {
+                        _pageController.nextPage(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        "assets/images/reshot-icon-arrow-right-LA2EJ39WDT.svg",
+                        color: Colors.white,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(
-                      height: 55,
-                    ),
-                    RoundedButton(
-                        title: "Getting Started",
-                        width: 200,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CheckUser()),
-                          );
-                        }),
-                  ],
-                ),
-              ),
-            ),
-          ],
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class DotIndicator extends StatelessWidget {
+  const DotIndicator({
+    Key? key,
+    required this.isActive,
+  }) : super(key: key);
+
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 300),
+      height: isActive ? 12 : 4,
+      width: 4,
+      decoration: BoxDecoration(
+        color: isActive
+            ? MyTheme.buttonColor
+            : MyTheme.buttonColor.withOpacity(0.4),
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
+}
+
+class Onboard {
+  final String image, title, description;
+
+  Onboard({
+    required this.image,
+    required this.title,
+    required this.description,
+  });
+}
+
+final List<Onboard> demo_data = [
+  Onboard(
+    image: "assets/images/onb2.png",
+    title: "Learn Form Home",
+    description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+  ),
+  Onboard(
+    image: "assets/images/onb3.png",
+    title: "Discover Your Power",
+    description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+  ),
+  Onboard(
+    image: "assets/images/onb1.png",
+    title: "Findout Your Creativity",
+    description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+  )
+];
+
+class OnboardContent extends StatelessWidget {
+  const OnboardContent({
+    Key? key,
+    required this.image,
+    required this.title,
+    required this.description,
+  }) : super(key: key);
+
+  final String image, title, description;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Spacer(),
+        Image.asset(
+          image,
+          height: MediaQuery.of(context).size.height * 0.4,
+        ),
+        Spacer(),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.08,
+            fontWeight: FontWeight.bold,
+            fontFamily: "FontMain",
+          ),
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.01,
+        ),
+        Text(
+          description,
+          textAlign: TextAlign.center,
+          style: TextStyle(),
+        ),
+        Spacer(),
+      ],
     );
   }
 }
