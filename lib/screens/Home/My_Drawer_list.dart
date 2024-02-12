@@ -3,6 +3,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
+import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
+import 'package:poralekha_app/screens/AllSubjects/AllSubjects.dart';
 import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
 
 class MyDrawerList extends StatelessWidget {
@@ -52,6 +54,11 @@ class MyDrawerList extends StatelessWidget {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AddChapterScreen()));
+            leading: const Icon(Iconsax.lamp),
+            title: const Text("All Subjects"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AllSubjectsScreen()));
             },
           ),
         ],

@@ -65,86 +65,88 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HomeBanner(),
-            SizedBox(height: screenHeight * 0.03),
-            Center(
-              child: Text(
-                "Class Lectures",
-                style: TextStyle(
-                  fontSize: screenWidth * 0.07,
-                  fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HomeBanner(),
+              SizedBox(height: screenHeight * 0.03),
+              Center(
+                child: Text(
+                  "Class Lectures",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.07,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: screenHeight * 0.03),
-            Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: screenHeight * 0.015,
-                  horizontal: screenWidth * 0.03),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(screenWidth * 0.04),
+              SizedBox(height: screenHeight * 0.03),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.015,
+                    horizontal: screenWidth * 0.03),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isRunningSelected = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isRunningSelected
+                            ? MyTheme.buttonColor
+                            : MyTheme.buttonColor.withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.02),
+                        ),
+                      ),
+                      child: Text(
+                        "Running",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isRunningSelected = false;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isRunningSelected
+                            ? MyTheme.buttonColor.withOpacity(0.6)
+                            : MyTheme.buttonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.02),
+                        ),
+                      ),
+                      child: Text(
+                        "Upcoming",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.04,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isRunningSelected = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isRunningSelected
-                          ? MyTheme.buttonColor
-                          : MyTheme.buttonColor.withOpacity(0.6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                      ),
-                    ),
-                    child: Text(
-                      "Running",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isRunningSelected = false;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isRunningSelected
-                          ? MyTheme.buttonColor.withOpacity(0.6)
-                          : MyTheme.buttonColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                      ),
-                    ),
-                    child: Text(
-                      "Upcoming",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: screenHeight * 0.04),
-            Expanded(
-              child: StreamBuilder(
+              SizedBox(height: screenHeight * 0.04),
+              StreamBuilder(
                 stream: _usersStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -164,6 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final lectureData = snapshot.data!.docs[index].data()
@@ -186,8 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       drawer: const Drawer(
