@@ -49,13 +49,8 @@ class MyDrawerList extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Iconsax.book_14),
-            title: const Text("Add Chapter"),
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddChapterScreen()));
             leading: const Icon(Iconsax.lamp),
-            title: const Text("All Subjects"),
+            title: const Text("All subject"),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AllSubjectsScreen()));
