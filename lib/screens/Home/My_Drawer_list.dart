@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
 import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
@@ -43,6 +44,14 @@ class MyDrawerList extends StatelessWidget {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AllLectureScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.book_14),
+            title: const Text("Add Chapter"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddChapterScreen()));
             },
           ),
         ],

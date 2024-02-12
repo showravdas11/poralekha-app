@@ -18,7 +18,7 @@ class _PdfViewerState extends State<PdfViewer> {
     _pdfStream = FirebaseFirestore.instance
         .collection("subjects")
         .doc(
-            "A3oHaj9vWr36rboPvOrl") // Replace with the actual document ID for the chapter
+            "adqxripumg9O6ZsUHjTL") // Replace with the actual document ID for the chapter
         .collection(
             "chapters") // Change to the name of your "subjects" collection
         .snapshots();

@@ -38,7 +38,7 @@ class _LectureCardState extends State<LectureCard> {
       // color: Color(0xFFFBFBFB), // Set card background color
       child: Container(
         decoration: BoxDecoration(
-            color: Color(0xFFFBFBFB),
+            color: const Color(0xFFFBFBFB),
             borderRadius: BorderRadius.circular(10.0)),
         width: cardWidth,
         height: cardHeight,
