@@ -19,10 +19,8 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
     super.initState();
     _chaptersStream = FirebaseFirestore.instance
         .collection("subjects")
-        .doc(
-            "A3oHaj9vWr36rboPvOrl") // Replace with the actual document ID for the chapter
-        .collection(
-            "chapters") // Change to the name of your "subjects" collection
+        .doc("adqxripumg9O6ZsUHjTL")
+        .collection("chapters")
         .snapshots();
   }
 

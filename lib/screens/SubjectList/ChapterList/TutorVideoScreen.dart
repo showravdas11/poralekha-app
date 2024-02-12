@@ -23,7 +23,7 @@ class _TutorVideoScreenState extends State<TutorVideoScreen> {
       DeviceOrientation.portraitUp,
     ]);
 
-    String videoUrl = 'https://youtu.be/orbkg5JH9C8?si=wlaQroTZesImPrCj';
+    String videoUrl = 'https://youtu.be/cpLOajjJ10Q?si=cAWOxRkG45xKlaYa';
 
     String videoId = YoutubePlayer.convertUrlToId(videoUrl) ?? '';
 
@@ -106,7 +106,7 @@ class _TutorVideoScreenState extends State<TutorVideoScreen> {
                                   },
                                 ),
                                 const Text(
-                                  "Chapter Topic Name",
+                                  "ATP ও সালোকসংশ্লেষণ",
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -118,9 +118,10 @@ class _TutorVideoScreenState extends State<TutorVideoScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 15),
                               child: Text(
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis viverra purus sit amet nulla fermentum, vitae malesuada libero bibendum. Aliquam erat volutpat. Nullam consequat quam et sapien consectetur, sed vulputate velit ultricies. Vestibulum in libero leo. Nullam et magna id arcu interdum tristique.",
+                                "সালোকসংশ্লেষণ প্রক্রিয়ার যে অধ্যায়ে আলোক শক্তি রাসায়নিক শক্তিতে রূপান্তরিত হয়ে ATP ও NADPH + H+ তে সঞ্চারিত হয়, তাকে আলোকনির্ভর অধ্যায় বলে। এ অংশের জন্য আলোক অপরিহার্য। সূর্যালোকের শক্তিকে ব্যবহার করে ATP তৈরির প্রক্রিয়াকে ফটোফসফোরাইলেশন(Photophosphorylation) বলে।",
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.grey.shade600),
+                                textAlign: TextAlign.justify,
                               ),
                             )
                           ],
