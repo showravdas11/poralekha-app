@@ -49,7 +49,7 @@ class MyDrawerList extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Iconsax.lamp),
+            leading: const Icon(Iconsax.book),
             title: const Text("All subject"),
             onTap: () {
               Navigator.push(context,
