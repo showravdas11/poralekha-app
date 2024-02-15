@@ -75,42 +75,74 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       });
   }
 
+  // Future<void> _selectEndTime(BuildContext context) async {
+  //   if (selectedStartTime != null) {
+  //     final TimeOfDay? pickedTime = await showTimePicker(
+  //       context: context,
+  //       initialTime: selectedEndTime ??
+  //           selectedStartTime!, // Set initial time to selected end time or start time
+  //     );
+  //     if (pickedTime != null) {
+  //       // Calculate the maximum selectable time (5 hours after the selected start time)
+  //       final maxSelectableTime = TimeOfDay(
+  //         hour: selectedStartTime!.hour + 5,
+  //         minute: selectedStartTime!.minute,
+  //       );
+  //       // Convert TimeOfDay to DateTime for comparison
+  //       final pickedDateTime =
+  //           DateTime(1, 1, 1, pickedTime.hour, pickedTime.minute);
+  //       final maxSelectableDateTime =
+  //           DateTime(1, 1, 1, maxSelectableTime.hour, maxSelectableTime.minute);
+  //       // Check if the picked time is before or equal to the maximum selectable time
+  //       if (pickedDateTime.isBefore(maxSelectableDateTime) ||
+  //           pickedDateTime == maxSelectableDateTime) {
+  //         setState(() {
+  //           selectedEndTime = pickedTime;
+  //         });
+  //       } else {
+  //         // Inform the user that the selected time is not within the allowed range
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(
+  //             content:
+  //                 Text('End time should be within 5 hours of the start time.'),
+  //           ),
+  //         );
+  //       }
+  //     }
+  //   } else {
+  //     // Inform the user to select the start time first
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Please select the start time first.'),
+  //       ),
+  //     );
+  //   }
+  // }
+
   Future<void> _selectEndTime(BuildContext context) async {
     if (selectedStartTime != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
-        initialTime: selectedEndTime ??
-            selectedStartTime!, // Set initial time to selected end time or start time
+        initialTime: selectedEndTime ?? selectedStartTime!,
       );
       if (pickedTime != null) {
-        // Calculate the maximum selectable time (5 hours after the selected start time)
-        final maxSelectableTime = TimeOfDay(
-          hour: selectedStartTime!.hour + 5,
-          minute: selectedStartTime!.minute,
-        );
-        // Convert TimeOfDay to DateTime for comparison
         final pickedDateTime =
             DateTime(1, 1, 1, pickedTime.hour, pickedTime.minute);
-        final maxSelectableDateTime =
-            DateTime(1, 1, 1, maxSelectableTime.hour, maxSelectableTime.minute);
-        // Check if the picked time is before or equal to the maximum selectable time
-        if (pickedDateTime.isBefore(maxSelectableDateTime) ||
-            pickedDateTime == maxSelectableDateTime) {
+        final startDateTime = DateTime(
+            1, 1, 1, selectedStartTime!.hour, selectedStartTime!.minute);
+        if (pickedDateTime.isAfter(startDateTime)) {
           setState(() {
             selectedEndTime = pickedTime;
           });
         } else {
-          // Inform the user that the selected time is not within the allowed range
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text('End time should be within 5 hours of the start time.'),
+              content: Text('End time should be after the start time.'),
             ),
           );
         }
       }
     } else {
-      // Inform the user to select the start time first
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please select the start time first.'),
@@ -165,56 +197,65 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
                       )),
-                  Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 2,
-                        )
-                      ],
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: selectClass,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectClass = newValue;
-                        });
-                      },
-                      items: [
-                        'Class HSC',
-                        'Class Ten',
-                        'Class Nine',
-                        'Class Eight',
-                        'Class Seven',
-                        'Class Six',
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              fontWeight: FontWeight.normal,
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('classes')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<DropdownMenuItem<String>> classItems = [];
+                        for (var doc in snapshot.data!.docs) {
+                          String className = doc.get('name');
+                          classItems.add(
+                            DropdownMenuItem<String>(
+                              value: className,
+                              child: Text(
+                                className,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return Container(
+                          height: 45,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 2,
+                              )
+                            ],
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: selectClass,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectClass = newValue;
+                              });
+                            },
+                            items: classItems,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Select Your Class",
+                              hintStyle: TextStyle(
+                                wordSpacing: 2,
+                                letterSpacing: 2,
+                              ),
+                              alignLabelWithHint: true,
+                              iconColor: Color(0xFF7E59FD),
                             ),
                           ),
                         );
-                      }).toList(),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Select Your Class",
-                        hintStyle: TextStyle(
-                          wordSpacing: 2,
-                          letterSpacing: 2,
-                        ),
-                        alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
-                      ),
-                    ),
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
                   ),
                   SizedBox(height: 6),
                   const Align(

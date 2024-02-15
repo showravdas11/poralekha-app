@@ -43,7 +43,46 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
     linkController = TextEditingController(text: widget.lectureData['link']);
   }
 
-  void updateFirestoreData() async {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        dateController.text =
+            pickedDate.toString().substring(0, 10); // Format the date as needed
+      });
+    }
+  }
+
+  Future<void> _selectStartTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      setState(() {
+        startTimeController.text = pickedTime.format(context);
+      });
+    }
+  }
+
+  Future<void> _selectEndTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null) {
+      setState(() {
+        endTimeController.text = pickedTime.format(context);
+      });
+    }
+  }
+
+  void updateLectureData() async {
     // Ensure all required fields are filled
     if (topicController.text.trim().isEmpty ||
         teacherNameController.text.trim().isEmpty ||
@@ -164,11 +203,31 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(height: screenSize.height * 0.01),
-              CommonTextField(
-                controller: dateController,
-                text: "Date",
-                textInputType: TextInputType.text,
-                obscure: false,
+              Container(
+                height: screenSize.height * 0.06,
+                padding:
+                    EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2,
+                    )
+                  ],
+                ),
+                child: TextFormField(
+                  controller: dateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  decoration: InputDecoration(
+                    hintText: 'Select Dare',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        horizontal: screenSize.width * 0.01),
+                  ),
+                ),
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
@@ -179,11 +238,32 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(height: screenSize.height * 0.01),
-              CommonTextField(
-                controller: startTimeController,
-                text: "Start Time",
-                textInputType: TextInputType.text,
-                obscure: false,
+              Container(
+                height: screenSize.height * 0.06,
+                padding:
+                    EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2,
+                    )
+                  ],
+                ),
+                child: TextFormField(
+                  controller: startTimeController,
+                  readOnly: true,
+                  onTap: () => _selectStartTime(context),
+                  decoration: InputDecoration(
+                    hintText: 'Select Start Time',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: screenSize.width * 0.01,
+                    ),
+                  ),
+                ),
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
@@ -194,11 +274,31 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(height: screenSize.height * 0.01),
-              CommonTextField(
-                controller: endTimeController,
-                text: "End Time",
-                textInputType: TextInputType.text,
-                obscure: false,
+              Container(
+                height: screenSize.height * 0.06,
+                padding:
+                    EdgeInsets.symmetric(horizontal: screenSize.width * 0.02),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 2,
+                    )
+                  ],
+                ),
+                child: TextFormField(
+                  controller: endTimeController,
+                  readOnly: true,
+                  onTap: () => _selectEndTime(context),
+                  decoration: InputDecoration(
+                    hintText: 'Select End Time',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                        horizontal: screenSize.width * 0.01),
+                  ),
+                ),
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
@@ -262,7 +362,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                   }).toList(),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: "Select Your Class",
+                    hintText: "Select Your State",
                     hintStyle: TextStyle(
                       wordSpacing: 2,
                       letterSpacing: 2,
@@ -276,7 +376,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               RoundedButton(
                 title: "Update Lectures",
                 onTap: () {
-                  updateFirestoreData();
+                  updateLectureData();
                 },
                 width: double.infinity,
               ),

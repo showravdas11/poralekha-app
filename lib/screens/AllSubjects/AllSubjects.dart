@@ -23,6 +23,9 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: "All Subject",
@@ -31,7 +34,7 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
         },
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: Column(
           children: [
             Expanded(
@@ -77,10 +80,10 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
         foregroundColor: MyTheme.buttonColor,
         child: Icon(
           Icons.add,
-          size: 35,
+          size: screenWidth * 0.1,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50.0),
+          borderRadius: BorderRadius.circular(screenWidth * 0.10),
         ),
       ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -98,13 +101,16 @@ class SubjectsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0), // Adjust the value as needed
+        borderRadius: BorderRadius.circular(screenWidth * 0.03),
       ),
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -112,13 +118,16 @@ class SubjectsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  subjecData['name'].toString(),
+                  "Subject: ${subjecData['name'].toString()}",
+                  style: TextStyle(
+                      fontSize: screenWidth * 0.04, fontFamily: "FontMain"),
                 ),
                 SizedBox(
-                  height: 3,
+                  height: screenHeight * 0.01,
                 ),
                 Text(
-                  subjecData['class'].toString(),
+                  "Class: ${subjecData['class'].toString()}",
+                  style: TextStyle(fontSize: screenWidth * 0.04),
                 ),
               ],
             ),
@@ -126,14 +135,18 @@ class SubjectsCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: MyTheme.buttonColor,
                 foregroundColor: Colors.white,
-                // minimumSize: Size(10, 40),
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.01,
+                    horizontal: screenWidth * 0.02),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.02),
                 ),
               ),
               onPressed: () {},
-              child: Text("Show Details"),
+              child: Text(
+                "Show Details",
+                style: TextStyle(fontSize: screenWidth * 0.04),
+              ),
             )
           ],
         ),

@@ -9,7 +9,7 @@ import 'package:poralekha_app/screens/AllSubjects/AllSubjects.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class AddSubjectsScreen extends StatefulWidget {
-  const AddSubjectsScreen({super.key});
+  const AddSubjectsScreen({Key? key}) : super(key: key);
 
   @override
   State<AddSubjectsScreen> createState() => _AddSubjectsScreenState();
@@ -68,7 +68,7 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
               const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Topic",
+                    "Class",
                     style: TextStyle(
                         color: Colors.grey,
                         fontSize: 17,
@@ -77,56 +77,65 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
               SizedBox(
                 height: 6,
               ),
-              Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 2,
-                    )
-                  ],
-                ),
-                child: DropdownButtonFormField<String>(
-                  value: selectClass,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectClass = newValue;
-                    });
-                  },
-                  items: [
-                    'HSC',
-                    'Ten',
-                    'Nine',
-                    'Eight',
-                    'Seven',
-                    'Six',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.normal,
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('classes')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<DropdownMenuItem<String>> classItems = [];
+                    for (var doc in snapshot.data!.docs) {
+                      String className = doc.get('name');
+                      classItems.add(
+                        DropdownMenuItem<String>(
+                          value: className,
+                          child: Text(
+                            className,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    return Container(
+                      height: 45,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        value: selectClass,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectClass = newValue;
+                          });
+                        },
+                        items: classItems,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Select Your Class",
+                          hintStyle: TextStyle(
+                            wordSpacing: 2,
+                            letterSpacing: 2,
+                          ),
+                          alignLabelWithHint: true,
+                          iconColor: Color(0xFF7E59FD),
                         ),
                       ),
                     );
-                  }).toList(),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Select Your Class",
-                    hintStyle: TextStyle(
-                      wordSpacing: 2,
-                      letterSpacing: 2,
-                    ),
-                    alignLabelWithHint: true,
-                    iconColor: Color(0xFF7E59FD),
-                  ),
-                ),
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               ),
               SizedBox(
                 height: 20,
