@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
+import 'package:poralekha_app/screens/AllSubjects/SubjectDetails.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class AllSubjectsScreen extends StatefulWidget {
-  const AllSubjectsScreen({super.key});
+  const AllSubjectsScreen({Key? key});
 
   @override
   State<AllSubjectsScreen> createState() => _AllSubjectsScreenState();
@@ -62,7 +64,9 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
                     itemBuilder: (context, index) {
                       var subjecData = snapshot.data!.docs[index].data()
                           as Map<String, dynamic>;
-                      return SubjectsCard(subjecData: subjecData);
+                      final documentId = snapshot.data!.docs[index].id;
+                      return SubjectsCard(
+                          subjecData: subjecData, documentId: documentId);
                     },
                   );
                 },
@@ -86,18 +90,19 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
           borderRadius: BorderRadius.circular(screenWidth * 0.10),
         ),
       ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
 
 class SubjectsCard extends StatelessWidget {
   const SubjectsCard({
-    super.key,
+    Key? key,
     required this.subjecData,
-  });
+    required this.documentId,
+  }) : super(key: key);
 
   final Map<String, dynamic> subjecData;
+  final String documentId;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +125,9 @@ class SubjectsCard extends StatelessWidget {
                 Text(
                   "Subject: ${subjecData['name'].toString()}",
                   style: TextStyle(
-                      fontSize: screenWidth * 0.04, fontFamily: "FontMain"),
+                    fontSize: screenWidth * 0.04,
+                    fontFamily: "FontMain",
+                  ),
                 ),
                 SizedBox(
                   height: screenHeight * 0.01,
@@ -136,13 +143,18 @@ class SubjectsCard extends StatelessWidget {
                 backgroundColor: MyTheme.buttonColor,
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.01,
-                    horizontal: screenWidth * 0.02),
+                  vertical: screenHeight * 0.01,
+                  horizontal: screenWidth * 0.02,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(screenWidth * 0.02),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                Get.to(SubjectDetails(
+                  subjectId: documentId,
+                ));
+              },
               child: Text(
                 "Show Details",
                 style: TextStyle(fontSize: screenWidth * 0.04),
