@@ -17,8 +17,17 @@ class AddChapterScreen extends StatefulWidget {
 
 class _AddChapterScreenState extends State<AddChapterScreen> {
   TextEditingController chapnameController = TextEditingController();
-  String? _filePath;
-  String? _storagePath;
+  // String? _filePath;
+  // String? _storagePath;
+  // bool _isExpanded = false;
+  late Stream<QuerySnapshot> _addChapterStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _addChapterStream =
+        FirebaseFirestore.instance.collection('subjects').snapshots();
+  }
 
   final FirebaseFirestore _firebasFirestore = FirebaseFirestore.instance;
 
@@ -150,31 +159,6 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 child: Text("Upload PDF"),
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
-            _filePath != null
-                ? Column(
-                    children: [
-                      Text(
-                        "Selected PDF: $_filePath",
-                        style: TextStyle(fontSize: screenWidth * 0.04),
-                      ),
-                      SizedBox(height: screenHeight * 0.01),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text("Confirm Upload"),
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.01),
-                      _storagePath != null
-                          ? Text(
-                              "Storage Path: $_storagePath",
-                              style: TextStyle(fontSize: screenWidth * 0.04),
-                            )
-                          : Container(),
-                    ],
-                  )
-                : Container(),
           ],
         ),
       ),
