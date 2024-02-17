@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -16,72 +17,72 @@ class AddChapterScreen extends StatefulWidget {
 
 class _AddChapterScreenState extends State<AddChapterScreen> {
   TextEditingController chapnameController = TextEditingController();
-  String? _filePath;
-  String? _storagePath;
+  // String? _filePath;
+  // String? _storagePath;
+  // bool _isExpanded = false;
+  late Stream<QuerySnapshot> _addChapterStream;
 
-  Future<void> _pickPDF() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
+  @override
+  void initState() {
+    super.initState();
+    _addChapterStream =
+        FirebaseFirestore.instance.collection('subjects').snapshots();
+  }
+
+  final FirebaseFirestore _firebasFirestore = FirebaseFirestore.instance;
+
+  Future<String> uploadPdf(String fileName, File file) async {
+    final reference =
+        FirebaseStorage.instance.ref().child("pdfs/$fileName/.pdf");
+
+    final uploadTask = reference.putFile(file);
+
+    await uploadTask.whenComplete(() {});
+
+    final downloadLink = await reference.getDownloadURL();
+
+    return downloadLink;
+  }
+
+  //------------pick File-----------------
+  void pickFile() async {
+    final pickedFile = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
 
-    if (result != null) {
-      setState(() {
-        _filePath = result.files.single.path!;
-      });
+    if (pickedFile != null) {
+      String fileName = pickedFile.files[0].name;
+
+      File file = File(pickedFile.files[0].path!);
+      final downloadLink = await uploadPdf(fileName, file); // Await here
+
+      await _firebasFirestore.collection("pdfs").add(
+        {
+          "name": fileName,
+          "url": downloadLink,
+        },
+      );
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'Pdf Uploaded SuccessFully',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      ).show();
     } else {
       // User canceled the picker
     }
   }
 
-  Future<void> _uploadPDF() async {
-    if (_filePath == null) return;
-
-    File file = File(_filePath!);
-    String fileName = file.path.split('/').last;
-
-    try {
-      Reference reference =
-          FirebaseStorage.instance.ref().child('pdfs/$fileName');
-      await reference.putFile(file);
-
-      // Get download URL
-      String downloadURL = await reference.getDownloadURL();
-
-      // Get storage path location
-      String storagePath = reference.fullPath;
-
-      // Now you can save this downloadURL and storagePath to Firestore along with any other information you need.
-      // For example, you can save them under a 'chapters' collection.
-
-      // Here's an example of how to do it using FirebaseFirestore:
-      // FirebaseFirestore.instance.collection('chapters').add({
-      //   'chapterName': chapnameController.text,
-      //   'pdfURL': downloadURL,
-      //   'storagePath': storagePath,
-      // });
-
-      // Clear the file path after upload
-      setState(() {
-        _filePath = null;
-        _storagePath = storagePath;
-      });
-
-      // Show a message indicating successful upload
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('PDF uploaded successfully!'),
-      ));
-    } catch (e) {
-      print('Error uploading PDF: $e');
-      // Show an error message if upload fails
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error uploading PDF. Please try again later.'),
-      ));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final appBarHeight = AppBar().preferredSize.height;
+    final screenHeight = screenSize.height - appBarHeight;
+    final screenWidth = screenSize.width;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: "Add Chapter",
@@ -89,21 +90,21 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
           Navigator.pop(context);
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(screenWidth * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(screenWidth * 0.05),
               ),
               child: Container(
-                padding: const EdgeInsets.all(16),
-                height: 100,
+                padding: EdgeInsets.all(screenWidth * 0.04),
+                height: screenHeight * 0.15,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(screenWidth * 0.05),
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
@@ -113,71 +114,51 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Subject Name: Physics",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                     Text(
                       "Class Ten",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: screenWidth * 0.05),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02),
             CommonTextField(
               controller: chapnameController,
               text: "Add Chapter Name",
               textInputType: TextInputType.text,
               obscure: false,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02),
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: MyTheme.buttonColor,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.015,
+                    horizontal: screenWidth * 0.05,
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(screenWidth * 0.05),
                   ),
                 ),
-                onPressed: _pickPDF,
+                onPressed: pickFile,
                 child: Text("Upload PDF"),
               ),
             ),
-            SizedBox(height: 20),
-            _filePath != null
-                ? Column(
-                    children: [
-                      Text(
-                        "Selected PDF: $_filePath",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: _uploadPDF,
-                          child: Text("Confirm Upload"),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      _storagePath != null
-                          ? Text(
-                              "Storage Path: $_storagePath",
-                              style: TextStyle(fontSize: 16),
-                            )
-                          : Container(),
-                    ],
-                  )
-                : Container(),
           ],
         ),
       ),
