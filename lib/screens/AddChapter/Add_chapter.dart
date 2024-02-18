@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
+import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class AddChapterScreen extends StatefulWidget {
-  const AddChapterScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> subjectData;
+  const AddChapterScreen({Key? key, required this.subjectData})
+      : super(key: key);
 
   @override
   State<AddChapterScreen> createState() => _AddChapterScreenState();
@@ -119,7 +122,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Subject Name: Physics",
+                      "Subject Name: ${widget.subjectData['name']}",
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.bold,
@@ -127,7 +130,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      "Class Ten",
+                      "Class: ${widget.subjectData['class']}",
                       style: TextStyle(fontSize: screenWidth * 0.05),
                     ),
                   ],
@@ -143,21 +146,13 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             ),
             SizedBox(height: screenHeight * 0.02),
             Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: MyTheme.buttonColor,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.015,
-                    horizontal: screenWidth * 0.05,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screenWidth * 0.05),
-                  ),
-                ),
-                onPressed: pickFile,
-                child: Text("Upload PDF"),
-              ),
+              child: RoundedButton(
+                  title: "Add Chapter", onTap: () {}, width: double.infinity),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Center(
+              child: RoundedButton(
+                  title: "Upload Pdf", onTap: pickFile, width: double.infinity),
             ),
           ],
         ),

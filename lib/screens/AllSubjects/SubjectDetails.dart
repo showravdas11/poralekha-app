@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
@@ -15,7 +16,8 @@ class SubjectDetails extends StatefulWidget {
 
 class _SubjectDetailsState extends State<SubjectDetails> {
   late Stream<DocumentSnapshot> _subjectStream;
-  late Stream<QuerySnapshot> _chapterStream; // Define _chapterStream
+  late Stream<QuerySnapshot> _chapterStream;
+  late Map<String, dynamic> _subjectData;
 
   @override
   void initState() {
@@ -25,7 +27,6 @@ class _SubjectDetailsState extends State<SubjectDetails> {
         .doc(widget.subjectId)
         .snapshots();
 
-    // Initialize _chapterStream
     _chapterStream = FirebaseFirestore.instance
         .collection('subjects')
         .doc(widget.subjectId)
@@ -36,35 +37,32 @@ class _SubjectDetailsState extends State<SubjectDetails> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        title: "Subject Details",
-        leadingOnPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: StreamBuilder<DocumentSnapshot>(
-          stream: _subjectStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (!snapshot.hasData || snapshot.data!.data() == null) {
-              return const Center(
-                child: Text("No Data Found"),
-              );
-            }
-            final subjectData = snapshot.data!.data() as Map<String, dynamic>;
-            final subjectName = subjectData['name'] ?? '';
-            final className = subjectData['class'] ?? '';
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _subjectStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (!snapshot.hasData || snapshot.data!.data() == null) {
+          return const Center(
+            child: Text("No Data Found"),
+          );
+        }
+        _subjectData = snapshot.data!.data() as Map<String, dynamic>;
 
-            return Column(
+        return Scaffold(
+          appBar: CustomAppBar(
+            title: "Subject Details",
+            leadingOnPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
@@ -87,7 +85,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Subject Name: $subjectName",
+                        "Subject Name: ${_subjectData['name'] ?? ''}",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -95,7 +93,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        "Class: $className",
+                        "Class: ${_subjectData['class'] ?? ''}",
                         style: const TextStyle(fontSize: 16),
                       ),
                     ],
@@ -153,7 +151,9 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                     backgroundColor: MyTheme.buttonColor,
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.symmetric(
-                                        vertical: screenHeight * 0.01,
+                                        vertical:
+                                            MediaQuery.of(context).size.height *
+                                                0.01,
                                         horizontal: screenWidth * 0.02),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
@@ -178,25 +178,30 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                   },
                 ),
               ],
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddSubjectsScreen()));
-        },
-        backgroundColor: Colors.white,
-        foregroundColor: MyTheme.buttonColor,
-        child: Icon(
-          Icons.add,
-          size: screenWidth * 0.1,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(screenWidth * 0.10),
-        ),
-      ),
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      AddChapterScreen(subjectData: _subjectData),
+                ),
+              );
+            },
+            backgroundColor: Colors.white,
+            foregroundColor: MyTheme.buttonColor,
+            child: Icon(
+              Icons.add,
+              size: screenWidth * 0.1,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(screenWidth * 0.10),
+            ),
+          ),
+        );
+      },
     );
   }
 }

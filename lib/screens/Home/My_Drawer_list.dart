@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:poralekha_app/AddChapter/Add_chapter.dart';
-import 'package:poralekha_app/AllLectures/AllLectures.dart';
+import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
+import 'package:poralekha_app/screens/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
 
 import 'package:poralekha_app/screens/AllSubjects/AllSubjects.dart';
 import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
+import 'package:poralekha_app/screens/AllStudents/AllStudents.dart';
+import 'package:poralekha_app/screens/count.dart';
 
 class MyDrawerList extends StatelessWidget {
   const MyDrawerList({Key? key});
@@ -42,10 +44,10 @@ class MyDrawerList extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Iconsax.lamp),
-            title: const Text("Add Chapter"),
+            title: const Text("All Student"),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddChapterScreen()));
+                  MaterialPageRoute(builder: (context) => AllStudent()));
             },
           ),
           ListTile(
