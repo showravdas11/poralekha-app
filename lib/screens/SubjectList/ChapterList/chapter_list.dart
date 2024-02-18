@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:poralekha_app/PDFViewer/pdf_viewer.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/ChapterTopicScreen.dart';
 
 class ChapterListScreen extends StatefulWidget {
-  const ChapterListScreen({Key? key}) : super(key: key);
+  final String subjectId;
+
+  // Update the constructor to properly initialize subjectId
+  const ChapterListScreen({
+    Key? key,
+    required this.subjectId,
+  }) : super(key: key);
 
   @override
   _ChapterListScreenState createState() => _ChapterListScreenState();
@@ -18,9 +23,9 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
   void initState() {
     super.initState();
     _chaptersStream = FirebaseFirestore.instance
-        .collection("subjects")
-        .doc("adqxripumg9O6ZsUHjTL")
-        .collection("chapters")
+        .collection('subjects')
+        .doc(widget.subjectId) // Use widget.subjectId here
+        .collection('chapters')
         .snapshots();
   }
 
@@ -59,8 +64,9 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    // Get.to(const PdfViewer());
-                    Get.to(ChapterTopicScreen());
+                    // Handle onTap event
+                    // Here, you can navigate to another screen passing the chapterId or any other necessary data
+                    Get.to(const ChapterTopicScreen());
                   },
                   child: Container(
                     height: 60,

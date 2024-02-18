@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
 class SubjectListScreen extends StatefulWidget {
-  const SubjectListScreen({Key? key}) : super(key: key);
+  final String className;
+
+  const SubjectListScreen({Key? key, required this.className})
+      : super(key: key);
 
   @override
   _SubjectListScreenState createState() => _SubjectListScreenState();
@@ -18,8 +21,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
     super.initState();
     _subjectsStream = FirebaseFirestore.instance
         .collection("subjects")
-        .where('class', isEqualTo: 'Class Ten')
-        //.orderBy('class')
+        .where('class', isEqualTo: widget.className)
         .snapshots();
   }
 
@@ -59,8 +61,8 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                 return GestureDetector(
                   onTap: () {
                     // Handle the onTap event
-                    Get.to(const ChapterListScreen());
-                    // Example: Navigator.push(context, MaterialPageRoute(builder: (context) => ChapterListScreen(classId: widget.classId, className: widget.className)));
+                    String selectedSubjectId = snapshot.data!.docs[index].id;
+                    Get.to(ChapterListScreen(subjectId: selectedSubjectId));
                   },
                   child: Container(
                     height: 60,
@@ -74,7 +76,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                         // BoxShadow(
                         //   color: Colors.grey.withOpacity(0.5),
                         //   spreadRadius: 1,
-                        //   blurRadius: 10,
+                        //   blurRadius: 1,
                         // ),
                       ],
                     ),

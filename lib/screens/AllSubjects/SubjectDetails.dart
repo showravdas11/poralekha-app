@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:poralekha_app/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
@@ -185,7 +186,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddSubjectsScreen()));
+              MaterialPageRoute(builder: (context) => AddChapterScreen()));
         },
         backgroundColor: Colors.white,
         foregroundColor: MyTheme.buttonColor,
