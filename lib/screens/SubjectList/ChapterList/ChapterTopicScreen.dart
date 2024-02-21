@@ -31,7 +31,7 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  Get.to(const PdfViewer());
+                  // Get.to(const PdfViewer());
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 126, 89, 253),
