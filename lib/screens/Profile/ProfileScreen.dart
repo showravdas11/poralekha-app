@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
+import 'package:poralekha_app/screens/Payment/PaymentScreen.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/widgets/ProfileHeadingSection.dart';
 import 'package:poralekha_app/widgets/ProfileMenu.dart';
@@ -170,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 // Add other ProfileMenu widgets as needed
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -180,7 +181,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
+                ),
+                UtilitiesSection(
+                  title: "Payment".tr,
+                  subTitle: "Click Here".tr,
+                  icon: Iconsax.card5,
+                  onPressed: () {
+                    Get.to(const PaymentScreen());
+                  },
                 ),
                 UtilitiesSection(
                   title: "Language".tr,
