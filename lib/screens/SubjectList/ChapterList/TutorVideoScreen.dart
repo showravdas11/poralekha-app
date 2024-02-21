@@ -4,7 +4,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class TutorVideoScreen extends StatefulWidget {
-  const TutorVideoScreen({Key? key}) : super(key: key);
+  final dynamic tutorial;
+  const TutorVideoScreen({Key? key, required this.tutorial}) : super(key: key);
 
   @override
   _TutorVideoScreenState createState() => _TutorVideoScreenState();
@@ -23,9 +24,8 @@ class _TutorVideoScreenState extends State<TutorVideoScreen> {
       DeviceOrientation.portraitUp,
     ]);
 
-    String videoUrl = 'https://youtu.be/cpLOajjJ10Q?si=cAWOxRkG45xKlaYa';
-
-    String videoId = YoutubePlayer.convertUrlToId(videoUrl) ?? '';
+    String videoId =
+        YoutubePlayer.convertUrlToId(widget.tutorial['videoLink']) ?? '';
 
     _controller = YoutubePlayerController(
       initialVideoId: videoId,
@@ -105,24 +105,14 @@ class _TutorVideoScreenState extends State<TutorVideoScreen> {
                                     Navigator.of(context).pop();
                                   },
                                 ),
-                                const Text(
-                                  "ATP ও সালোকসংশ্লেষণ",
-                                  style: TextStyle(
+                                Text(
+                                  widget.tutorial['name'],
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Text(
-                                "সালোকসংশ্লেষণ প্রক্রিয়ার যে অধ্যায়ে আলোক শক্তি রাসায়নিক শক্তিতে রূপান্তরিত হয়ে ATP ও NADPH + H+ তে সঞ্চারিত হয়, তাকে আলোকনির্ভর অধ্যায় বলে। এ অংশের জন্য আলোক অপরিহার্য। সূর্যালোকের শক্তিকে ব্যবহার করে ATP তৈরির প্রক্রিয়াকে ফটোফসফোরাইলেশন(Photophosphorylation) বলে।",
-                                style: TextStyle(
-                                    fontSize: 15, color: Colors.grey.shade600),
-                                textAlign: TextAlign.justify,
-                              ),
                             )
                           ],
                         ),

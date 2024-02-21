@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfViewer extends StatefulWidget {
-  const PdfViewer({Key? key}) : super(key: key);
+  final String documentId;
+  final String pdfLink;
+  const PdfViewer({Key? key, required this.documentId, required this.pdfLink})
+      : super(key: key);
 
   @override
   State<PdfViewer> createState() => _PdfViewerState();
@@ -17,8 +20,8 @@ class _PdfViewerState extends State<PdfViewer> {
     super.initState();
     _pdfStream = FirebaseFirestore.instance
         .collection("subjects")
-        .doc(
-            "adqxripumg9O6ZsUHjTL") // Replace with the actual document ID for the chapter
+        .doc(widget
+            .documentId) // Replace with the actual document ID for the chapter
         .collection(
             "chapters") // Change to the name of your "subjects" collection
         .snapshots();
@@ -46,12 +49,14 @@ class _PdfViewerState extends State<PdfViewer> {
             );
           }
 
-          List<String> pdfLinks = snapshot.data!.docs
-              .map((doc) => doc['pdfLink'] as String)
-              .toList();
+          if (widget.pdfLink.isEmpty) {
+            return Center(
+              child: Text('No PDF documents available'),
+            );
+          }
 
           return SfPdfViewer.network(
-            pdfLinks[0],
+            widget.pdfLink,
           );
         },
       ),

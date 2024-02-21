@@ -7,13 +7,26 @@ import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoOnline.d
 import 'package:poralekha_app/screens/SubjectList/ChapterList/TutorVideoScreen.dart';
 
 class ChapterTopicScreen extends StatefulWidget {
-  const ChapterTopicScreen({Key? key}) : super(key: key);
+  final String documentId;
+  final Map<String, dynamic> chapter;
+  const ChapterTopicScreen({
+    Key? key,
+    required this.documentId,
+    required this.chapter,
+  }) : super(key: key);
 
   @override
   _ChapterTopicScreenState createState() => _ChapterTopicScreenState();
 }
 
 class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Print topics in initState
+    print("Topics: ${widget.chapter['topics']}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +44,9 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  Get.to(const PdfViewer());
+                  Get.to(PdfViewer(
+                      documentId: widget.documentId,
+                      pdfLink: widget.chapter['pdfLink']));
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 126, 89, 253),
@@ -64,7 +79,10 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
               const SizedBox(
                 height: 10,
               ),
-              const ImportantTopicScreen(),
+              ImportantTopicScreen(
+                documentId: widget.documentId,
+                topics: widget.chapter["topics"] ?? [],
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -78,7 +96,7 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
               const SizedBox(
                 height: 10,
               ),
-              TutorVideoOnline(),
+              TutorVideoOnline(tutorials: widget.chapter['tutorials'] ?? []),
             ],
           ),
         ),
