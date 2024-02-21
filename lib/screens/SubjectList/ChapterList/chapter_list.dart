@@ -55,18 +55,17 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
               );
             }
 
-            List<String> chapters = snapshot.data!.docs
-                .map((doc) => doc['name'] as String)
-                .toList();
-
             return ListView.builder(
-              itemCount: chapters.length,
+              itemCount: snapshot.data!.docs.length,
               itemBuilder: (BuildContext context, int index) {
+                final documentId = snapshot.data!.docs[index].id;
+                final chapter = snapshot.data!.docs[index].data();
                 return GestureDetector(
                   onTap: () {
-                    // Handle onTap event
-                    // Here, you can navigate to another screen passing the chapterId or any other necessary data
-                    Get.to(const ChapterTopicScreen());
+                    Get.to(ChapterTopicScreen(
+                      documentId: documentId,
+                      chapter: chapter,
+                    ));
                   },
                   child: Container(
                     height: 60,
@@ -88,12 +87,19 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          chapters[index],
+                          chapter['name'],
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                           ),
                         ),
+                        // Text(
+                        //   chapters[index]['pdfLink'],
+                        //   style: const TextStyle(
+                        //     color: Colors.white,
+                        //     fontSize: 18,
+                        //   ),
+                        // ),
                         const Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
