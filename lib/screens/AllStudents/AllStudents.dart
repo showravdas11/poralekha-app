@@ -32,7 +32,9 @@ class _AllStudentState extends State<AllStudent> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('test-students')
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -40,7 +42,7 @@ class _AllStudentState extends State<AllStudent> {
                         CircularProgressIndicator()); // Display loading indicator while waiting for data
               }
               // Calculate total number of users
-              int totalUsers = snapshot.data!.docs.length;
+              int totalUsers = snapshot.data?.docs.length ?? 0;
               return Column(
                 children: [
                   SfCircularChart(
@@ -85,11 +87,11 @@ class _AllStudentState extends State<AllStudent> {
   // Dummy chart data, replace this with your actual chart data
   List<GdpData> getChartData() {
     final List<GdpData> charData = [
-      GdpData(continent: "Class Six", gdp: 2000),
-      GdpData(continent: "Class Seven", gdp: 5000),
-      GdpData(continent: "Class Eight", gdp: 1500),
-      GdpData(continent: "Class Nine", gdp: 3000),
-      GdpData(continent: "Class Ten", gdp: 5000),
+      GdpData(continent: "Class Six", gdp: 2470),
+      GdpData(continent: "Class Seven", gdp: 3301),
+      GdpData(continent: "Class Eight", gdp: 5604),
+      GdpData(continent: "Class Nine", gdp: 2945),
+      GdpData(continent: "Class Ten", gdp: 5569),
     ];
     return charData;
   }
