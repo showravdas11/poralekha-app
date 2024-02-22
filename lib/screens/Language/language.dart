@@ -12,6 +12,8 @@ class Languages extends Translations {
           'Address': 'Address',
           'Age': 'Age',
           'Utilities': 'Utilities',
+          'Payment': 'Payment',
+          'Click Here': 'Click Here',
           'Language': 'Language',
           'Log Out': 'Log Out',
           'Logout': 'Logout',
@@ -24,6 +26,10 @@ class Languages extends Translations {
           'Class Ten': 'Class Ten',
           'HSC': 'HSC',
           'Select Your Class': 'Select Your Class',
+          //Payment Screen
+          'Choose your payment method': 'Choose your payment method',
+          'bKash': 'bKash',
+          'Nagad': 'Nagad',
         },
         'bd_BAN': {
           //Profile Screen
@@ -34,6 +40,8 @@ class Languages extends Translations {
           'Address': 'ঠিকানা',
           'Age': 'বয়স',
           'Utilities': 'ইউটিলিটিস',
+          'Payment': 'পেমেন্ট',
+          'Click Here': 'এখানে ক্লিক করুন',
           'Language': 'ভাষা',
           'Log Out': 'লগ আউট',
           'Logout': 'লগআউট',
@@ -46,6 +54,10 @@ class Languages extends Translations {
           'Class Ten': 'দশম শ্রেণি',
           'HSC': 'এইচএসসি',
           'Select Your Class': 'আপনার শ্রেণি নির্বাচন করুন',
+          //Payment Screen
+          'Choose your payment method': 'আপনার পরিশোধের পদ্ধতি পছন্দ করুন',
+          'bKash': 'বিকাশ',
+          'Nagad': 'নগদ',
         },
       };
 }
