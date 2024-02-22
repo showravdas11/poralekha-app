@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
+import 'package:poralekha_app/screens/Payment/Successfull/SuccessfullScreen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({Key? key}) : super(key: key);
@@ -30,10 +32,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
       body: Column(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              "Choose your payment method",
+              "Choose your payment method".tr,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ),
@@ -45,7 +47,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               itemCount: paymentLabels.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(paymentLabels[index]),
+                  title: Text(paymentLabels[index].tr),
                   leading: Radio<int>(
                     value: index,
                     groupValue: _selectedPaymentIndex,
@@ -77,7 +79,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: RoundedButton(
-                title: "Pay", onTap: () {}, width: double.infinity),
+                title: "Pay",
+                onTap: () {
+                  Get.to(SuccessfullScreen());
+                },
+                width: double.infinity),
           )
         ],
       ),
