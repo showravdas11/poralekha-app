@@ -11,12 +11,29 @@ class AllStudent extends StatefulWidget {
 }
 
 class _AllStudentState extends State<AllStudent> {
-  late TooltipBehavior _tooltipbehavior;
+  int studentCount = 0;
+  bool isLoading = true;
 
   @override
   void initState() {
-    _tooltipbehavior = TooltipBehavior(enable: true);
     super.initState();
+    loadCollectionLength();
+  }
+
+  Future<void> loadCollectionLength() async {
+    try {
+      FirebaseFirestore.instance.collection("students").count().get().then(
+            (res) => {
+              setState(() {
+                studentCount = res.count ?? 0;
+                isLoading = false;
+              })
+            },
+        onError: (e) => print("Error completing: $e"),
+      );
+    } catch (e) {
+      print('Error loading collection length: $e');
+    }
   }
 
   @override
@@ -31,75 +48,25 @@ class _AllStudentState extends State<AllStudent> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('test-students')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child:
-                        CircularProgressIndicator()); // Display loading indicator while waiting for data
-              }
-              // Calculate total number of users
-              int totalUsers = snapshot.data?.docs.length ?? 0;
-              return Column(
-                children: [
-                  SfCircularChart(
-                    legend: Legend(
-                      isVisible: true,
-                      overflowMode: LegendItemOverflowMode.wrap,
-                    ),
-                    tooltipBehavior: _tooltipbehavior,
-                    series: <CircularSeries>[
-                      DoughnutSeries<GdpData, String>(
-                        dataSource: getChartData(), // Pass your chart data
-                        xValueMapper: (GdpData data, _) => data.continent,
-                        yValueMapper: (GdpData data, _) => data.gdp,
-                        dataLabelSettings: DataLabelSettings(
-                          isVisible: true,
-                          // color: Colors.amber,
-                          // borderColor: Colors.black,
-                        ),
-                        enableTooltip: true,
-                      )
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "Total Student: $totalUsers",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
+          isLoading ?
+            Center(child: CircularProgressIndicator()) :
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Center(
+              child: Text(
+                "Total Student: $studentCount",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
-
-  // Dummy chart data, replace this with your actual chart data
-  List<GdpData> getChartData() {
-    final List<GdpData> charData = [
-      GdpData(continent: "Class Six", gdp: 2470),
-      GdpData(continent: "Class Seven", gdp: 3301),
-      GdpData(continent: "Class Eight", gdp: 5604),
-      GdpData(continent: "Class Nine", gdp: 2945),
-      GdpData(continent: "Class Ten", gdp: 5569),
-    ];
-    return charData;
-  }
 }
 
-class GdpData {
-  final String continent;
-  final int gdp;
 
-  GdpData({required this.continent, required this.gdp});
-}
+

@@ -33,23 +33,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future addUserDetails(String name, String email, String address, int age,
       String role, String gender, UserCredential? userCredential) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'name': name,
-      'email': email,
-      'address': address,
-      'age': age,
-      'role': selectedRole,
-      'gender': selectGender,
-      'isAdmin': false,
-      'isApproved': false,
-      'class': '',
-      'timestamp': FieldValue.serverTimestamp()
-    });
+    try {
+      await FirebaseFirestore.instance.collection('users').add({
+        'name': name,
+        'email': email,
+        'address': address,
+        'age': age,
+        'role': selectedRole,
+        'gender': selectGender,
+        'isAdmin': false,
+        'isApproved': false,
+        'class': '',
+        'timestamp': FieldValue.serverTimestamp()
+      });
+    } catch (e) {
+      print('Adding user data error: $e');
+    }
     Navigator.pop(dialogContext!);
     try {
       await userCredential?.user?.sendEmailVerification();
     } catch (e) {
-      print('Error: $e');
+      print('Email verification send error: $e');
     }
 
     AwesomeDialog(
