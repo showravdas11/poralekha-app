@@ -4,10 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
+
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class AddChapterScreen extends StatefulWidget {
@@ -24,9 +26,12 @@ class AddChapterScreen extends StatefulWidget {
 class _AddChapterScreenState extends State<AddChapterScreen> {
   TextEditingController chapnameController = TextEditingController();
   String? _filePath;
+  String? _gifPath;
   late Stream<QuerySnapshot> _addChapterStream;
   bool _uploading = false;
   late File _selectedFile;
+  late File _gifSelectedFile;
+  List<Widget> _textFieldWidgets = [];
 
   @override
   void initState() {
@@ -62,6 +67,43 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 
     if (pickedFile != null) {
       _selectedFile = File(pickedFile.files[0].path!);
+      setState(() {
+        _filePath = pickedFile.files[0].path;
+        _uploading = false;
+      });
+    } else {
+      setState(() {
+        _uploading = false;
+      });
+    }
+  }
+
+  //upolad gif
+  Future<String> uploadGif(String fileName, File file) async {
+    final reference =
+        FirebaseStorage.instance.ref().child("gifs/$fileName/.gif");
+
+    final uploadTask = reference.putFile(file);
+
+    await uploadTask.whenComplete(() {});
+
+    final downloadLink = await reference.getDownloadURL();
+
+    return downloadLink;
+  }
+
+  void pickGifFile() async {
+    setState(() {
+      _uploading = true;
+    });
+
+    final pickedFile = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['gif'],
+    );
+
+    if (pickedFile != null) {
+      _gifSelectedFile = File(pickedFile.files[0].path!);
       setState(() {
         _filePath = pickedFile.files[0].path;
         _uploading = false;
@@ -183,7 +225,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               text: "Add Chapter Name",
               textInputType: TextInputType.text,
               obscure: false,
-              suffixIcon: Icon(Iconsax.add_circle),
+              suffixIcon: const Icon(Iconsax.add_circle),
             ),
             SizedBox(height: screenSize.height * 0.02),
             Container(
@@ -207,18 +249,18 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: _filePath ?? "Select Your pdf",
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     wordSpacing: 2,
                     letterSpacing: 2,
                   ),
                   suffixIcon: _uploading
-                      ? CircularProgressIndicator()
+                      ? const CircularProgressIndicator()
                       : IconButton(
-                          icon: Icon(Iconsax.attach_circle),
+                          icon: const Icon(Iconsax.attach_circle),
                           onPressed: pickFile,
                         ),
                   alignLabelWithHint: true,
-                  iconColor: Color(0xFF7E59FD),
+                  iconColor: const Color(0xFF7E59FD),
                 ),
               ),
             ),
@@ -231,9 +273,112 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               ),
             ),
             SizedBox(height: screenHeight * 0.02),
+            const Center(
+                child: Text(
+              "Add Topics",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Colors.black54),
+            )),
+            SizedBox(height: screenHeight * 0.02),
+            Column(
+              children: _textFieldWidgets.map((widget) {
+                return Column(
+                  children: [
+                    widget,
+                    SizedBox(height: screenHeight * 0.02),
+                  ],
+                );
+              }).toList(),
+            ),
+            Container(
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(6),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2,
+                  )
+                ],
+              ),
+              child: TextFormField(
+                onTap: () {
+                  pickGifFile();
+                },
+                readOnly: true,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: _gifPath ?? "Select topic Animation",
+                  hintStyle: const TextStyle(
+                    wordSpacing: 2,
+                    letterSpacing: 2,
+                  ),
+                  suffixIcon: _uploading
+                      ? const CircularProgressIndicator()
+                      : IconButton(
+                          icon: const Icon(Iconsax.attach_circle),
+                          onPressed: pickFile,
+                        ),
+                  alignLabelWithHint: true,
+                  iconColor: const Color(0xFF7E59FD),
+                ),
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+            Center(
+                child: Column(
+              children: [
+                Container(
+                    height: 40,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: const Color(0xFF7E59FD),
+                        borderRadius: BorderRadius.circular(100)),
+                    child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            TextEditingController newController =
+                                TextEditingController();
+                            _textFieldWidgets
+                                .add(_buildCummonTextField(newController));
+                          });
+                        },
+                        icon: const Icon(
+                          Iconsax.add,
+                          size: 26,
+                          color: Colors.white,
+                        ))),
+              ],
+            )),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.white,
+        foregroundColor: MyTheme.buttonColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(screenWidth * 0.10),
+        ),
+        child: Icon(
+          Icons.add,
+          size: screenWidth * 0.1,
         ),
       ),
     );
   }
+}
+
+Widget _buildCummonTextField(TextEditingController controller) {
+  return CommonTextField(
+    controller: controller,
+    text: "Topic Name",
+    textInputType: TextInputType.text,
+    obscure: false,
+    suffixIcon: const Icon(Iconsax.add_circle),
+  );
 }
