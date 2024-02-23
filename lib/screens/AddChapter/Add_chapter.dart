@@ -31,7 +31,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
   bool _uploading = false;
   late File _selectedFile;
   late File _gifSelectedFile;
-  List<Widget> _textFieldWidgets = [];
+  List<Widget> _topicWidgets = [];
 
   @override
   void initState() {
@@ -161,6 +161,56 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     ).show();
   }
 
+  Widget _buildTopicHolder(TextEditingController controller) {
+    return Column(
+      children: [
+        Container(
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 255, 255, 255),
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 2,
+              )
+            ],
+          ),
+          child: TextFormField(
+            onTap: () {
+              pickGifFile();
+            },
+            readOnly: true,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: _gifPath ?? "Select topic Animation",
+              hintStyle: const TextStyle(
+                wordSpacing: 2,
+                letterSpacing: 2,
+              ),
+              suffixIcon: _uploading
+                  ? const CircularProgressIndicator()
+                  : IconButton(
+                icon: const Icon(Iconsax.attach_circle),
+                onPressed: pickFile,
+              ),
+              alignLabelWithHint: true,
+              iconColor: const Color(0xFF7E59FD),
+            ),
+          ),
+        ),
+        CommonTextField(
+            controller: controller,
+            text: "Topic Name",
+            textInputType: TextInputType.text,
+            obscure: false,
+            suffixIcon: const Icon(Iconsax.add_circle),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -283,7 +333,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             )),
             SizedBox(height: screenHeight * 0.02),
             Column(
-              children: _textFieldWidgets.map((widget) {
+              children: _topicWidgets.map((widget) {
                 return Column(
                   children: [
                     widget,
@@ -291,42 +341,6 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                   ],
                 );
               }).toList(),
-            ),
-            Container(
-              height: 45,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 2,
-                  )
-                ],
-              ),
-              child: TextFormField(
-                onTap: () {
-                  pickGifFile();
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: _gifPath ?? "Select topic Animation",
-                  hintStyle: const TextStyle(
-                    wordSpacing: 2,
-                    letterSpacing: 2,
-                  ),
-                  suffixIcon: _uploading
-                      ? const CircularProgressIndicator()
-                      : IconButton(
-                          icon: const Icon(Iconsax.attach_circle),
-                          onPressed: pickFile,
-                        ),
-                  alignLabelWithHint: true,
-                  iconColor: const Color(0xFF7E59FD),
-                ),
-              ),
             ),
             SizedBox(height: screenHeight * 0.02),
             Center(
@@ -343,8 +357,8 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                           setState(() {
                             TextEditingController newController =
                                 TextEditingController();
-                            _textFieldWidgets
-                                .add(_buildCummonTextField(newController));
+                            _topicWidgets
+                                .add(_buildTopicHolder(newController));
                           });
                         },
                         icon: const Icon(
@@ -371,14 +385,4 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       ),
     );
   }
-}
-
-Widget _buildCummonTextField(TextEditingController controller) {
-  return CommonTextField(
-    controller: controller,
-    text: "Topic Name",
-    textInputType: TextInputType.text,
-    obscure: false,
-    suffixIcon: const Icon(Iconsax.add_circle),
-  );
 }
