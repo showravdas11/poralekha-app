@@ -216,7 +216,11 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     letterSpacing: 2,
                   ),
                   suffixIcon: _uploading
-                      ? CircularProgressIndicator()
+                      ? SizedBox(
+                          width: 30, // Set the width as per your requirement
+                          height: 30, // Set the height as per your requirement
+                          child: Image(
+                              image: AssetImage('assets/images/load.gif')))
                       : IconButton(
                           icon: Icon(Iconsax.attach_circle),
                           onPressed: pickFile,

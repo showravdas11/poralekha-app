@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:poralekha_app/theme/myTheme.dart'; // Import Firestore
+import 'package:poralekha_app/theme/myTheme.dart';
 
 class AllStudent extends StatefulWidget {
   const AllStudent({Key? key});
@@ -14,7 +14,7 @@ class _AllStudentState extends State<AllStudent> {
   int studentCount = 0;
   bool isLoading = true;
   int currentPage = 1;
-  int itemsPerPage = 10;
+  int itemsPerPage = 6;
 
   @override
   void initState() {
@@ -24,11 +24,15 @@ class _AllStudentState extends State<AllStudent> {
 
   Future<void> loadCollectionLength() async {
     try {
-      final res = await FirebaseFirestore.instance.collection("students").get();
-      setState(() {
-        studentCount = res.size;
-        isLoading = false;
-      });
+      FirebaseFirestore.instance.collection("students").count().get().then(
+            (res) => {
+              setState(() {
+                studentCount = res.count ?? 0;
+                isLoading = false;
+              })
+            },
+            onError: (e) => print("Error completing: $e"),
+          );
     } catch (e) {
       print('Error loading collection length: $e');
     }
@@ -44,15 +48,17 @@ class _AllStudentState extends State<AllStudent> {
         },
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Center(
                     child: Text(
                       "Total Student: $studentCount",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         fontFamily: "FontMain",
@@ -73,12 +79,11 @@ class _AllStudentState extends State<AllStudent> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center();
                 }
 
                 final List<DocumentSnapshot> documents = snapshot.data!.docs;
+                print(documents);
 
                 // Paginate the documents
                 final paginatedDocuments = documents
@@ -86,12 +91,14 @@ class _AllStudentState extends State<AllStudent> {
                     .take(itemsPerPage)
                     .toList();
 
+                print("Hellllo pagin${paginatedDocuments}");
+
                 return SingleChildScrollView(
                   child: Column(
                     children: [
                       ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: paginatedDocuments.length,
                         itemBuilder: (BuildContext context, int index) {
                           final student = paginatedDocuments[index].data()
@@ -107,6 +114,9 @@ class _AllStudentState extends State<AllStudent> {
                           );
                         },
                       ),
+                      const SizedBox(
+                        height: 50,
+                      ),
                       _buildPaginator(),
                     ],
                   ),
@@ -121,59 +131,110 @@ class _AllStudentState extends State<AllStudent> {
 
   Widget _buildPaginator() {
     final totalPages = (studentCount / itemsPerPage).ceil();
-    final visiblePages = 5; // Number of visible page buttons
-    final startPage = currentPage - (visiblePages ~/ 2);
-    final endPage = currentPage + (visiblePages ~/ 2);
+    print("total pagesss${totalPages}");
+    final visiblePages = 4; // Maximum number of visible page buttons
+    final startPage = (currentPage - (visiblePages ~/ 2))
+        .clamp(1, totalPages - visiblePages + 1);
+    final endPage = (startPage + visiblePages - 1).clamp(1, totalPages);
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
+    List<Widget> pageButtons = [];
+
+    if (startPage > 2) {
+      pageButtons.add(_PageButton(
+        pageNumber: 1,
+        currentPage: currentPage,
+        totalPages: totalPages,
+        onPressed: () {
+          setState(() {
+            currentPage = 1;
+          });
+        },
+      ));
+      pageButtons.add(const Text(
+        '...',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ));
+    }
+
+    for (var i = startPage; i <= endPage; i++) {
+      print(
+          'startPage: $startPage, endPage: $endPage, totalPages: $totalPages');
+      if (i > 0 && i <= totalPages) {
+        pageButtons.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            child: _PageButton(
+              pageNumber: i,
+              currentPage: currentPage,
+              totalPages: totalPages,
+              onPressed: () {
+                setState(() {
+                  currentPage = i;
+                });
+              },
+            ),
+          ),
+        );
+      }
+    }
+
+    if (endPage < totalPages - 1) {
+      pageButtons.add(const Text(
+        '...',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ));
+    }
+
+    if (endPage < totalPages) {
+      pageButtons.add(_PageButton(
+        pageNumber: totalPages,
+        currentPage: currentPage,
+        totalPages: totalPages,
+        onPressed: () {
+          setState(() {
+            currentPage = totalPages;
+          });
+        },
+      ));
+    }
+
+    // Arrow buttons for previous and next page
+    pageButtons.insert(
+      0,
+      IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: currentPage > 1
+            ? () {
+                setState(() {
+                  currentPage--;
+                });
+              }
+            : null,
+      ),
+    );
+
+    pageButtons.add(
+      IconButton(
+        icon: const Icon(Icons.arrow_forward),
+        onPressed: currentPage < totalPages
+            ? () {
+                setState(() {
+                  currentPage++;
+                });
+              }
+            : null,
+      ),
+    );
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedOpacity(
-            opacity: currentPage == 1 ? 0.0 : 1.0,
-            duration: Duration(milliseconds: 300),
-            child: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: currentPage > 1
-                  ? () {
-                      setState(() {
-                        currentPage--;
-                      });
-                    }
-                  : null,
-            ),
-          ),
-          for (var i = startPage; i <= endPage; i++)
-            if (i > 0 && i <= totalPages)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: _PageButton(
-                  pageNumber: i,
-                  currentPage: currentPage,
-                  totalPages: totalPages,
-                  onPressed: () {
-                    setState(() {
-                      currentPage = i;
-                    });
-                  },
-                ),
-              ),
-          AnimatedOpacity(
-            opacity: currentPage == totalPages ? 0.0 : 1.0,
-            duration: Duration(milliseconds: 300),
-            child: IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: currentPage < totalPages
-                  ? () {
-                      setState(() {
-                        currentPage++;
-                      });
-                    }
-                  : null,
-            ),
-          ),
-        ],
+        children: pageButtons,
       ),
     );
   }
@@ -196,6 +257,10 @@ class _PageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isCurrentPage = pageNumber == currentPage;
     final isLastPage = pageNumber == totalPages;
+
+    final double paddingSize =
+        MediaQuery.of(context).size.width > 600 ? 12.0 : 8.0;
+
     return InkWell(
       onTap: onPressed,
       child: Container(
@@ -207,7 +272,7 @@ class _PageButton extends StatelessWidget {
             width: isCurrentPage ? 0 : 1,
           ),
         ),
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(paddingSize), // Use responsive padding
         child: Text(
           '$pageNumber',
           style: TextStyle(
