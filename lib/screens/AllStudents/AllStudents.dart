@@ -91,7 +91,7 @@ class _AllStudentState extends State<AllStudent> {
                     .take(itemsPerPage)
                     .toList();
 
-                print("Hellllo pagin${paginatedDocuments}");
+                print("Hello pagin${paginatedDocuments}");
 
                 return SingleChildScrollView(
                   child: Column(
@@ -103,7 +103,9 @@ class _AllStudentState extends State<AllStudent> {
                         itemBuilder: (BuildContext context, int index) {
                           final student = paginatedDocuments[index].data()
                               as Map<String, dynamic>;
+                          print("hellllo studens${student}");
                           final name = student['name'];
+                          print("namememem ${name}");
                           final mobileNumber = student['mobileNumber'];
                           return Card(
                             color: Colors.white,
@@ -131,7 +133,6 @@ class _AllStudentState extends State<AllStudent> {
 
   Widget _buildPaginator() {
     final totalPages = (studentCount / itemsPerPage).ceil();
-    print("total pagesss${totalPages}");
     final visiblePages = 4; // Maximum number of visible page buttons
     final startPage = (currentPage - (visiblePages ~/ 2))
         .clamp(1, totalPages - visiblePages + 1);
@@ -159,8 +160,6 @@ class _AllStudentState extends State<AllStudent> {
     }
 
     for (var i = startPage; i <= endPage; i++) {
-      print(
-          'startPage: $startPage, endPage: $endPage, totalPages: $totalPages');
       if (i > 0 && i <= totalPages) {
         pageButtons.add(
           Padding(
@@ -256,7 +255,6 @@ class _PageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isCurrentPage = pageNumber == currentPage;
-    final isLastPage = pageNumber == totalPages;
 
     final double paddingSize =
         MediaQuery.of(context).size.width > 600 ? 12.0 : 8.0;
@@ -272,7 +270,7 @@ class _PageButton extends StatelessWidget {
             width: isCurrentPage ? 0 : 1,
           ),
         ),
-        padding: EdgeInsets.all(paddingSize), // Use responsive padding
+        padding: EdgeInsets.all(paddingSize),
         child: Text(
           '$pageNumber',
           style: TextStyle(
