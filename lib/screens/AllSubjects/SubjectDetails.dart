@@ -88,7 +88,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Subject Name: ${_subjectData['name'] ?? ''}",
+                          "Subject: ${_subjectData['name'] ?? ''}",
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -96,7 +96,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          "Class: ${_subjectData['class'] ?? ''}",
+                          " ${_subjectData['class'] ?? ''}",
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],

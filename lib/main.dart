@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             color: Color.fromARGB(255, 240, 248, 255),
           ),
-          scaffoldBackgroundColor: const Color.fromARGB(255, 240, 246, 255),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 240, 248, 255),
           primaryColor: const Color.fromARGB(255, 240, 248, 255)),
       home: const SplashScreen(),
     );
