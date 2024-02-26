@@ -26,7 +26,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   BuildContext? dialogContext;
   String? selectGender;
 
-  late Stream<QuerySnapshot> _usersStream;
+  // late Future<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
   late Timer _timer;
@@ -50,12 +50,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       });
     });
 
-    // Fetch user data
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
-    _usersStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: user?.email)
-        .snapshots();
+    if (user != null) {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: user.email)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        var userData = querySnapshot.docs.first.data();
+        nameController.text = userData['name'] ?? 'N/A';
+        addressController.text = userData['address'] ?? 'N/A';
+        ageController.text = userData['age']?.toString() ?? 'N/A';
+        setState(() {
+          selectGender = userData['gender'] ?? 'N/A';
+        });
+      }
+    }
   }
 
   @override
@@ -236,11 +251,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           vertical: 20, horizontal: 10),
                       child: Text(
                         quotes[currentIndex],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             fontFamily: "FontMain",
-                            color: const Color.fromARGB(255, 0, 0, 0)),
+                            color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                     ),
                   ),
@@ -252,166 +267,135 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  StreamBuilder<QuerySnapshot>(
-                    stream: _usersStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Center(
-                          child: Text("Something Went Wrong"),
-                        );
-                      }
-
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                          child: Text("No Data Found"),
-                        );
-                      }
-
-                      var userData = snapshot.data!.docs.first.data()
-                          as Map<String, dynamic>;
-
-                      nameController.text = userData['name'] ?? 'N/A';
-                      selectGender = userData['gender'] ?? "N/A";
-                      addressController.text = userData['address'] ?? 'N/A';
-                      ageController.text = userData['age'].toString() ?? 'N/A';
-
-                      return Column(
-                        children: [
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Name",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: nameController,
-                            text: "Name",
-                            textInputType: TextInputType.text,
-                            obscure: false,
-                            suffixIcon: const Icon(
-                              Icons.person,
-                              color: Color(0xFF7E59FD),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Gender",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Container(
-                            height: 45,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 2)
-                              ],
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              value: selectGender,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectGender = newValue;
-                                });
-                              },
-                              items: [
-                                'Male',
-                                'Female',
-                                'Other'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: const TextStyle(
-                                        color: Color.fromARGB(
-                                          255,
-                                          0,
-                                          0,
-                                          0,
-                                        ),
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  alignLabelWithHint: true,
-                                  iconColor: Color(0xFF7E59FD)),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Address",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: addressController,
-                            text: "Address",
-                            textInputType: TextInputType.text,
-                            obscure: false,
-                            suffixIcon: const Icon(Icons.location_on,
-                                color: Color(0xFF7E59FD)),
-                          ),
-                          const SizedBox(height: 6),
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Age",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: ageController,
-                            text: "Age",
-                            textInputType: TextInputType.number,
-                            obscure: false,
-                            suffixIcon: const Icon(Icons.calendar_today,
-                                color: Color(0xFF7E59FD)),
-                          ),
-                        ],
-                      );
-                    },
+                  Column(
+                    children: [
+                      const Align(
+                      alignment: Alignment.topLeft,
+                        child: Text(
+                          "Name",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: nameController,
+                        text: "Name",
+                        textInputType: TextInputType.text,
+                        obscure: false,
+                        suffixIcon: const Icon(
+                          Icons.person,
+                          color: Color(0xFF7E59FD),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Gender",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Container(
+                        height: 45,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 2)
+                          ],
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: selectGender,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectGender = newValue;
+                            });
+                          },
+                          items: [
+                            'Male',
+                            'Female',
+                            'Other'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: const TextStyle(
+                                    color: Color.fromARGB(
+                                      255,
+                                      0,
+                                      0,
+                                      0,
+                                    ),
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            );
+                          }).toList(),
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              alignLabelWithHint: true,
+                              iconColor: Color(0xFF7E59FD)),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Address",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: addressController,
+                        text: "Address",
+                        textInputType: TextInputType.text,
+                        obscure: false,
+                        suffixIcon: const Icon(Icons.location_on,
+                            color: Color(0xFF7E59FD)),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Age",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: ageController,
+                        text: "Age",
+                        textInputType: TextInputType.number,
+                        obscure: false,
+                        suffixIcon: const Icon(Icons.calendar_today,
+                            color: Color(0xFF7E59FD)),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   RoundedButton(
