@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:poralekha_app/common/AppBar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'dart:convert';
+import "package:http/http.dart" as http;
 
 class AllStudent extends StatefulWidget {
   const AllStudent({Key? key});
@@ -11,31 +12,37 @@ class AllStudent extends StatefulWidget {
 }
 
 class _AllStudentState extends State<AllStudent> {
-  int studentCount = 0;
-  bool isLoading = true;
-  int currentPage = 1;
-  int itemsPerPage = 6;
+  int _totalStudents = 0;
+  int _totalPages = 0;
+  bool _isLoading = true;
+  bool _isError = false;
+  int _currentPage = 1;
+  List _students = [];
+
+  Future<void> _loadStudents() async {
+    final response =
+    await http.get(Uri.parse('https://poralekha-server-chi.vercel.app/api/data?page=$_currentPage&password=qwerty'));
+
+    if (response.statusCode == 200) {
+      var body = json.decode(response.body) as Map<String, dynamic>;
+      setState(() {
+        _students = body['students'] as List;
+        _totalStudents = body['totalStudents'];
+        _totalPages = body['totalPages'];
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+        _isError = true;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    loadCollectionLength();
-  }
-
-  Future<void> loadCollectionLength() async {
-    try {
-      FirebaseFirestore.instance.collection("students").count().get().then(
-            (res) => {
-              setState(() {
-                studentCount = res.count ?? 0;
-                isLoading = false;
-              })
-            },
-            onError: (e) => print("Error completing: $e"),
-          );
-    } catch (e) {
-      print('Error loading collection length: $e');
-    }
+    _loadStudents();
   }
 
   @override
@@ -51,61 +58,39 @@ class _AllStudentState extends State<AllStudent> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Center(
-                    child: Text(
-                      "Total Student: $studentCount",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "FontMain",
-                      ),
-                    ),
-                  ),
-                ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('students').snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center();
-                }
-
-                final List<DocumentSnapshot> documents = snapshot.data!.docs;
-                print(documents);
-
-                // Paginate the documents
-                final paginatedDocuments = documents
-                    .skip((currentPage - 1) * itemsPerPage)
-                    .take(itemsPerPage)
-                    .toList();
-
-                print("Hello pagin${paginatedDocuments}");
-
-                return SingleChildScrollView(
+          if (_isLoading)
+            const Center(child: CircularProgressIndicator()),
+          if (_isError)
+            const Center(
+              child: Text(
+                'Something went wrong. Please try again.'
+              ),
+            ),
+          if (!_isLoading && !_isError)
+            Expanded(
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Center(
+                          child: Text(
+                            "Total Student: $_totalStudents",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "FontMain",
+                            ),
+                          ),
+                        ),
+                      ),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: paginatedDocuments.length,
+                        itemCount: _students.length,
                         itemBuilder: (BuildContext context, int index) {
-                          final student = paginatedDocuments[index].data()
-                              as Map<String, dynamic>;
-                          print("hellllo studens${student}");
+                          final student = _students[index] as Map<String, dynamic>;
                           final name = student['name'];
-                          print("namememem ${name}");
                           final mobileNumber = student['mobileNumber'];
                           return Card(
                             color: Colors.white,
@@ -117,38 +102,42 @@ class _AllStudentState extends State<AllStudent> {
                         },
                       ),
                       const SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
-                      _buildPaginator(),
+                      _buildPagination(),
+                      const SizedBox(
+                        height: 30,
+                      ),
                     ],
                   ),
-                );
-              },
+                )
             ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildPaginator() {
-    final totalPages = (studentCount / itemsPerPage).ceil();
-    final visiblePages = 4; // Maximum number of visible page buttons
-    final startPage = (currentPage - (visiblePages ~/ 2))
-        .clamp(1, totalPages - visiblePages + 1);
-    final endPage = (startPage + visiblePages - 1).clamp(1, totalPages);
+  Widget _buildPagination() {
+    const visiblePages = 4; // Maximum number of visible page buttons
+    final startPage = (_currentPage - (visiblePages ~/ 2))
+        .clamp(1, _totalPages - visiblePages + 1);
+    final endPage = (startPage + visiblePages - 1).clamp(1, _totalPages);
 
     List<Widget> pageButtons = [];
 
     if (startPage > 2) {
       pageButtons.add(_PageButton(
         pageNumber: 1,
-        currentPage: currentPage,
-        totalPages: totalPages,
+        currentPage: _currentPage,
+        totalPages: _totalPages,
         onPressed: () {
-          setState(() {
-            currentPage = 1;
-          });
+          if (_currentPage != 1) {
+            setState(() {
+              _currentPage = 1;
+              _isLoading = true;
+            });
+            _loadStudents();
+          }
         },
       ));
       pageButtons.add(const Text(
@@ -160,18 +149,22 @@ class _AllStudentState extends State<AllStudent> {
     }
 
     for (var i = startPage; i <= endPage; i++) {
-      if (i > 0 && i <= totalPages) {
+      if (i > 0 && i <= _totalPages) {
         pageButtons.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0),
             child: _PageButton(
               pageNumber: i,
-              currentPage: currentPage,
-              totalPages: totalPages,
+              currentPage: _currentPage,
+              totalPages: _totalPages,
               onPressed: () {
-                setState(() {
-                  currentPage = i;
-                });
+                if (_currentPage != i) {
+                  setState(() {
+                    _currentPage = i;
+                    _isLoading = true;
+                  });
+                  _loadStudents();
+                }
               },
             ),
           ),
@@ -179,7 +172,7 @@ class _AllStudentState extends State<AllStudent> {
       }
     }
 
-    if (endPage < totalPages - 1) {
+    if (endPage < _totalPages - 1) {
       pageButtons.add(const Text(
         '...',
         style: TextStyle(
@@ -188,15 +181,19 @@ class _AllStudentState extends State<AllStudent> {
       ));
     }
 
-    if (endPage < totalPages) {
+    if (endPage < _totalPages) {
       pageButtons.add(_PageButton(
-        pageNumber: totalPages,
-        currentPage: currentPage,
-        totalPages: totalPages,
+        pageNumber: _totalPages,
+        currentPage: _currentPage,
+        totalPages: _totalPages,
         onPressed: () {
-          setState(() {
-            currentPage = totalPages;
-          });
+          if (_currentPage != _totalPages) {
+            setState(() {
+              _currentPage = _totalPages;
+              _isLoading = true;
+            });
+            _loadStudents();
+          }
         },
       ));
     }
@@ -206,10 +203,10 @@ class _AllStudentState extends State<AllStudent> {
       0,
       IconButton(
         icon: const Icon(Icons.arrow_back),
-        onPressed: currentPage > 1
+        onPressed: _currentPage > 1
             ? () {
                 setState(() {
-                  currentPage--;
+                  _currentPage--;
                 });
               }
             : null,
@@ -219,10 +216,10 @@ class _AllStudentState extends State<AllStudent> {
     pageButtons.add(
       IconButton(
         icon: const Icon(Icons.arrow_forward),
-        onPressed: currentPage < totalPages
+        onPressed: _currentPage < _totalPages
             ? () {
                 setState(() {
-                  currentPage++;
+                  _currentPage++;
                 });
               }
             : null,
