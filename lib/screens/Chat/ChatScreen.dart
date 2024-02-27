@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -15,19 +14,79 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _messageController = TextEditingController();
+  bool _isSending = false;
+  String _msg = "";
+  DocumentSnapshot<Map<String, dynamic>>? userData;
+  ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+  int _perPage = 15;
+  List<DocumentSnapshot> _messages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_scrollListener);
+    _getMessages();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      _getMessages();
+    }
+  }
+
+  void _getMessages() async {
+    if (_isLoadingMore) return;
+    setState(() {
+      _isLoadingMore = true;
+    });
+    final user = FirebaseAuth.instance.currentUser;
+    final collectionRef = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(widget.chatRoomName)
+        .collection('messages');
+
+    QuerySnapshot querySnapshot;
+    if (_messages.isEmpty) {
+      querySnapshot = await collectionRef
+          .orderBy('createdAt', descending: true)
+          .limit(_perPage)
+          .get();
+    } else {
+      querySnapshot = await collectionRef
+          .orderBy('createdAt', descending: true)
+          .startAfterDocument(_messages.last)
+          .limit(_perPage)
+          .get();
+    }
+
+    setState(() {
+      _isLoadingMore = false;
+      _messages.addAll(querySnapshot.docs);
+    });
+  }
 
   void _sendMessage() async {
     final messageText = _messageController.text.trim();
+
     if (messageText.isEmpty) {
       return;
     }
+
     final user = FirebaseAuth.instance.currentUser;
     final userData = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get();
+
+    setState(() {
+      _isSending = true;
+    });
+
     try {
-      await FirebaseFirestore.instance
+      DocumentReference messageRef = await FirebaseFirestore.instance
           .collection('chats')
           .doc(widget.chatRoomName)
           .collection('messages')
@@ -37,9 +96,21 @@ class _ChatScreenState extends State<ChatScreen> {
         'userId': user.uid,
         'name': userData['name'],
       });
+
+      DocumentSnapshot sentMessageSnapshot = await messageRef.get();
+
+      setState(() {
+        _messages.insert(0, sentMessageSnapshot);
+        _isSending = false;
+        _msg = "";
+      });
     } catch (e) {
       print("Error adding message: $e");
+      setState(() {
+        _isSending = false;
+      });
     }
+
     _messageController.clear();
   }
 
@@ -63,31 +134,28 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('chats')
-                      .doc(widget.chatRoomName)
-                      .collection('messages')
-                      .orderBy('createdAt', descending: true)
-                      .snapshots(),
-                  builder: (ctx, AsyncSnapshot<QuerySnapshot> chatSnapshot) {
-                    if (chatSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    final chatDocs = chatSnapshot.data!.docs;
-                    return ListView.builder(
-                      reverse: true,
-                      itemCount: chatDocs.length,
-                      itemBuilder: (ctx, index) => MessageBubble(
-                        chatDocs[index]['text'],
-                        chatDocs[index]['name'],
-                        chatDocs[index]['userId'] ==
+                child: ListView.builder(
+                  controller: _scrollController,
+                  reverse: true,
+                  itemCount: _messages.length + 1,
+                  itemBuilder: (ctx, index) {
+                    if (index < _messages.length) {
+                      return MessageBubble(
+                        _messages[index]['text'],
+                        _messages[index]['name'],
+                        _messages[index]['userId'] ==
                             FirebaseAuth.instance.currentUser!.uid,
-                        chatDocs[index]['createdAt'], // Pass the timestamp
-                        key: ValueKey(chatDocs[index].id),
-                      ),
-                    );
+                        _messages[index]['createdAt'],
+                        isSending: _isSending && index == 0,
+                        key: ValueKey(_messages[index].id),
+                      );
+                    } else {
+                      return _isLoadingMore
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : SizedBox();
+                    }
                   },
                 ),
               ),
@@ -124,11 +192,6 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.insert_emoticon,
-                    color: Colors.grey[600],
-                  ),
-                  const SizedBox(width: 8.0),
                   Expanded(
                     child: TextField(
                       controller: _messageController,
@@ -137,7 +200,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         border: InputBorder.none,
                       ),
                       textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _sendMessage(),
+                      onSubmitted: (_) {
+                        _sendMessage();
+                      },
                     ),
                   ),
                 ],
@@ -169,13 +234,15 @@ class MessageBubble extends StatefulWidget {
   final String message;
   final String username;
   final bool belongsToCurrentUser;
-  final Timestamp timestamp; // Added timestamp field
+  final Timestamp timestamp;
+  final bool isSending;
 
   MessageBubble(
     this.message,
     this.username,
     this.belongsToCurrentUser,
     this.timestamp, {
+    required this.isSending,
     Key? key,
   }) : super(key: key);
 
@@ -230,15 +297,22 @@ class _MessageBubbleState extends State<MessageBubble> {
                       fontSize: 16,
                     ),
                   ),
+                  if (widget.isSending)
+                    Text(
+                      'Sending...',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   const SizedBox(height: 5),
                   Text(
                     _formatTimestamp(),
                     style: TextStyle(
-                        fontSize: 10,
-                        color:
-                            const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7)
-                        //  Colors.black.withOpacity(0.7),
-                        ),
+                      fontSize: 10,
+                      color:
+                          const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7),
+                    ),
                   ),
                 ],
               ),
@@ -251,7 +325,7 @@ class _MessageBubbleState extends State<MessageBubble> {
 
   String _formatTimestamp() {
     DateTime dateTime = widget.timestamp.toDate();
-    String formattedTime = DateFormat.jm().format(dateTime); // Format time only
+    String formattedTime = DateFormat.jm().format(dateTime);
     return formattedTime;
   }
 }
