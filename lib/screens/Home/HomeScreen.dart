@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
-import 'package:poralekha_app/screens/AllStudents/AllStudents.dart';
+import 'package:intl/intl.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
@@ -16,8 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isRunningSelected = true;
-  late Stream<QuerySnapshot> _usersStream;
+  String _state = "running";
+  late Stream<QuerySnapshot> _lectureStream;
 
   final String documentId;
 
@@ -26,8 +26,39 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _usersStream = FirebaseFirestore.instance.collection('lecture').snapshots();
+    final DateTime now = DateTime.now();
+    final DateFormat dateFormatter = DateFormat('dd-MM-yyyy');
+    final DateFormat timeFormatter = DateFormat('hh:mm a');
+    final String formattedDate = dateFormatter.format(now);
+    final String formattedTime = timeFormatter.format(now);
+    print("Now formatted time $formattedDate $formattedTime");
+    _lectureStream = FirebaseFirestore.instance.collection('lecture').snapshots();
   }
+
+  bool isRunningLecture(String date, String startTime, String endTime) {
+    try {
+      final DateFormat dateFormatter = DateFormat('dd-MM-yyyy');
+      final DateFormat timeFormatter = DateFormat('hh:mm a');
+
+      DateTime parsedDate = dateFormatter.parse(date);
+      DateTime today = DateTime.now();
+
+      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
+        // final DateTime startDateTime = timeFormatter.parse(startTime);
+        // final DateTime endDateTime = timeFormatter.parse(endTime);
+        // DateTime now = DateTime.now();
+        // return now.isAfter(startDateTime) && now.isBefore(endDateTime);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("object");
+      print('Error occurred: $e');
+      return false;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeBanner(),
+              const HomeBanner(),
               SizedBox(height: screenHeight * 0.03),
               Center(
                 child: Text(
@@ -97,17 +128,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          isRunningSelected = true;
-                        });
+                        if (_state != "running") {
+                          setState(() {
+                            _state = "running";
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isRunningSelected
+                        backgroundColor: _state == "running"
                             ? MyTheme.buttonColor
                             : MyTheme.buttonColor.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.circular(screenWidth * 0.02),
+                          BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
@@ -121,17 +154,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          isRunningSelected = false;
-                        });
+                        if (_state != "upcoming") {
+                          setState(() {
+                            _state = "upcoming";
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isRunningSelected
+                        backgroundColor: _state == "running"
                             ? MyTheme.buttonColor.withOpacity(0.6)
                             : MyTheme.buttonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.circular(screenWidth * 0.02),
+                          BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
@@ -148,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: screenHeight * 0.02),
               StreamBuilder(
-                stream: _usersStream,
+                stream: _lectureStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return const Center(
@@ -165,28 +200,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text("No Data Found"),
                     );
                   }
-
                   return ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final lectureData = snapshot.data!.docs[index].data()
-                          as Map<String, dynamic>;
-
-                      final String state = lectureData["state"];
-
-                      return isRunningSelected
-                          ? Padding(
-                              padding:
-                                  EdgeInsets.only(top: screenHeight * 0.01),
-                              child: LectureCard(
-                                lectureData: lectureData,
-                                documentId: documentId,
-                                screen: "home",
-                              ),
-                            )
-                          : SizedBox();
+                      as Map<String, dynamic>;
+                      bool isRunning = isRunningLecture(lectureData['date'], lectureData['startTime'], lectureData['endTime']);
+                      if ((isRunning && _state == 'running') || (!isRunning && _state == 'upcoming')) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: screenHeight * 0.01),
+                          child: LectureCard(
+                            lectureData: lectureData,
+                            documentId: documentId,
+                            screen: "home",
+                          ),
+                        );
+                      }
                     },
                   );
                 },

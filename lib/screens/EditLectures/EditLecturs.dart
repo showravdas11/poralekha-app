@@ -39,7 +39,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
         TextEditingController(text: widget.lectureData['startTime']);
     endTimeController =
         TextEditingController(text: widget.lectureData['endTime']);
-    stateController = TextEditingController(text: widget.lectureData['state']);
     linkController = TextEditingController(text: widget.lectureData['link']);
   }
 
@@ -119,7 +118,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
         'startTime': startTimeController.text,
         'endTime': endTimeController.text,
         'link': linkController.text,
-        'state': selectState,
       });
 
       // Show a success dialog
@@ -316,63 +314,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                 obscure: false,
               ),
               SizedBox(height: screenSize.height * 0.02),
-              Text(
-                "State",
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: screenSize.width * 0.04,
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(height: screenSize.height * 0.01),
-              Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 2,
-                    )
-                  ],
-                ),
-                child: DropdownButtonFormField<String>(
-                  value: selectState,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectState = newValue;
-                    });
-                  },
-                  items: [
-                    'pending',
-                    'running',
-                    'done',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Select Your State",
-                    hintStyle: TextStyle(
-                      wordSpacing: 2,
-                      letterSpacing: 2,
-                    ),
-                    alignLabelWithHint: true,
-                    iconColor: Color(0xFF7E59FD),
-                  ),
-                ),
-              ),
-              SizedBox(height: screenSize.height * 0.04),
               RoundedButton(
                 title: "Update Lectures",
                 onTap: () {
