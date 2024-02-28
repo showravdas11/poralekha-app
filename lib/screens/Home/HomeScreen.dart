@@ -174,8 +174,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       final lectureData = snapshot.data!.docs[index].data()
                           as Map<String, dynamic>;
 
-                      final String state = lectureData["state"];
-
                       return isRunningSelected
                           ? Padding(
                               padding:
