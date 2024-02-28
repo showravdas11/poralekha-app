@@ -2,26 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Chat/ChatListScreen.dart';
-
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
-import 'package:poralekha_app/screens/Chat/ChatScreen.dart';
 import 'package:poralekha_app/screens/Home/HomeScreen.dart';
 import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
 
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
+class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const HomeScreen(),
     ChatListScreen(),
-    ClassListScreen(),
+    const ClassListScreen(),
     ProfileScreen(),
   ];
 

@@ -1,8 +1,9 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
@@ -52,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (user != null && user.emailVerified) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavBar()),
+            MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else {
           await userCredential.user?.sendEmailVerification();

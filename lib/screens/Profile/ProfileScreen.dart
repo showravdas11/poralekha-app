@@ -40,12 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text("Profile".tr),
         backgroundColor: MyTheme.canvousColor,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Iconsax.arrow_left),
-        ),
       ),
       body: StreamBuilder(
         stream: _usersStream,
