@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Iconsax.logout,
                   onPressed: () {
                     auth.signOut().then((value) {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginScreen()),

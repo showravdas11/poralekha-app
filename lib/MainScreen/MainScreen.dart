@@ -5,6 +5,7 @@ import 'package:poralekha_app/screens/Chat/ChatListScreen.dart';
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/Home/HomeScreen.dart';
 import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
+import 'package:poralekha_app/screens/SubjectList/subject_list_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   static final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
     ChatListScreen(),
-    const ClassListScreen(),
+    const SubjectListScreen(),
     ProfileScreen(),
   ];
 
