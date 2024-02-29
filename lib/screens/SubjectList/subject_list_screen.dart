@@ -1,28 +1,38 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
 class SubjectListScreen extends StatefulWidget {
-  final String className;
-
-  const SubjectListScreen({Key? key, required this.className})
-      : super(key: key);
+  const SubjectListScreen({Key? key}) : super(key: key);
 
   @override
   _SubjectListScreenState createState() => _SubjectListScreenState();
 }
 
 class _SubjectListScreenState extends State<SubjectListScreen> {
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _subjectsStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _subjectsStream;
 
   @override
   void initState() {
     super.initState();
-    _subjectsStream = FirebaseFirestore.instance
-        .collection("subjects")
-        .where('class', isEqualTo: widget.className)
-        .snapshots();
+    loadSubjectList();
+  }
+
+  void loadSubjectList() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final className = userData.get('class') as String;
+      _subjectsStream = FirebaseFirestore.instance
+          .collection("subjects")
+          .where('class', isEqualTo: className)
+          .snapshots();
+    }
   }
 
   @override
@@ -51,9 +61,15 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
               );
             }
 
-            List<String> subjects = snapshot.data!.docs
-                .map((doc) => doc['name'] as String)
-                .toList();
+            List<String> subjects = snapshot.data?.docs
+                    .map((doc) => doc['name'] as String)
+                    .toList() ??
+                [];
+            if (subjects.isEmpty) {
+              return const Center(
+                child: Text("Sorry. There is no subject for you"),
+              );
+            }
 
             return ListView.builder(
               itemCount: subjects.length,
