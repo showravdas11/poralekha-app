@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
@@ -43,7 +44,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void initState() {
     super.initState();
     // Initialize the timer to change the quote every 5 seconds
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       setState(() {
         // Increment the currentIndex to display the next quote
         currentIndex = (currentIndex + 1) % quotes.length;
@@ -146,12 +147,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       alignment: Alignment.center,
                     ),
                   ),
-                  const Positioned(
+                  Positioned(
                     top: 50,
                     left: 20,
                     child: Text(
-                      "Edit Profile",
-                      style: TextStyle(
+                      "Edit Profile".tr,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -229,18 +230,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 255, 248, 200),
+                        color: const Color.fromARGB(255, 255, 248, 200),
                         borderRadius: BorderRadius.circular(10)),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 10),
                       child: Text(
                         quotes[currentIndex],
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             fontFamily: "FontMain",
-                            color: const Color.fromARGB(255, 0, 0, 0)),
+                            color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                     ),
                   ),
@@ -283,11 +284,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                       return Column(
                         children: [
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Name",
-                              style: TextStyle(
+                              "Name".tr,
+                              style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500),
@@ -307,11 +308,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Gender",
-                              style: TextStyle(
+                              "Gender".tr,
+                              style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500),
@@ -342,7 +343,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               items: [
                                 'Male',
                                 'Female',
-                                'Other'
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -366,11 +366,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Address",
-                              style: TextStyle(
+                              "Address".tr,
+                              style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500),
@@ -388,11 +388,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 color: Color(0xFF7E59FD)),
                           ),
                           const SizedBox(height: 6),
-                          const Align(
+                          Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "Age",
-                              style: TextStyle(
+                              "Age".tr,
+                              style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 17,
                                   fontWeight: FontWeight.w500),
@@ -415,7 +415,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   RoundedButton(
-                    title: "Update",
+                    title: "Update".tr,
                     onTap: () {
                       if (nameController.text.trim().isEmpty ||
                           addressController.text.trim().isEmpty ||

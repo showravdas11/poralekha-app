@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/screens/AllLectures/AllLectures.dart';
@@ -20,7 +21,7 @@ class MyDrawerList extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Iconsax.user),
-            title: const Text("Approve User"),
+            title: Text("Approve User".tr),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ApproveUser()));
@@ -28,42 +29,50 @@ class MyDrawerList extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.admin_panel_settings_outlined),
-            title: const Text("Mange Admin"),
+            title: Text("Manage Admin".tr),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddLectureScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddLectureScreen()));
             },
           ),
           ListTile(
             leading: const Icon(Iconsax.add_circle),
-            title: const Text("Add Lecture"),
+            title: Text("Add Lecture".tr),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddLectureScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddLectureScreen()));
             },
           ),
           ListTile(
             leading: const Icon(Iconsax.lamp),
-            title: const Text("All Student"),
+            title: Text("All Students".tr),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AllStudent()));
+                  MaterialPageRoute(builder: (context) => const AllStudent()));
             },
           ),
           ListTile(
             leading: const Icon(Iconsax.lamp),
-            title: const Text("All lecture"),
+            title: Text("All lectures".tr),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AllLectureScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllLectureScreen()));
             },
           ),
           ListTile(
             leading: const Icon(Iconsax.book),
-            title: const Text("All subject"),
+            title: Text("All subjects".tr),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AllSubjectsScreen()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllSubjectsScreen()));
             },
           ),
         ],

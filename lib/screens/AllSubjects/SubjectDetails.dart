@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
+import 'package:poralekha_app/screens/SubjectList/ChapterList/ChapterTopicScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class SubjectDetails extends StatefulWidget {
@@ -37,7 +39,10 @@ class _SubjectDetailsState extends State<SubjectDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+    final appBarHeight = AppBar().preferredSize.height;
+    final screenHeight = screenSize.height - appBarHeight;
+    final screenWidth = screenSize.width;
 
     return StreamBuilder<DocumentSnapshot>(
       stream: _subjectStream,
@@ -64,54 +69,55 @@ class _SubjectDetailsState extends State<SubjectDetails> {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(screenWidth * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    height: 100,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 1,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.05),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Subject Name: ${_subjectData['name'] ?? ''}",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    child: Container(
+                      padding: EdgeInsets.all(screenWidth * 0.05),
+                      height: screenHeight * 0.15,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 1,
+                            offset: const Offset(0, 1),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          "Class: ${_subjectData['class'] ?? ''}",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Subject Name: ${_subjectData['name'] ?? ''}",
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.05,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01),
+                          Text(
+                            "Class: ${_subjectData['class'] ?? ''}",
+                            style: TextStyle(fontSize: screenWidth * 0.04),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  const Text(
+                  SizedBox(height: screenHeight * 0.02),
+                  Text(
                     "Chapter List",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: screenHeight * 0.02),
                   StreamBuilder<QuerySnapshot>(
                     stream: _chapterStream,
                     builder: (context, snapshot) {
@@ -127,6 +133,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                           final chapterData =
                               chapter.data() as Map<String, dynamic>;
                           final chapterName = chapterData['name'] ?? '';
+
                           return Card(
                             shape: RoundedRectangleBorder(
                               borderRadius:
@@ -156,10 +163,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                       backgroundColor: MyTheme.buttonColor,
                                       foregroundColor: Colors.white,
                                       padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.01,
+                                          vertical: screenHeight * 0.01,
                                           horizontal: screenWidth * 0.02),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
@@ -167,7 +171,10 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      // Handle button press
+                                      Get.to(ChapterTopicScreen(
+                                        documentId: chapter.id,
+                                        chapter: chapterData,
+                                      ));
                                     },
                                     child: Text(
                                       "Show Details",
@@ -204,7 +211,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
               size: screenWidth * 0.1,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(screenWidth * 0.10),
+              borderRadius: BorderRadius.circular(screenWidth * 0.1),
             ),
           ),
         );

@@ -147,7 +147,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 borderRadius: BorderRadius.circular(screenWidth * 0.05),
               ),
               child: Container(
-                padding: EdgeInsets.all(screenWidth * 0.04),
+                padding: EdgeInsets.all(screenWidth * 0.05),
                 height: screenHeight * 0.15,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -175,7 +175,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     SizedBox(height: screenHeight * 0.01),
                     Text(
                       "Class: ${widget.subjectData['class']}",
-                      style: TextStyle(fontSize: screenWidth * 0.05),
+                      style: TextStyle(fontSize: screenWidth * 0.04),
                     ),
                   ],
                 ),
