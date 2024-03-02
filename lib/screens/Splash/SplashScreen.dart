@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:poralekha_app/MainScreen/MainScreen.dart';
+import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
+import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/screens/OnBoard/OnBoardScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
@@ -20,16 +25,37 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _startFadeOut() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         opacity = 0.0;
       });
 
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const OnBoardScreen()),
-        );
+      Future.delayed(const Duration(seconds: 1), () async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && user.emailVerified) {
+          final userData = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+          final userClass = userData.get('class');
+          if (userClass == null || userClass == "") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ClassListScreen()),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+            );
+          }
+        } else {
+          // Return a widget, for example, a Material widget containing LoginScreen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const OnBoardScreen()),
+          );
+        }
       });
     });
   }

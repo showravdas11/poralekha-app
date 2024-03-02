@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
-import 'package:poralekha_app/utils/check_user.dart';
 
 class OnBoardScreen extends StatefulWidget {
   const OnBoardScreen({Key? key}) : super(key: key);
@@ -53,9 +53,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => CheckUser()),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
                       );
                     },
                     child: Text(
@@ -111,10 +112,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       ),
                       onPressed: () {
                         if (_pageIndex == demo_data.length - 1) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CheckUser(),
+                              builder: (context) => const LoginScreen(),
                             ),
                           );
                         } else {

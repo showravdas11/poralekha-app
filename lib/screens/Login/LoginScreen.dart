@@ -1,10 +1,12 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:poralekha_app/bottomNavBar/BottomNavBar.dart';
+import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
+import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
@@ -50,10 +52,26 @@ class _LoginScreenState extends State<LoginScreen> {
         User? user = userCredential.user;
 
         if (user != null && user.emailVerified) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavBar()),
-          );
+          // Check if the 'class' field is empty
+          final userData = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .get();
+          final userClass = userData.get('class') as String;
+
+          if (userClass == "") {
+            // Redirect to ClassListScreen if class field is empty
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ClassListScreen()),
+            );
+          } else {
+            // Redirect to MainScreen if class field is not empty
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+            );
+          }
         } else {
           await userCredential.user?.sendEmailVerification();
           AwesomeDialog(

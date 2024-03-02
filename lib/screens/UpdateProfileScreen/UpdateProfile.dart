@@ -4,16 +4,20 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  const UpdateProfileScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic> userData;
+  const UpdateProfileScreen({Key? key, required this.userData})
+      : super(key: key);
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
@@ -27,7 +31,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   BuildContext? dialogContext;
   String? selectGender;
 
-  late Stream<QuerySnapshot> _usersStream;
+  // late Future<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
   late Timer _timer;
@@ -51,12 +55,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       });
     });
 
-    // Fetch user data
-    User? user = FirebaseAuth.instance.currentUser;
-    _usersStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: user?.email)
-        .snapshots();
+    nameController.text = widget.userData['name'] ?? 'N/A';
+    addressController.text = widget.userData['address'] ?? 'N/A';
+    ageController.text = widget.userData['age']?.toString() ?? 'N/A';
+    setState(() {
+      selectGender = widget.userData['gender'] ?? 'N/A';
+    });
   }
 
   @override
@@ -71,20 +75,27 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
+        // Upload image to Firebase Storage
+        String imagePath = 'profile_images/${user.uid}_profile.jpg';
+        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
+        String imageUrl = widget.userData['img'];
+        if (_selectedImage != null) {
+          await storageReference.putFile(_selectedImage!);
+          imageUrl = await storageReference.getDownloadURL();
+        }
+
+        // Update user data in Firebase Realtime Database
         await FirebaseFirestore.instance
             .collection('users')
-            .where('email', isEqualTo: user.email)
-            .get()
-            .then((QuerySnapshot querySnapshot) {
-          querySnapshot.docs.forEach((doc) {
-            doc.reference.update({
-              'name': nameController.text,
-              'gender': selectGender,
-              'address': addressController.text,
-              'age': ageController.text,
-            });
-          });
+            .doc(user.uid)
+            .update({
+          'name': nameController.text,
+          'gender': selectGender,
+          'address': addressController.text,
+          'age': ageController.text,
+          'img': imageUrl,
         });
+
         Navigator.pop(dialogContext!);
         AwesomeDialog(
           context: context,
@@ -111,8 +122,71 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   //------------------image select form gallery----------------------//
 
   Future<void> _picImageFormGallery() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picker = ImagePicker();
+    final pickedImage = await showDialog<File?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Iconsax.gallery_add,
+                        size: 30,
+                        color: Color.fromARGB(255, 142, 36, 171),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Gallery",
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  ),
+                  onTap: () async {
+                    final pickedFile = await picker.pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    Navigator.of(context).pop(File(pickedFile!.path));
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.camera,
+                        size: 30,
+                        color: Color.fromARGB(255, 48, 96, 78),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Camera",
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  ),
+                  onTap: () async {
+                    final pickedFile = await picker.pickImage(
+                      source: ImageSource.camera,
+                    );
+                    Navigator.of(context).pop(File(pickedFile!.path));
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
     if (pickedImage != null) {
       setState(() {
         _selectedImage = File(pickedImage.path);
@@ -192,10 +266,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   )
                                 : ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
-                                    child: Image.asset(
-                                      "assets/images/person-placeholder.jpg",
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: widget.userData["img"] != ""
+                                        ? Image.network(
+                                            widget.userData["img"]!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.asset(
+                                            "assets/images/person-placeholder.jpg",
+                                            fit: BoxFit.cover,
+                                          ),
                                   ),
                           ),
                           Container(
@@ -227,191 +306,142 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 255, 248, 200),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                      child: Text(
-                        quotes[currentIndex],
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "FontMain",
-                            color: Color.fromARGB(255, 0, 0, 0)),
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  StreamBuilder<QuerySnapshot>(
-                    stream: _usersStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Center(
-                          child: Text("Something Went Wrong"),
-                        );
-                      }
-
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-
-                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(
-                          child: Text("No Data Found"),
-                        );
-                      }
-
-                      var userData = snapshot.data!.docs.first.data()
-                          as Map<String, dynamic>;
-
-                      nameController.text = userData['name'] ?? 'N/A';
-                      selectGender = userData['gender'] ?? "N/A";
-                      addressController.text = userData['address'] ?? 'N/A';
-                      ageController.text = userData['age'].toString() ?? 'N/A';
-
-                      return Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Name".tr,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: nameController,
-                            text: "Name",
-                            textInputType: TextInputType.text,
-                            obscure: false,
-                            suffixIcon: const Icon(
-                              Icons.person,
-                              color: Color(0xFF7E59FD),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Gender".tr,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Container(
-                            height: 45,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                              borderRadius: BorderRadius.circular(6),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 2)
-                              ],
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              value: selectGender,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectGender = newValue;
-                                });
-                              },
-                              items: [
-                                'Male',
-                                'Female',
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: const TextStyle(
-                                        color: Color.fromARGB(
-                                          255,
-                                          0,
-                                          0,
-                                          0,
-                                        ),
-                                        fontWeight: FontWeight.normal),
-                                  ),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none,
-                                  alignLabelWithHint: true,
-                                  iconColor: Color(0xFF7E59FD)),
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Address".tr,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: addressController,
-                            text: "Address",
-                            textInputType: TextInputType.text,
-                            obscure: false,
-                            suffixIcon: const Icon(Icons.location_on,
-                                color: Color(0xFF7E59FD)),
-                          ),
-                          const SizedBox(height: 6),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Age".tr,
-                              style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          CommonTextField(
-                            controller: ageController,
-                            text: "Age",
-                            textInputType: TextInputType.number,
-                            obscure: false,
-                            suffixIcon: const Icon(Icons.calendar_today,
-                                color: Color(0xFF7E59FD)),
-                          ),
-                        ],
-                      );
-                    },
+                  Column(
+                    children: [
+                      const Align(
+                      alignment: Alignment.topLeft,
+                        child: Text(
+                          "Name",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: nameController,
+                        text: "Name",
+                        textInputType: TextInputType.text,
+                        obscure: false,
+                        suffixIcon: const Icon(
+                          Icons.person,
+                          color: Color(0xFF7E59FD),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Gender",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      Container(
+                        height: 45,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          borderRadius: BorderRadius.circular(6),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 2)
+                          ],
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: selectGender,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectGender = newValue;
+                            });
+                          },
+                          items: [
+                            'Male',
+                            'Female',
+                            'Other'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: const TextStyle(
+                                    color: Color.fromARGB(
+                                      255,
+                                      0,
+                                      0,
+                                      0,
+                                    ),
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            );
+                          }).toList(),
+                          decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              alignLabelWithHint: true,
+                              iconColor: Color(0xFF7E59FD)),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Address",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: addressController,
+                        text: "Address",
+                        textInputType: TextInputType.text,
+                        obscure: false,
+                        suffixIcon: const Icon(Icons.location_on,
+                            color: Color(0xFF7E59FD)),
+                      ),
+                      const SizedBox(height: 6),
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Age",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      CommonTextField(
+                        controller: ageController,
+                        text: "Age",
+                        textInputType: TextInputType.number,
+                        obscure: false,
+                        suffixIcon: const Icon(Icons.calendar_today,
+                            color: Color(0xFF7E59FD)),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 20),
                   RoundedButton(

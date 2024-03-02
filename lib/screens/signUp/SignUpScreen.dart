@@ -34,7 +34,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future addUserDetails(String name, String email, String address, int age,
       String role, String gender, UserCredential? userCredential) async {
     try {
-      await FirebaseFirestore.instance.collection('users').add({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential?.user?.uid)
+          .set({
         'name': name,
         'email': email,
         'address': address,
@@ -44,7 +47,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'isAdmin': false,
         'isApproved': false,
         'class': '',
-        'timestamp': FieldValue.serverTimestamp()
+        'timestamp': FieldValue.serverTimestamp(),
+        'img': ""
       });
     } catch (e) {
       print('Adding user data error: $e');
@@ -435,12 +439,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "Sign In",

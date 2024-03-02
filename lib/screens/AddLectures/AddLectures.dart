@@ -47,7 +47,6 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       'endTime': endTime,
       'link': link,
       'linkType': linkType,
-      'state': "pending",
       'date': date,
     });
   }
@@ -59,10 +58,11 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
-    if (pickedDate != null && pickedDate != selectedDate)
+    if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
       });
+    }
   }
 
   Future<void> _selectStartTime(BuildContext context) async {
@@ -70,10 +70,11 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       context: context,
       initialTime: TimeOfDay.now(),
     );
-    if (pickedTime != null && pickedTime != selectedStartTime)
+    if (pickedTime != null && pickedTime != selectedStartTime) {
       setState(() {
         selectedStartTime = pickedTime;
       });
+    }
   }
 
   // Future<void> _selectEndTime(BuildContext context) async {
@@ -137,7 +138,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('End time should be after the start time.'),
             ),
           );
@@ -145,7 +146,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please select the start time first.'),
         ),
       );
@@ -291,7 +292,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                         hintText: selectedDate != null
                             ? DateFormat('dd-MM-yyyy').format(selectedDate!)
                             : "Select Your date",
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           wordSpacing: 2,
                           letterSpacing: 2,
                         ),
@@ -301,7 +302,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   const Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -317,7 +318,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                     textInputType: TextInputType.text,
                     obscure: false,
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   const Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -352,7 +353,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                                 ?.format(context)
                                 .toLowerCase() // Customize as needed
                             : "Select Start Time",
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           wordSpacing: 2,
                           letterSpacing: 2,
                         ),
@@ -362,7 +363,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   const Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -397,7 +398,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                                 ?.format(context)
                                 .toString() // Customize as needed
                             : "Select End Time",
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           wordSpacing: 2,
                           letterSpacing: 2,
                         ),
@@ -407,7 +408,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   const Align(
                       alignment: Alignment.topLeft,
                       child: Text(
