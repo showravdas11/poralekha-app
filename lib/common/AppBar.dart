@@ -16,6 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return AppBar(
+      centerTitle: true,
       title: Text(
         title,
         style: TextStyle(

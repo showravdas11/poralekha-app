@@ -41,9 +41,10 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Class Subject",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        centerTitle: true,
+        title: Text(
+          "Class Subjects".tr,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(

@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:poralekha_app/common/AppBar.dart';
@@ -156,7 +157,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Add Lecture",
+        title: "Add Lecture".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },

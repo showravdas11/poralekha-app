@@ -55,7 +55,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ListTile(
             title: const Text("English"),
             onTap: () {
-              Get.updateLocale(Locale('en', 'US'));
+              Get.updateLocale(const Locale('en', 'US'));
             },
           ),
           Divider(
@@ -65,7 +65,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ListTile(
             title: const Text("বাংলা"),
             onTap: () {
-              Get.updateLocale(Locale('bd', 'BAN'));
+              Get.updateLocale(const Locale('bd', 'BAN'));
             },
           ),
         ],

@@ -33,8 +33,8 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "ChapterTopic",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          "Chapter Topics",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: Padding(

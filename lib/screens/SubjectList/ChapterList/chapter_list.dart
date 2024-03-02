@@ -33,9 +33,10 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Chapter List",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        centerTitle: true,
+        title: Text(
+          "Chapters".tr,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(

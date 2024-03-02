@@ -237,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final lectureData = snapshot.data!.docs[index].data()
+
                       as Map<String, dynamic>;
                       bool isRunning = isRunningLecture(lectureData['date'], lectureData['startTime'], lectureData['endTime']);
                       if ((isRunning && _state == 'running') || (!isRunning && _state == 'upcoming')) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ApproveUser extends StatelessWidget {
@@ -7,7 +8,7 @@ class ApproveUser extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Approve Users'),
+        title: Text("Approve User".tr),
       ),
       body: ApproveUserList(),
     );

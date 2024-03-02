@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
 
@@ -24,7 +25,7 @@ class _AllLectureScreenState extends State<AllLectureScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: CustomAppBar(
-        title: "All Lectures",
+        title: "All lectures".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },

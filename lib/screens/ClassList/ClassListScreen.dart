@@ -52,6 +52,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "Select Your Class".tr,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

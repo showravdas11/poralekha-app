@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     "assets/images/poralekha-splash-screen-logo.png",
                     width: screenWidth * 0.4,
                   ),
-                  SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.04),
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(

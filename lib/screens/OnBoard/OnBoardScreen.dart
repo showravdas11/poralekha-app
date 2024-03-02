@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
@@ -297,6 +298,7 @@ class _LanguageSelectionState extends State<LanguageSelection>
         children: [
           ElevatedButton(
             onPressed: () {
+              Get.updateLocale(const Locale('en', 'US'));
               setState(() {
                 isRunningSelected = true;
                 _animationController.reverse();
@@ -324,6 +326,7 @@ class _LanguageSelectionState extends State<LanguageSelection>
           ),
           ElevatedButton(
             onPressed: () {
+              Get.updateLocale(const Locale('bd', 'BAN'));
               setState(() {
                 isRunningSelected = false;
                 _animationController.forward();
@@ -346,14 +349,14 @@ class _LanguageSelectionState extends State<LanguageSelection>
               ),
             ),
           ),
-          SlideTransition(
-            position: _slideAnimation,
-            child: Container(
-              height: 40,
-              width: 4,
-              color: MyTheme.buttonColor,
-            ),
-          ),
+          // SlideTransition(
+          //   position: _slideAnimation,
+          //   child: Container(
+          //     height: 40,
+          //     width: 4,
+          //     color: MyTheme.buttonColor,
+          //   ),
+          // ),
         ],
       ),
     );
