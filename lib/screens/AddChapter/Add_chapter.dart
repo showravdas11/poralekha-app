@@ -49,9 +49,8 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 
     _tutorialNameControllers.add(TextEditingController());
     _tutorialLinkControllers.add(TextEditingController());
-    _tutorialWidgets.add(
-        _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
-    );
+    _tutorialWidgets.add(_tutorialHolder(
+        _tutorialNameControllers.last, _tutorialLinkControllers.last));
   }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -166,7 +165,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       _uploading = false;
     });
 
-    chapnameController.clear();
+    // chapnameController.clear();
     _filePath = null;
     _selectedFile = File('');
 
@@ -303,9 +302,11 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      TextEditingController topicNameController = TextEditingController();
+                      TextEditingController topicNameController =
+                          TextEditingController();
                       _topicNameControllers.add(topicNameController);
-                      _topicWidgets.add(_buildTopicHolder(_topicNameControllers.last));
+                      _topicWidgets
+                          .add(_buildTopicHolder(_topicNameControllers.last));
                     });
                   },
                   child: const Text("Add More"),
@@ -338,9 +339,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     setState(() {
                       _tutorialNameControllers.add(TextEditingController());
                       _tutorialLinkControllers.add(TextEditingController());
-                      _tutorialWidgets.add(
-                          _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
-                      );
+                      _tutorialWidgets.add(_tutorialHolder(
+                          _tutorialNameControllers.last,
+                          _tutorialLinkControllers.last));
                     });
                   },
                   child: const Text("Add More"),
@@ -411,9 +412,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               suffixIcon: _uploading
                   ? const CircularProgressIndicator()
                   : IconButton(
-                icon: const Icon(Iconsax.gallery_add),
-                onPressed: pickGifFile,
-              ),
+                      icon: const Icon(Iconsax.gallery_add),
+                      onPressed: pickGifFile,
+                    ),
               alignLabelWithHint: true,
               iconColor: const Color(0xFF7E59FD),
             ),
@@ -423,7 +424,8 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     );
   }
 
-  Widget _tutorialHolder(TextEditingController nameController, TextEditingController linkController) {
+  Widget _tutorialHolder(TextEditingController nameController,
+      TextEditingController linkController) {
     return Column(
       children: [
         CommonTextField(
