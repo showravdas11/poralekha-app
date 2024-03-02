@@ -47,7 +47,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         'isAdmin': false,
         'isApproved': false,
         'class': '',
-        'timestamp': FieldValue.serverTimestamp()
+        'timestamp': FieldValue.serverTimestamp(),
+        'img': ""
       });
     } catch (e) {
       print('Adding user data error: $e');

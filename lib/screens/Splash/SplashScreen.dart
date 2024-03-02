@@ -38,15 +38,12 @@ class _SplashScreenState extends State<SplashScreen> {
               .doc(user.uid)
               .get();
           final userClass = userData.get('class');
-          print("myclasssls ${userClass}");
           if (userClass == null || userClass == "") {
-            print("going to class list");
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const ClassListScreen()),
             );
           } else {
-            print("going to main screen");
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const MainScreen()),

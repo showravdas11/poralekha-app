@@ -29,7 +29,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   File? _selectedImage;
   BuildContext? dialogContext;
   String? selectGender;
-  // String? profileImageUrl = widget.userData['profileImageUrl'];
 
   // late Future<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
@@ -55,27 +54,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       });
     });
 
-    loadUserData();
-  }
-
-  Future<void> loadUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('email', isEqualTo: user.email)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        var userData = querySnapshot.docs.first.data();
-        nameController.text = userData['name'] ?? 'N/A';
-        addressController.text = userData['address'] ?? 'N/A';
-        ageController.text = userData['age']?.toString() ?? 'N/A';
-        setState(() {
-          selectGender = userData['gender'] ?? 'N/A';
-        });
-      }
-    }
+    nameController.text = widget.userData['name'] ?? 'N/A';
+    addressController.text = widget.userData['address'] ?? 'N/A';
+    ageController.text = widget.userData['age']?.toString() ?? 'N/A';
+    setState(() {
+      selectGender = widget.userData['gender'] ?? 'N/A';
+    });
   }
 
   @override
@@ -92,12 +76,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (user != null) {
         // Upload image to Firebase Storage
         String imagePath = 'profile_images/${user.uid}_profile.jpg';
-        Reference storageReference =
-            FirebaseStorage.instance.ref().child(imagePath);
-        await storageReference.putFile(_selectedImage!);
-
-        // Get the download URL of the uploaded image
-        String imageUrl = await storageReference.getDownloadURL();
+        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
+        String imageUrl = widget.userData['img'];
+        if (_selectedImage != null) {
+          await storageReference.putFile(_selectedImage!);
+          imageUrl = await storageReference.getDownloadURL();
+        }
 
         // Update user data in Firebase Realtime Database
         await FirebaseFirestore.instance
@@ -108,7 +92,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           'gender': selectGender,
           'address': addressController.text,
           'age': ageController.text,
-          'profileImageUrl': imageUrl, // Store image URL in the database
+          'img': imageUrl,
         });
 
         Navigator.pop(dialogContext!);
@@ -281,10 +265,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   )
                                 : ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
-                                    child: widget.userData["profileImageUrl"] !=
-                                            null
+                                    child: widget.userData["img"] != ""
                                         ? Image.network(
-                                            widget.userData["profileImageUrl"]!,
+                                            widget.userData["img"]!,
                                             fit: BoxFit.cover,
                                           )
                                         : Image.asset(

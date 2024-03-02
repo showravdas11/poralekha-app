@@ -111,13 +111,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
-                              child: userData['profileImageUrl'] != null
+                              child: userData['img'] != ""
                                   ? Image.network(
-                                      userData['profileImageUrl'],
+                                      userData['img'],
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      "assets/images/default_profile_image.jpg", // Provide a default image asset
+                                      "assets/images/person-placeholder.jpg", // Provide a default image asset
                                       fit: BoxFit.cover,
                                     ),
                             )),
