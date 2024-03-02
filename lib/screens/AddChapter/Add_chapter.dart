@@ -27,26 +27,34 @@ class AddChapterScreen extends StatefulWidget {
 }
 
 class _AddChapterScreenState extends State<AddChapterScreen> {
-  TextEditingController chapnameController = TextEditingController();
+  TextEditingController chapterNameController = TextEditingController();
   String? _filePath;
   String? _gifPath;
-  late Stream<QuerySnapshot> _addChapterStream;
   bool _uploading = false;
   late File _selectedFile;
   late File _gifSelectedFile;
-  List<Widget> _topicWidgets = [];
-  List<Widget> _tutorialsWidgets = [];
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _linkController = TextEditingController();
+
+  final List<Widget> _topicWidgets = [];
+  final List<TextEditingController> _topicNameControllers = [];
+  final List<String> _gifUrls = [];
+  final List<Widget> _tutorialWidgets = [];
+  final List<TextEditingController> _tutorialNameControllers = [];
+  final List<TextEditingController> _tutorialLinkControllers = [];
 
   @override
   void initState() {
     super.initState();
-    _addChapterStream =
-        FirebaseFirestore.instance.collection('subjects').snapshots();
+    _topicNameControllers.add(TextEditingController());
+    _topicWidgets.add(_buildTopicHolder(_topicNameControllers.last));
+
+    _tutorialNameControllers.add(TextEditingController());
+    _tutorialLinkControllers.add(TextEditingController());
+    _tutorialWidgets.add(
+        _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
+    );
   }
 
-  final FirebaseFirestore _firebasFirestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<String> uploadPdf(String fileName, File file) async {
     final reference =
@@ -84,7 +92,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     }
   }
 
-  //upolad gif
+  // upload gif
   Future<String> uploadGif(String fileName, File file) async {
     final reference =
         FirebaseStorage.instance.ref().child("gifs/$fileName/.gif");
@@ -123,7 +131,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
   }
 
   void addChapter() async {
-    if (chapnameController.text.isEmpty || _selectedFile == null) {
+    if (chapterNameController.text.isEmpty || _selectedFile == null) {
       // If any required field is empty, show dialog
       AwesomeDialog(
         context: context,
@@ -150,7 +158,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
         .collection('chapters');
 
     await chapterCollection.add({
-      "name": chapnameController.text,
+      "name": chapterNameController.text,
       "pdfLink": downloadLink,
     });
 
@@ -168,61 +176,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     ).show();
   }
 
-  Widget _buildTopicHolder(
-      TextEditingController controller, double screenHeight) {
-    return Column(
-      children: [
-        CommonTextField(
-          controller: controller,
-          text: "Enter Topic Name",
-          textInputType: TextInputType.text,
-          obscure: false,
-          suffixIcon: const Icon(Iconsax.add_circle),
-        ),
-        SizedBox(height: screenHeight * 0.02),
-        Container(
-          height: 45,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            borderRadius: BorderRadius.circular(6),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 2,
-              )
-            ],
-          ),
-          child: TextFormField(
-            onTap: () {
-              pickGifFile();
-            },
-            readOnly: true,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: _gifPath ?? "Select topic Animation",
-              hintStyle: const TextStyle(
-                wordSpacing: 2,
-                letterSpacing: 2,
-              ),
-              suffixIcon: _uploading
-                  ? const CircularProgressIndicator()
-                  : IconButton(
-                      icon: const Icon(Iconsax.gallery_add),
-                      onPressed: pickGifFile,
-                    ),
-              alignLabelWithHint: true,
-              iconColor: const Color(0xFF7E59FD),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    Size screenSize = MediaQuery.of(context).size;
     final appBarHeight = AppBar().preferredSize.height;
     final screenHeight = screenSize.height - appBarHeight;
     final screenWidth = screenSize.width;
@@ -286,9 +242,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            const SizedBox(height: 15),
             CommonTextField(
-              controller: chapnameController,
+              controller: chapterNameController,
               text: "Enter Chapter Name",
               textInputType: TextInputType.text,
               obscure: false,
@@ -329,7 +285,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -343,70 +299,22 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      TextEditingController newController =
-                          TextEditingController();
-                      _topicWidgets
-                          .add(_buildTopicHolder(newController, screenHeight));
+                      TextEditingController topicNameController = TextEditingController();
+                      _topicNameControllers.add(topicNameController);
+                      _topicWidgets.add(_buildTopicHolder(_topicNameControllers.last));
                     });
                   },
                   child: const Text("Add More"),
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.02),
-            Column(
-              children: [
-                CommonTextField(
-                  controller: topicController,
-                  text: "Enter Topic Name",
-                  textInputType: TextInputType.text,
-                  obscure: false,
-                  suffixIcon: const Icon(Iconsax.add_circle),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Container(
-                  height: 45,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 2,
-                      )
-                    ],
-                  ),
-                  child: TextFormField(
-                    onTap: () {
-                      pickGifFile();
-                    },
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: _gifPath ?? "Select topic Animation",
-                      hintStyle: const TextStyle(
-                        wordSpacing: 2,
-                        letterSpacing: 2,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Iconsax.gallery_add),
-                        onPressed: pickGifFile,
-                      ),
-                      alignLabelWithHint: true,
-                      iconColor: const Color(0xFF7E59FD),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: screenHeight * 0.02),
+            const SizedBox(height: 15),
             Column(
               children: _topicWidgets.map((widget) {
                 return Column(
                   children: [
                     widget,
-                    SizedBox(height: screenHeight * 0.02),
+                    const SizedBox(height: 15),
                   ],
                 );
               }).toList(),
@@ -424,51 +332,32 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      _tutorialsWidgets.add(_buildCummonTextField(
-                          _nameController,
-                          _linkController,
-                          screenHeight)); // Add the text field widget to the list
-                      _nameController =
-                          TextEditingController(); // Reset the controller for the next text field
-                      _linkController =
-                          TextEditingController(); // Reset the controller for the next text field
+                      _tutorialNameControllers.add(TextEditingController());
+                      _tutorialLinkControllers.add(TextEditingController());
+                      _tutorialWidgets.add(
+                          _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
+                      );
                     });
                   },
                   child: const Text("Add More"),
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.02),
-            CommonTextField(
-              controller: _nameController,
-              text: "Enter Tutorials Name",
-              textInputType: TextInputType.text,
-              obscure: false,
-              suffixIcon: const Icon(Iconsax.text),
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            CommonTextField(
-              controller: _linkController,
-              text: "Paste Tutorials Link",
-              textInputType: TextInputType.text,
-              obscure: false,
-              suffixIcon: const Icon(Iconsax.link),
-            ),
-            SizedBox(height: screenHeight * 0.02),
+            const SizedBox(height: 15),
             Column(
-              children: _tutorialsWidgets.map((widget) {
+              children: _tutorialWidgets.map((widget) {
                 return Column(
                   children: [
                     widget,
-                    SizedBox(height: screenHeight * 0.02),
+                    const SizedBox(height: 15),
                   ],
                 );
               }).toList(),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            const SizedBox(height: 15),
             Center(
               child: RoundedButton(
-                title: "Add",
+                title: "Add Chapter",
                 onTap: addChapter,
                 width: double.infinity,
               ),
@@ -478,27 +367,77 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       ),
     );
   }
-}
 
-Widget _buildCummonTextField(TextEditingController nameController,
-    TextEditingController linkController, double screenHeight) {
-  return Column(
-    children: [
-      CommonTextField(
-        controller: nameController,
-        text: "Enter Tutorials Name",
-        textInputType: TextInputType.text,
-        obscure: false,
-        suffixIcon: const Icon(Iconsax.text),
-      ),
-      SizedBox(height: screenHeight * 0.02),
-      CommonTextField(
-        controller: linkController,
-        text: "Paste Tutorials Link",
-        textInputType: TextInputType.text,
-        obscure: false,
-        suffixIcon: const Icon(Iconsax.link),
-      ),
-    ],
-  );
+  Widget _buildTopicHolder(TextEditingController topicNameController) {
+    return Column(
+      children: [
+        CommonTextField(
+          controller: topicNameController,
+          text: "Enter Topic Name",
+          textInputType: TextInputType.text,
+          obscure: false,
+          suffixIcon: const Icon(Iconsax.add_circle),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 255, 255, 255),
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 2,
+              )
+            ],
+          ),
+          child: TextFormField(
+            onTap: () {
+              pickGifFile();
+            },
+            readOnly: true,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: _gifPath ?? "Select topic Animation",
+              hintStyle: const TextStyle(
+                wordSpacing: 2,
+                letterSpacing: 2,
+              ),
+              suffixIcon: _uploading
+                  ? const CircularProgressIndicator()
+                  : IconButton(
+                icon: const Icon(Iconsax.gallery_add),
+                onPressed: pickGifFile,
+              ),
+              alignLabelWithHint: true,
+              iconColor: const Color(0xFF7E59FD),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _tutorialHolder(TextEditingController nameController, TextEditingController linkController) {
+    return Column(
+      children: [
+        CommonTextField(
+          controller: nameController,
+          text: "Enter Tutorials Name",
+          textInputType: TextInputType.text,
+          obscure: false,
+          suffixIcon: const Icon(Iconsax.text),
+        ),
+        const SizedBox(height: 15),
+        CommonTextField(
+          controller: linkController,
+          text: "Paste Tutorials Link",
+          textInputType: TextInputType.text,
+          obscure: false,
+          suffixIcon: const Icon(Iconsax.link),
+        ),
+      ],
+    );
+  }
 }
