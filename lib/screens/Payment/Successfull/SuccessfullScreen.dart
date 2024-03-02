@@ -17,7 +17,7 @@ class _SuccessfullScreenState extends State<SuccessfullScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Image(
-            image: AssetImage("assets/images/done.gif"),
+            image: AssetImage("assets/images/success.gif"),
           ),
           Text(
             "+01808808880",
