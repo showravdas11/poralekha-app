@@ -28,10 +28,12 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
           .doc(user.uid)
           .get();
       final className = userData.get('class') as String;
-      _subjectsStream = FirebaseFirestore.instance
-          .collection("subjects")
-          .where('class', isEqualTo: className)
-          .snapshots();
+      setState(() {
+        _subjectsStream = FirebaseFirestore.instance
+            .collection("subjects")
+            .where('class', isEqualTo: className)
+            .snapshots();
+      });
     }
   }
 

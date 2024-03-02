@@ -307,29 +307,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 255, 248, 200),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 10),
-                      child: Text(
-                        quotes[currentIndex],
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "FontMain",
-                            color: const Color.fromARGB(255, 0, 0, 0)),
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _usersStream = FirebaseFirestore.instance.collection('lecture').snapshots();
   }
 
+  void loadSubjectList() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -36,33 +47,64 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0, // Remove elevation
         actions: [
-          Row(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const Text(
-                    'Mina',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    'Class Five'.tr,
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 10),
-              const Padding(
-                padding: EdgeInsets.only(right: 15),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage(
-                    'assets/images/profile.png',
-                  ),
+          StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser?.uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+
+              if (!snapshot.hasData || snapshot.data!.data() == null) {
+                return Text('User data not found');
+              }
+
+              // Extract user data
+              final userData = snapshot.data!.data() as Map<String, dynamic>;
+              final String userProfileImageUrl =
+                  userData['profileImageUrl'] ?? '';
+              final String userName = userData['name'] ?? '';
+              final String userClass = userData['class'] ?? '';
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: userProfileImageUrl.isNotEmpty
+                          ? NetworkImage(userProfileImageUrl)
+                          : AssetImage(
+                                  'assets/images/default_profile_image.png')
+                              as ImageProvider,
+                    ),
+                    SizedBox(width: 10),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          userName,
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black87), // Adjust text color
+                        ),
+                        Text(
+                          userClass,
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey), // Adjust text color
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ],
       ),

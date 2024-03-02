@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/screens/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
-
 import 'package:poralekha_app/screens/AllSubjects/AllSubjects.dart';
 import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
 import 'package:poralekha_app/screens/AllStudents/AllStudents.dart';
-import 'package:poralekha_app/screens/count.dart';
+import 'package:poralekha_app/screens/ManageAdimin/ManageAdmin.dart';
 
 class MyDrawerList extends StatelessWidget {
   const MyDrawerList({Key? key});
@@ -31,7 +29,7 @@ class MyDrawerList extends StatelessWidget {
             title: const Text("Mange Admin"),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddLectureScreen()));
+                  MaterialPageRoute(builder: (context) => ManageAdminScreen()));
             },
           ),
           ListTile(
