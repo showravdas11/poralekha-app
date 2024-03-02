@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:poralekha_app/screens/SubjectList/subject_list_screen.dart';
+import 'package:poralekha_app/MainScreen/MainScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth for user authentication
 
 class ClassListScreen extends StatefulWidget {
   const ClassListScreen({Key? key}) : super(key: key);
@@ -20,6 +21,29 @@ class _ClassListScreenState extends State<ClassListScreen> {
         .collection("classes")
         .orderBy('serial')
         .snapshots();
+  }
+
+  void updateClassInDatabase(String selectedClass) async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
+
+      // Check if the user is logged in
+      if (user != null) {
+        // Update the user's document in the Firestore database
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({'class': selectedClass});
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+      }
+    } catch (error) {
+      // Handle any errors that occur during the update process
+      print("Error updating class: $error");
+    }
   }
 
   @override
@@ -66,11 +90,8 @@ class _ClassListScreenState extends State<ClassListScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    String selectedClass =
-                        name[index]; // Get the selected class
-                    Get.to(SubjectListScreen(
-                        className:
-                            selectedClass)); // Pass the class name to SubjectListScreen
+                    String selectedClass = name[index];
+                    updateClassInDatabase(selectedClass);
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(

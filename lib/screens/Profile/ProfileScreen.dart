@@ -40,12 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text("Profile".tr),
         backgroundColor: MyTheme.canvousColor,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Iconsax.arrow_left),
-        ),
       ),
       body: StreamBuilder(
         stream: _usersStream,
@@ -70,6 +64,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           var userData =
               snapshot.data!.docs.first.data() as Map<String, dynamic>;
+
+          print("Data paisi${userData}");
 
           return SingleChildScrollView(
             child: Column(
@@ -115,10 +111,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
-                              child: Image.asset(
-                                "assets/images/user.png",
-                                fit: BoxFit.cover,
-                              ),
+                              child: userData['profileImageUrl'] != null
+                                  ? Image.network(
+                                      userData['profileImageUrl'],
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      "assets/images/default_profile_image.jpg", // Provide a default image asset
+                                      fit: BoxFit.cover,
+                                    ),
                             )),
                       ),
                     ),
@@ -135,7 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const UpdateProfileScreen(),
+                          builder: (context) =>
+                              UpdateProfileScreen(userData: userData),
                         ),
                       );
                     },
@@ -209,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Iconsax.logout,
                   onPressed: () {
                     auth.signOut().then((value) {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const LoginScreen()),

@@ -166,6 +166,10 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       _uploading = false;
     });
 
+    chapnameController.clear();
+    _filePath = null;
+    _selectedFile = File('');
+
     AwesomeDialog(
       context: context,
       dialogType: DialogType.success,

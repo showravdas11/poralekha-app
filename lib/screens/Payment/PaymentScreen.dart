@@ -32,10 +32,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
       body: Column(
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              "Choose your payment method",
+              "Choose your payment method".tr,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ),
@@ -47,7 +47,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               itemCount: paymentLabels.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(paymentLabels[index]),
+                  title: Text(paymentLabels[index].tr),
                   leading: Radio<int>(
                     value: index,
                     groupValue: _selectedPaymentIndex,
