@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HeadingSection extends StatelessWidget {
-  const HeadingSection({
+  HeadingSection({
     Key? key,
     this.onPressed,
     this.textColor,
@@ -23,7 +24,7 @@ class HeadingSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          title,
+          title.tr,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -37,12 +38,12 @@ class HeadingSection extends StatelessWidget {
             icon: Icon(
               icon ?? Icons.edit,
               color: Color(0xFF7E59FD),
-              size: 17,
+              size: 15,
             ), // Use edit icon or provided icon
             label: Text(
-              buttonTitle,
+              buttonTitle.tr,
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF7E59FD)),
             ),

@@ -77,7 +77,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (user != null) {
         // Upload image to Firebase Storage
         String imagePath = 'profile_images/${user.uid}_profile.jpg';
-        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child(imagePath);
         String imageUrl = widget.userData['img'];
         if (_selectedImage != null) {
           await storageReference.putFile(_selectedImage!);
@@ -127,12 +128,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Image'),
+          title: const Text('Select Image'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 GestureDetector(
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Iconsax.gallery_add,
@@ -155,9 +156,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     Navigator.of(context).pop(File(pickedFile!.path));
                   },
                 ),
-                Padding(padding: EdgeInsets.all(8.0)),
+                const Padding(padding: EdgeInsets.all(8.0)),
                 GestureDetector(
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.camera,
@@ -315,11 +316,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 children: [
                   Column(
                     children: [
-                      const Align(
-                      alignment: Alignment.topLeft,
+                      Align(
+                        alignment: Alignment.topLeft,
                         child: Text(
-                          "Name",
-                          style: TextStyle(
+                          "Name".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -339,11 +340,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Gender",
-                          style: TextStyle(
+                          "Gender".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -371,11 +372,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               selectGender = newValue;
                             });
                           },
-                          items: [
-                            'Male',
-                            'Female',
-                            'Other'
-                          ].map<DropdownMenuItem<String>>((String value) {
+                          items: ['Male', 'Female', 'Other']
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
@@ -398,11 +396,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Address",
-                          style: TextStyle(
+                          "Address".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -420,11 +418,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             color: Color(0xFF7E59FD)),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Age",
-                          style: TextStyle(
+                          "Age".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),

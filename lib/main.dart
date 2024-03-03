@@ -13,6 +13,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: const AppBarTheme(
             color: Color.fromARGB(255, 240, 248, 255),
           ),
-          scaffoldBackgroundColor: const Color.fromARGB(255, 240, 248, 255),
+          scaffoldBackgroundColor: const Color.fromARGB(255, 240, 246, 255),
           primaryColor: const Color.fromARGB(255, 240, 248, 255)),
       home: const SplashScreen(),
     );

@@ -1,7 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
@@ -33,7 +33,7 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Add Subject",
+        title: "Add Subject".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -44,37 +44,38 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Align(
+              Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Subject",
-                    style: TextStyle(
+                    "Subject".tr,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 17,
                         fontWeight: FontWeight.w500),
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 6,
               ),
               CommonTextField(
                 controller: subjectController,
-                text: "Subject",
+                text: "Enter Subject Name".tr,
                 textInputType: TextInputType.text,
                 obscure: false,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 6,
               ),
-              const Align(
+              Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Class",
-                    style: TextStyle(
+                    "Class".tr,
+                    style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 17,
                         fontWeight: FontWeight.w500),
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 6,
               ),
               StreamBuilder<QuerySnapshot>(
@@ -120,28 +121,28 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
                           });
                         },
                         items: classItems,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Select Your Class",
-                          hintStyle: TextStyle(
+                          hintText: "Select Class".tr,
+                          hintStyle: const TextStyle(
                             wordSpacing: 2,
                             letterSpacing: 2,
                           ),
                           alignLabelWithHint: true,
-                          iconColor: Color(0xFF7E59FD),
+                          iconColor: const Color(0xFF7E59FD),
                         ),
                       ),
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               RoundedButton(
-                  title: "Add Subject",
+                  title: "Add".tr,
                   onTap: () {
                     if (subjectController.text.trim().isEmpty ||
                         selectClass == null) {
@@ -169,7 +170,8 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AllSubjectsScreen()));
+                                  builder: (context) =>
+                                      const AllSubjectsScreen()));
                         },
                       ).show();
                     }
