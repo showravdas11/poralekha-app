@@ -86,11 +86,17 @@ class ApproveUserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        title: Text('Name: $name'),
+        title: Text(
+          'Name: $name',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,20 +106,19 @@ class ApproveUserTile extends StatelessWidget {
         ),
         trailing: ElevatedButton(
           onPressed: isApproved ? null : onPressed,
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
-                if (states.contains(MaterialState.disabled)) {
-                  return Colors.grey; // Color when button is disabled
-                }
-                return MyTheme.buttonColor; // Color when button is enabled
-              },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isApproved ? Colors.grey : MyTheme.buttonColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text('Approve',
-              style: TextStyle(
-                color: Colors.white,
-              )),
+          child: Text(
+            'Approve',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         contentPadding: EdgeInsets.all(16.0),
       ),

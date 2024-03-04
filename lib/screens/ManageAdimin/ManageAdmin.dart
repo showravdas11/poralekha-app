@@ -120,7 +120,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
             decoration: BoxDecoration(
               gradient: widget.isAdmin
                   ? LinearGradient(
-                      colors: [Colors.red.withOpacity(0.8), Colors.red],
+                      colors: [Colors.green.withOpacity(0.8), Colors.green],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     )

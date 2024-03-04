@@ -33,7 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final String formattedDate = dateFormatter.format(now);
     final String formattedTime = timeFormatter.format(now);
     print("Now formatted time $formattedDate $formattedTime");
-    _lectureStream = FirebaseFirestore.instance.collection('lecture').snapshots();
+    _lectureStream =
+        FirebaseFirestore.instance.collection('lecture').snapshots();
   }
 
   bool isRunningLecture(String date, String startTime, String endTime) {
@@ -44,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
       DateTime parsedDate = dateFormatter.parse(date);
       DateTime today = DateTime.now();
 
-      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
+      if (parsedDate
+          .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
         // final DateTime startDateTime = timeFormatter.parse(startTime);
         // final DateTime endDateTime = timeFormatter.parse(endTime);
         // DateTime now = DateTime.now();
@@ -77,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return SizedBox();
               }
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
@@ -86,8 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Extract user data
               final userData = snapshot.data!.data() as Map<String, dynamic>;
-              final String userProfileImageUrl =
-                  userData['profileImageUrl'] ?? '';
+              final String userProfileImageUrl = userData['img'] ?? '';
               final String userName = userData['name'] ?? '';
               final String userClass = userData['class'] ?? '';
 
@@ -171,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             : MyTheme.buttonColor.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.circular(screenWidth * 0.02),
+                              BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
@@ -197,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             : MyTheme.buttonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.circular(screenWidth * 0.02),
+                              BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
@@ -237,10 +238,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final lectureData = snapshot.data!.docs[index].data()
-
-                      as Map<String, dynamic>;
-                      bool isRunning = isRunningLecture(lectureData['date'], lectureData['startTime'], lectureData['endTime']);
-                      if ((isRunning && _state == 'running') || (!isRunning && _state == 'upcoming')) {
+                          as Map<String, dynamic>;
+                      bool isRunning = isRunningLecture(lectureData['date'],
+                          lectureData['startTime'], lectureData['endTime']);
+                      if ((isRunning && _state == 'running') ||
+                          (!isRunning && _state == 'upcoming')) {
                         return Padding(
                           padding: EdgeInsets.only(top: screenHeight * 0.01),
                           child: LectureCard(
