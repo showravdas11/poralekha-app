@@ -24,8 +24,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
           .collection('users')
           .doc(user.uid)
           .get();
-      final isAmin = userData.get('isAdmin') as bool;
-      if (isAmin) {
+      final isAdmin = userData.get('isAdmin') as bool;
+      if (isAdmin) {
         setState(() {
           _chatroomsStream =
               FirebaseFirestore.instance.collection("chats").snapshots();
@@ -42,13 +42,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
   }
 
-  final List<String> avatarImages = [
-    'assets/images/six.png',
-    'assets/images/seven.png',
-    'assets/images/eight.png',
-    'assets/images/nine.png',
-    'assets/images/ten.png',
-  ];
+  // final List<String> avatarImages = [
+  //   'assets/images/six.png',
+  //   'assets/images/seven.png',
+  //   'assets/images/eight.png',
+  //   'assets/images/nine.png',
+  //   'assets/images/ten.png',
+  // ];
 
   @override
   Widget build(BuildContext context) {

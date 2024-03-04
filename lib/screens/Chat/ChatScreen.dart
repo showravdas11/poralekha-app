@@ -26,6 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    _fetchUserData(); // Fetch user data including isAdmin
     _getMessages();
   }
 
@@ -34,6 +35,19 @@ class _ChatScreenState extends State<ChatScreen> {
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       _getMessages();
+    }
+  }
+
+  void _fetchUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDataDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        userData = userDataDoc;
+      });
     }
   }
 
@@ -95,6 +109,7 @@ class _ChatScreenState extends State<ChatScreen> {
         'createdAt': Timestamp.now(),
         'userId': user.uid,
         'name': userData['name'],
+        'isAdmin': userData['isAdmin']
       });
 
       DocumentSnapshot sentMessageSnapshot = await messageRef.get();
@@ -137,15 +152,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: ListView.builder(
                   controller: _scrollController,
                   reverse: true,
-                  itemCount: _messages.length + 1,
+                  itemCount: _messages.length,
                   itemBuilder: (ctx, index) {
+                    DocumentSnapshot<Object?> message = _messages[index];
                     if (index < _messages.length) {
                       return MessageBubble(
-                        _messages[index]['text'],
-                        _messages[index]['name'],
-                        _messages[index]['userId'] ==
+                        message['text'],
+                        message['name'],
+                        message['userId'] ==
                             FirebaseAuth.instance.currentUser!.uid,
-                        _messages[index]['createdAt'],
+                        message['createdAt'],
+                        isAdmin: message['isAdmin'],
                         isSending: _isSending && index == 0,
                         key: ValueKey(_messages[index].id),
                       );
@@ -236,6 +253,7 @@ class MessageBubble extends StatefulWidget {
   final bool belongsToCurrentUser;
   final Timestamp timestamp;
   final bool isSending;
+  final bool isAdmin;
 
   MessageBubble(
     this.message,
@@ -243,6 +261,7 @@ class MessageBubble extends StatefulWidget {
     this.belongsToCurrentUser,
     this.timestamp, {
     required this.isSending,
+    required this.isAdmin,
     Key? key,
   }) : super(key: key);
 
@@ -276,19 +295,32 @@ class _MessageBubbleState extends State<MessageBubble> {
                 : Colors.white,
             elevation: 1,
             child: Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
+              ), // Limit width to 70% of screen width
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (!widget.belongsToCurrentUser)
-                    Text(
-                      widget.username,
-                      style: const TextStyle(
-                        color: Color(0xFF128C7E),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.username,
+                        style: const TextStyle(
+                          color: Color(0xFF128C7E),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
+                      if (widget.isAdmin)
+                        Icon(
+                          Icons.done,
+                          color: Colors.blue,
+                          size: 18,
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 5),
                   Text(
                     widget.message,
