@@ -123,7 +123,7 @@ class SubjectsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Subject: ${subjecData['name'].toString()}",
+                  "${"Subject".tr}: ${subjecData['name'].toString()}",
                   style: TextStyle(
                     fontSize: screenWidth * 0.04,
                     fontFamily: "FontMain",
@@ -133,7 +133,7 @@ class SubjectsCard extends StatelessWidget {
                   height: screenHeight * 0.01,
                 ),
                 Text(
-                  "Class: ${subjecData['class'].toString()}",
+                  "${"Class".tr}: ${subjecData['class'].toString()}",
                   style: TextStyle(fontSize: screenWidth * 0.04),
                 ),
               ],
@@ -156,7 +156,7 @@ class SubjectsCard extends StatelessWidget {
                 ));
               },
               child: Text(
-                "Show Details",
+                "Show Details".tr,
                 style: TextStyle(fontSize: screenWidth * 0.04),
               ),
             )

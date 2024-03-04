@@ -226,17 +226,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Subject: ${widget.subjectData['name']}",
+                      "${"Subject".tr}: ${widget.subjectData['name']}",
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.bold,
                         // color: Colors
                         //     .white, // Adjust text color to make it visible on the background image
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      "Class: ${widget.subjectData['class']}",
+                      "${"Class".tr}: ${widget.subjectData['class']}",
                       style: TextStyle(fontSize: screenWidth * 0.04),
                     ),
                   ],

@@ -7,7 +7,11 @@ class ChatListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Rooms'),
+        centerTitle: true,
+        title: Text(
+          'Chat Rooms',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('chats').snapshots(),
@@ -36,8 +40,8 @@ class ChatListScreen extends StatelessWidget {
                           'assets/images/six.png'), // Replace with actual avatar URL
                     ),
                     title: Text(chatDocs[index]['name']),
-                    subtitle: Text('Last message'),
-                    trailing: Text(
+                    subtitle: const Text('Last message'),
+                    trailing: const Text(
                         '11:30 PM'), // Replace with actual last message time
                   ),
                   Divider(

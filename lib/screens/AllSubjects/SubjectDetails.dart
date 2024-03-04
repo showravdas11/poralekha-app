@@ -62,7 +62,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: "Subject Details",
+            title: "Subject Details".tr,
             leadingOnPressed: () {
               Navigator.pop(context);
             },
@@ -97,15 +97,17 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Subject Name: ${_subjectData['name'] ?? ''}",
+                            "${"Subject".tr}: ${_subjectData['name'] ?? ''}".tr,
                             style: TextStyle(
                               fontSize: screenWidth * 0.05,
                               fontWeight: FontWeight.bold,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: screenHeight * 0.01),
                           Text(
-                            "Class: ${_subjectData['class'] ?? ''}",
+                            "${"Class".tr}: ${_subjectData['class'] ?? ''}",
                             style: TextStyle(fontSize: screenWidth * 0.04),
                           ),
                         ],
@@ -114,7 +116,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   Text(
-                    "Chapter List",
+                    "Chapter List".tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(height: screenHeight * 0.02),
@@ -177,7 +179,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                       ));
                                     },
                                     child: Text(
-                                      "Show Details",
+                                      "Show Details".tr,
                                       style: TextStyle(
                                           fontSize: screenWidth * 0.04),
                                     ),
