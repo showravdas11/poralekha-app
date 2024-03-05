@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth for user authentication
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart'; // Import FirebaseAuth for user authentication
 
 class ClassListScreen extends StatefulWidget {
   const ClassListScreen({Key? key}) : super(key: key);
@@ -35,10 +36,21 @@ class _ClassListScreenState extends State<ClassListScreen> {
             .collection('users')
             .doc(user.uid)
             .update({'class': selectedClass});
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
+        final userData = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (userData['isApproved'] == true) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WaitingScreen()),
+          );
+        }
       }
     } catch (error) {
       // Handle any errors that occur during the update process

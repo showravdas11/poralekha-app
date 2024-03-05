@@ -52,10 +52,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _getMessages() async {
+    print("hello");
     if (_isLoadingMore) return;
     setState(() {
       _isLoadingMore = true;
     });
+
     final user = FirebaseAuth.instance.currentUser;
     final collectionRef = FirebaseFirestore.instance
         .collection('chats')
@@ -63,6 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
         .collection('messages');
 
     QuerySnapshot querySnapshot;
+
     if (_messages.isEmpty) {
       querySnapshot = await collectionRef
           .orderBy('createdAt', descending: true)
@@ -149,30 +152,51 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  itemCount: _messages.length,
-                  itemBuilder: (ctx, index) {
-                    DocumentSnapshot<Object?> message = _messages[index];
-                    if (index < _messages.length) {
-                      return MessageBubble(
-                        message['text'],
-                        message['name'],
-                        message['userId'] ==
-                            FirebaseAuth.instance.currentUser!.uid,
-                        message['createdAt'],
-                        isAdmin: message['isAdmin'],
-                        isSending: _isSending && index == 0,
-                        key: ValueKey(_messages[index].id),
-                      );
-                    } else {
-                      return _isLoadingMore
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : SizedBox();
-                    }
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chats')
+                      .doc(widget.chatRoomName)
+                      .collection('messages')
+                      .orderBy('createdAt', descending: true)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    // if (snapshot.connectionState == ConnectionState.waiting) {
+                    //   return Center(
+                    //     child: CircularProgressIndicator(),
+                    //   );
+                    // }
+
+                    final messages = snapshot.data?.docs ?? [];
+                    print(
+                        'Message count: ${messages.length + (_isLoadingMore ? 1 : 0)}');
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      reverse: true,
+                      itemCount: messages.length + (_isLoadingMore ? 1 : 0),
+                      itemBuilder: (BuildContext ctx, int index) {
+                        if (index < messages.length) {
+                          final message = messages[index];
+                          return MessageBubble(
+                            message['text'],
+                            message['name'],
+                            message['userId'] ==
+                                FirebaseAuth.instance.currentUser!.uid,
+                            message['createdAt'],
+                            isAdmin: message['isAdmin'],
+                            isSending: _isSending && index == 0,
+                            key: ValueKey(message.id),
+                          );
+                        } else {
+                          return _isLoadingMore
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : SizedBox();
+                        }
+                      },
+                    );
                   },
                 ),
               ),
