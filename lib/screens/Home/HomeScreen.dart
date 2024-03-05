@@ -81,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return SizedBox();
+
               }
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
@@ -90,8 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Extract user data
               final userData = snapshot.data!.data() as Map<String, dynamic>;
-              final String userProfileImageUrl =
-                  userData['profileImageUrl'] ?? '';
+              final String userProfileImageUrl = userData['img'] ?? '';
               final String userName = userData['name'] ?? '';
               final String userClass = userData['class'] ?? '';
 
