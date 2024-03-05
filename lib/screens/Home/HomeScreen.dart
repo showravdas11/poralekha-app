@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
 import 'package:intl/intl.dart';
+import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
@@ -80,10 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SizedBox();
+
               }
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
-                return Text('User data not found');
+                return const Text('User data not found');
               }
 
               // Extract user data
@@ -93,34 +96,40 @@ class _HomeScreenState extends State<HomeScreen> {
               final String userClass = userData['class'] ?? '';
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: userProfileImageUrl.isNotEmpty
-                          ? NetworkImage(userProfileImageUrl)
-                          : AssetImage(
-                                  'assets/images/default_profile_image.png')
-                              as ImageProvider,
-                    ),
-                    SizedBox(width: 10),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          userName,
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87), // Adjust text color
-                        ),
                         Text(
                           userClass,
                           style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey), // Adjust text color
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade700), // Adjust text color
+                        ),
+                        Text(
+                          userName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.black87), // Adjust text color
                         ),
                       ],
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(UpdateProfileScreen(userData: userData));
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: userProfileImageUrl.isNotEmpty
+                            ? NetworkImage(userProfileImageUrl)
+                            : const AssetImage('assets/images/user.png')
+                                as ImageProvider,
+                      ),
                     ),
                   ],
                 ),
@@ -260,13 +269,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      drawer: const Drawer(
-        backgroundColor: Color.fromARGB(255, 240, 248, 255),
-        child: Column(
-          children: [
-            MyDrawerHeader(),
-            MyDrawerList(),
-          ],
+      drawer: SizedBox(
+        width: Get.width * 0.60,
+        height: Get.height * 0.60,
+        child: const Drawer(
+          backgroundColor: Color.fromARGB(255, 240, 248, 255),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MyDrawerHeader(),
+              MyDrawerList(),
+            ],
+          ),
         ),
       ),
     );

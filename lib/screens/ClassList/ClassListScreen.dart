@@ -29,7 +29,6 @@ class _ClassListScreenState extends State<ClassListScreen> {
       // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
 
-      // Check if the user is logged in
       if (user != null) {
         // Update the user's document in the Firestore database
         await FirebaseFirestore.instance

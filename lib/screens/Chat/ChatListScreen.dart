@@ -54,7 +54,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Rooms'),
+        centerTitle: true,
+        title: Text(
+          'Chat Rooms',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 2),
@@ -98,6 +102,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       thickness: 0.5,
                       color: Colors.grey[300],
                     ),
+
                   ],
                 ),
               ),
