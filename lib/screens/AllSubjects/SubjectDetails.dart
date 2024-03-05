@@ -117,14 +117,15 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                   SizedBox(height: screenHeight * 0.02),
                   Text(
                     "Chapter List".tr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(height: screenHeight * 0.02),
                   StreamBuilder<QuerySnapshot>(
                     stream: _chapterStream,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
+                        return const Center(child: CircularProgressIndicator());
                       }
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');

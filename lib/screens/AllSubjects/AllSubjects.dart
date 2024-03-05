@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
@@ -119,24 +120,28 @@ class SubjectsCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "${"Subject".tr}: ${subjecData['name'].toString()}",
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.04,
-                    fontFamily: "FontMain",
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${"Subject".tr}: ${subjecData['name'].toString()}",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.04,
+                      fontFamily: "FontMain",
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                SizedBox(
-                  height: screenHeight * 0.01,
-                ),
-                Text(
-                  "${"Class".tr}: ${subjecData['class'].toString()}",
-                  style: TextStyle(fontSize: screenWidth * 0.04),
-                ),
-              ],
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Text(
+                    "${"Class".tr}: ${subjecData['class'].toString()}",
+                    style: TextStyle(fontSize: screenWidth * 0.04),
+                  ),
+                ],
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -144,7 +149,7 @@ class SubjectsCard extends StatelessWidget {
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(
                   vertical: screenHeight * 0.01,
-                  horizontal: screenWidth * 0.02,
+                  horizontal: screenWidth * 0.01,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(screenWidth * 0.02),
