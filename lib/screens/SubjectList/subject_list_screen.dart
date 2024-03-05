@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
@@ -102,11 +103,15 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          subjects[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
+                        Expanded(
+                          child: Text(
+                            subjects[index],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         const Icon(
