@@ -342,12 +342,25 @@ class _MessageBubbleState extends State<MessageBubble> {
                           fontSize: 14,
                         ),
                       ),
+                      SizedBox(
+                        width: 5,
+                      ),
                       if (widget.isAdmin)
-                        Icon(
-                          Icons.done,
-                          color: Colors.blue,
-                          size: 18,
-                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xFF146C43),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 3.0, vertical: 1.0),
+                            child: Text(
+                              "Admin",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        )
                     ],
                   ),
                   const SizedBox(height: 5),
