@@ -82,7 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SizedBox();
-
               }
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {

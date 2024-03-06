@@ -53,12 +53,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } catch (e) {
       print('Adding user data error: $e');
     }
-    Navigator.pop(dialogContext!);
     try {
       await userCredential?.user?.sendEmailVerification();
     } catch (e) {
       print('Email verification send error: $e');
     }
+
+    Navigator.pop(dialogContext!);
 
     AwesomeDialog(
       context: context,

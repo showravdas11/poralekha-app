@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -31,22 +32,31 @@ class ApproveUserList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
         List<QueryDocumentSnapshot> users = snapshot.data!.docs;
 
+        String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
+
         return ListView.builder(
           itemCount: users.length,
           itemBuilder: (context, index) {
             var user = users[index].data() as Map<String, dynamic>;
 
+            if (user['isAdmin'] == true) {
+              return const SizedBox.shrink();
+            }
+            if (user['email'] == currentUserEmail) {
+              return const SizedBox.shrink();
+            }
+
             return ApproveUserTile(
               name: user['name'] ?? 'Name',
               email: user['email'] ?? 'Email',
-              role: user['role'] ?? 'Role',
+              Class: user['class'] ?? 'Class',
               isApproved: user['isApproved'] ?? false,
               userId: users[index].id,
             );
@@ -60,14 +70,14 @@ class ApproveUserList extends StatelessWidget {
 class ApproveUserTile extends StatelessWidget {
   final String name;
   final String email;
-  final String role;
+  final String Class;
   final bool isApproved;
   final String userId;
 
   ApproveUserTile({
     required this.name,
     required this.email,
-    required this.role,
+    required this.Class,
     required this.isApproved,
     required this.userId,
   });
@@ -83,13 +93,13 @@ class ApproveUserTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           'Name: $name',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Email: $email'),
-            Text('Role: $role'),
+            Text('Class: $Class'),
           ],
         ),
         trailing: isApproved
@@ -101,7 +111,7 @@ class ApproveUserTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Revert',
                   style: TextStyle(
                     color: Colors.white,
@@ -117,7 +127,7 @@ class ApproveUserTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Approve',
                   style: TextStyle(
                     color: Colors.white,
@@ -125,7 +135,7 @@ class ApproveUserTile extends StatelessWidget {
                   ),
                 ),
               ),
-        contentPadding: EdgeInsets.all(16.0),
+        contentPadding: const EdgeInsets.all(16.0),
       ),
     );
   }
@@ -145,17 +155,17 @@ class ApproveUserTile extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.all(20.0),
-                  margin: EdgeInsets.only(top: 20.0),
+                  padding: const EdgeInsets.all(20.0),
+                  margin: const EdgeInsets.only(top: 20.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(20.0),
                     boxShadow: [
-                      BoxShadow(
+                      const BoxShadow(
                         color: Colors.black26,
                         blurRadius: 10.0,
-                        offset: const Offset(0.0, 10.0),
+                        offset: Offset(0.0, 10.0),
                       ),
                     ],
                   ),
@@ -164,24 +174,24 @@ class ApproveUserTile extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         isApproveAction ? 'Confirm Approval' : 'Confirm Revert',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.green,
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Text(
                         isApproveAction
                             ? 'Do you want to approve this student?'
                             : 'Do you want to revert the approval of this student?',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18.0,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 24.0),
+                      const SizedBox(height: 24.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
@@ -195,7 +205,7 @@ class ApproveUserTile extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'No',
                               style: TextStyle(
                                 fontSize: 18.0,
@@ -214,7 +224,7 @@ class ApproveUserTile extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: Text(
+                            child: const Text(
                               'Yes',
                               style: TextStyle(
                                 fontSize: 18.0,
