@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
-import 'package:intl/intl.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
@@ -49,16 +49,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (parsedDate
           .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
-        // final DateTime startDateTime = timeFormatter.parse(startTime);
-        // final DateTime endDateTime = timeFormatter.parse(endTime);
-        // DateTime now = DateTime.now();
-        // return now.isAfter(startDateTime) && now.isBefore(endDateTime);
         return true;
       } else {
         return false;
       }
     } catch (e) {
-      print("object");
       print('Error occurred: $e');
       return false;
     }
@@ -71,8 +66,71 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0, // Remove elevation
+        backgroundColor: const Color.fromARGB(255, 240, 248, 255),
+        elevation: 0,
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox();
+                }
+
+                if (!snapshot.hasData || snapshot.data!.data() == null) {
+                  return const Text('User data not found');
+                }
+
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                final bool isAdmin = userData['isAdmin'] ?? false;
+
+                return Visibility(
+                  visible: !isAdmin,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 15),
+                    child: Image.asset(
+                      "assets/images/poralekha-app-icon-2.png",
+                      height: Get.height * 0.04,
+                    ),
+                  ),
+                );
+              },
+            ),
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const SizedBox();
+                }
+
+                if (!snapshot.hasData || snapshot.data!.data() == null) {
+                  return const Text('User data not found');
+                }
+
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                final bool isAdmin = userData['isAdmin'] ?? false;
+
+                if (isAdmin) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                } else {
+                  return const SizedBox(); // If not admin, return empty widget
+                }
+              },
+            ),
+          ],
+        ),
         actions: [
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
@@ -81,14 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox();
+                return const SizedBox();
               }
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
                 return const Text('User data not found');
               }
 
-              // Extract user data
               final userData = snapshot.data!.data() as Map<String, dynamic>;
               final String userProfileImageUrl = userData['img'] ?? '';
               final String userName = userData['name'] ?? '';
@@ -97,7 +154,9 @@ class _HomeScreenState extends State<HomeScreen> {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    if (userData['isAdmin'] == true) const SizedBox(),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -105,16 +164,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text(
                           userClass,
                           style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey.shade700), // Adjust text color
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                         Text(
                           userName,
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black87), // Adjust text color
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
                       ],
                     ),
@@ -157,8 +218,9 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: screenHeight * 0.02),
               Container(
                 padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.015,
-                    horizontal: screenWidth * 0.03),
+                  vertical: screenHeight * 0.015,
+                  horizontal: screenWidth * 0.03,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(screenWidth * 0.04),
@@ -259,6 +321,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             screen: "home",
                           ),
                         );
+                      } else {
+                        return const SizedBox(); // Return empty widget if condition not met
                       }
                     },
                   );
@@ -268,19 +332,43 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      drawer: SizedBox(
-        width: Get.width * 0.60,
-        height: Get.height * 0.60,
-        child: const Drawer(
-          backgroundColor: Color.fromARGB(255, 240, 248, 255),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyDrawerHeader(),
-              MyDrawerList(),
-            ],
-          ),
-        ),
+      drawer: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox(); // Return empty widget while loading user data
+          }
+
+          if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return const Text('User data not found');
+          }
+
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final bool isAdmin =
+              userData['isAdmin'] ?? true; // Assuming 'isAdmin' field exists
+
+          if (isAdmin) {
+            return SizedBox(
+              width: Get.width * 0.60,
+              height: Get.height * 0.60,
+              child: const Drawer(
+                backgroundColor: Color.fromARGB(255, 240, 248, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyDrawerHeader(),
+                    MyDrawerList(),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return const SizedBox(); // If not admin, don't show the drawer
+          }
+        },
       ),
     );
   }
