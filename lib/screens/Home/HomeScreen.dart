@@ -66,40 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 240, 248, 255),
-        elevation: 0,
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        automaticallyImplyLeading: false,
+        title: Row(
           children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(FirebaseAuth.instance.currentUser?.uid)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox();
-                }
-
-                if (!snapshot.hasData || snapshot.data!.data() == null) {
-                  return const Text('User data not found');
-                }
-
-                final userData = snapshot.data!.data() as Map<String, dynamic>;
-                final bool isAdmin = userData['isAdmin'] ?? false;
-
-                return Visibility(
-                  visible: !isAdmin,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 15),
-                    child: Image.asset(
-                      "assets/images/poralekha-app-icon-2.png",
-                      height: Get.height * 0.04,
-                    ),
-                  ),
-                );
-              },
-            ),
             StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -125,12 +94,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   );
                 } else {
-                  return const SizedBox(); // If not admin, return empty widget
+                  return Visibility(
+                    visible: !isAdmin,
+                    child: Image.asset(
+                      "assets/images/poralekha-splash-screen-logo.png",
+                      height: Get.height * 0.03,
+                    ),
+                  );
                 }
               },
             ),
           ],
         ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
@@ -197,6 +174,43 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ],
+      ),
+      drawer: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
+          }
+
+          if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return const Text('User data not found');
+          }
+
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final bool isAdmin = userData['isAdmin'] ?? true;
+
+          if (isAdmin) {
+            return SizedBox(
+              width: Get.width * 0.60,
+              height: Get.height * 0.60,
+              child: const Drawer(
+                backgroundColor: Color.fromARGB(255, 240, 248, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyDrawerHeader(),
+                    MyDrawerList(),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -322,7 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       } else {
-                        return const SizedBox(); // Return empty widget if condition not met
+                        return const SizedBox();
                       }
                     },
                   );
@@ -331,44 +345,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
-      drawer: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox(); // Return empty widget while loading user data
-          }
-
-          if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return const Text('User data not found');
-          }
-
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
-          final bool isAdmin =
-              userData['isAdmin'] ?? true; // Assuming 'isAdmin' field exists
-
-          if (isAdmin) {
-            return SizedBox(
-              width: Get.width * 0.60,
-              height: Get.height * 0.60,
-              child: const Drawer(
-                backgroundColor: Color.fromARGB(255, 240, 248, 255),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyDrawerHeader(),
-                    MyDrawerList(),
-                  ],
-                ),
-              ),
-            );
-          } else {
-            return const SizedBox(); // If not admin, don't show the drawer
-          }
-        },
       ),
     );
   }
