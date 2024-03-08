@@ -178,8 +178,8 @@ class Onboard {
 
 final List<Onboard> demo_data = [
   Onboard(
-    image: "assets/images/onb2.png",
-    title: "Learn Form Home",
+    image: "assets/images/onb4.png",
+    title: "Education For All",
     description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
   ),

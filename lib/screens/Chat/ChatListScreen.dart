@@ -102,7 +102,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       thickness: 0.5,
                       color: Colors.grey[300],
                     ),
-
                   ],
                 ),
               ),
