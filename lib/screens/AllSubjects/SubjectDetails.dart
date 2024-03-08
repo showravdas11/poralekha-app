@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/screens/AddSubjects/AddSubjects.dart';
+import 'package:poralekha_app/screens/AllSubjects/EditSubject.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/ChapterTopicScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
@@ -79,7 +80,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                     ),
                     child: Container(
                       padding: EdgeInsets.all(screenWidth * 0.05),
-                      height: screenHeight * 0.15,
+                      height: screenHeight * 0.21,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
@@ -110,6 +111,15 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                             "${"Class".tr}: ${_subjectData['class'] ?? ''}",
                             style: TextStyle(fontSize: screenWidth * 0.04),
                           ),
+                          TextButton(
+                            onPressed: () {
+                              Get.to(EditSubject(
+                                subjectData: _subjectData,
+                                documentId: _docId,
+                              ));
+                            },
+                            child: const Text("Update Subject"),
+                          )
                         ],
                       ),
                     ),
@@ -199,7 +209,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddChapterScreen(

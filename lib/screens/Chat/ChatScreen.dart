@@ -136,7 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFEAE2),
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -147,8 +146,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image:
-                NetworkImage("https://cdn.wallpapersafari.com/4/11/WofyVJ.png"),
+            image: AssetImage("assets/images/chatbg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
