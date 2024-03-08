@@ -75,9 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   .doc(FirebaseAuth.instance.currentUser?.uid)
                   .snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox();
-                }
+                if (snapshot.connectionState == ConnectionState.waiting) {}
 
                 if (!snapshot.hasData || snapshot.data!.data() == null) {
                   return const Text('User data not found');
@@ -115,9 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .doc(FirebaseAuth.instance.currentUser?.uid)
                 .snapshots(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox();
-              }
+              if (snapshot.connectionState == ConnectionState.waiting) {}
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
                 return const Text('User data not found');
