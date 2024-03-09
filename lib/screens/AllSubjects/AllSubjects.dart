@@ -63,11 +63,11 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      var subjecData = snapshot.data!.docs[index].data()
+                      var subjectData = snapshot.data!.docs[index].data()
                           as Map<String, dynamic>;
                       final documentId = snapshot.data!.docs[index].id;
                       return SubjectsCard(
-                          subjecData: subjecData, documentId: documentId);
+                          subjectData: subjectData, documentId: documentId);
                     },
                   );
                 },
@@ -98,11 +98,11 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
 class SubjectsCard extends StatelessWidget {
   const SubjectsCard({
     Key? key,
-    required this.subjecData,
+    required this.subjectData,
     required this.documentId,
   }) : super(key: key);
 
-  final Map<String, dynamic> subjecData;
+  final Map<String, dynamic> subjectData;
   final String documentId;
 
   @override
@@ -125,7 +125,7 @@ class SubjectsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${"Subject".tr}: ${subjecData['name'].toString()}",
+                    "${"Subject".tr}: ${subjectData['name'].toString()}",
                     style: TextStyle(
                       fontSize: screenWidth * 0.04,
                       fontFamily: "FontMain",
@@ -137,7 +137,7 @@ class SubjectsCard extends StatelessWidget {
                     height: screenHeight * 0.01,
                   ),
                   Text(
-                    "${"Class".tr}: ${subjecData['class'].toString()}",
+                    "${"Class".tr}: ${subjectData['class'].toString()}",
                     style: TextStyle(fontSize: screenWidth * 0.04),
                   ),
                 ],
@@ -157,8 +157,9 @@ class SubjectsCard extends StatelessWidget {
               ),
               onPressed: () {
                 Get.to(SubjectDetails(
-                  subjectId: documentId,
-                ));
+                    documentId: documentId,
+                    subjectName: subjectData['name'],
+                    className: subjectData['class']));
               },
               child: Text(
                 "Show Details".tr,

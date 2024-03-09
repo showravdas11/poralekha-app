@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -5,12 +6,18 @@ import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/screens/Payment/Successfull/SuccessfullScreen.dart';
+import 'package:poralekha_app/theme/myTheme.dart';
 
 class EditSubject extends StatefulWidget {
-  final Map<String, dynamic> subjectData;
+  final String documentId;
+  final String subjectName;
+  final String className;
 
   const EditSubject(
-      {Key? key, required this.subjectData, required String documentId})
+      {Key? key,
+      required this.documentId,
+      required this.subjectName,
+      required this.className})
       : super(key: key);
 
   @override
@@ -20,16 +27,14 @@ class EditSubject extends StatefulWidget {
 class _EditSubjectState extends State<EditSubject> {
   TextEditingController nameController = TextEditingController();
   String? selectClass;
-  late String documentId; // Declare documentId
+  late String documentId;
 
   @override
   void initState() {
     super.initState();
-    nameController.text =
-        widget.subjectData['name'] ?? ''; // Initialize with subject name
-    selectClass =
-        widget.subjectData['class'] ?? ''; // Initialize with subject class
-    documentId = widget.subjectData['id'] ?? ''; // Initialize documentId
+    nameController.text = widget.subjectName;
+    selectClass = widget.className;
+    documentId = widget.documentId;
   }
 
   Future<void> updateSubject() async {
@@ -42,22 +47,35 @@ class _EditSubjectState extends State<EditSubject> {
         'class': selectClass,
       });
 
-      Get.snackbar(
-        'Success',
-        'Subject details updated successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Success',
+      //   'Subject details updated successfully',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Colors.green,
+      //   colorText: Colors.white,
+      // );
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        animType: AnimType.rightSlide,
+        title: 'Subject updated successfully',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {
+          Navigator.pop(context);
+        },
+      ).show();
     } catch (error) {
       // Show error message if update fails
-      Get.snackbar(
-        'Error',
-        'Failed to update subject details. Please try again later.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: 'Failed to update subject details. Please try again later.',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {
+          Navigator.pop(context);
+        },
+      ).show();
     }
   }
 
