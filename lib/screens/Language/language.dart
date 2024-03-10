@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Languages extends Translations {
   @override
@@ -165,4 +166,10 @@ class Languages extends Translations {
           'Add Lectures': 'বক্তৃতা যোগ করুন',
         },
       };
+
+  static Future<Map<String, String>> getTranslations() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String selectedLanguage = preferences.getString('language') ?? 'en_US';
+    return (Languages()).keys[selectedLanguage] ?? {};
+  }
 }

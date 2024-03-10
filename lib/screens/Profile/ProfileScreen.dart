@@ -217,8 +217,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 UtilitiesSection(
                   title: "Language".tr,
-                  subTitle:
-                      Get.locale?.languageCode == 'en' ? 'English' : 'বাংলা',
+                  subTitle: Get.locale?.languageCode == 'en_US'
+                      ? 'English'.tr
+                      : 'বাংলা'.tr,
                   icon: Iconsax.language_square5,
                   onPressed: () {
                     Get.bottomSheet(
