@@ -14,6 +14,15 @@ class SubjectListScreen extends StatefulWidget {
 
 class _SubjectListScreenState extends State<SubjectListScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? _subjectsStream;
+  List<Color> _tileColors = [
+    Color(0xFFFE7B33),
+    Color(0xFF616FEA),
+    Color(0xFF9736E5),
+    Color(0xFF3BBDF9),
+    Color(0xFF3DC88A),
+    Color(0xFFE84D51),
+    // Add more colors as needed
+  ];
 
   @override
   void initState() {
@@ -44,7 +53,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Class Subjects".tr,
+          "Your Subjects".tr,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
@@ -69,56 +78,42 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     .map((doc) => doc['name'] as String)
                     .toList() ??
                 [];
-            if (subjects.isEmpty) {
-              return const Center(
-                child: Text("Sorry. There is no subject for you"),
-              );
-            }
 
-            return ListView.builder(
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 1.5,
+              ),
               itemCount: subjects.length,
               itemBuilder: (BuildContext context, int index) {
+                // Get the color for the current tile
+                Color tileColor = _tileColors[index % _tileColors.length];
                 return GestureDetector(
                   onTap: () {
                     // Handle the onTap event
                     String selectedSubjectId = snapshot.data!.docs[index].id;
                     Get.to(ChapterListScreen(subjectId: selectedSubjectId));
                   },
-                  child: Container(
-                    height: 60,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(15),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 126, 89, 253),
+                  child: Card(
+                    color: tileColor,
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
-                      boxShadow: const [
-                        // BoxShadow(
-                        //   color: Colors.grey.withOpacity(0.5),
-                        //   spreadRadius: 1,
-                        //   blurRadius: 1,
-                        // ),
-                      ],
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            subjects[index],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Center(
+                        child: Text(
+                          subjects[index],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 );
