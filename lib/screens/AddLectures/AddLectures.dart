@@ -514,9 +514,11 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                           context: context,
                           dialogType: DialogType.success,
                           animType: AnimType.rightSlide,
-                          title: 'Data Added SuccessFully',
+                          title: 'Lecture Added Successfully',
                           btnOkColor: MyTheme.buttonColor,
-                          btnOkOnPress: () {},
+                          btnOkOnPress: () {
+                            Navigator.pop(context);
+                          },
                         ).show();
                       }
                     },

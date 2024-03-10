@@ -13,9 +13,8 @@ class TutorVideoScreen extends StatefulWidget {
 
 class _TutorVideoScreenState extends State<TutorVideoScreen> {
   late YoutubePlayerController _controller;
-  double _startPosition = 0.0; // Variable to store the video playback position
-  bool _isFullScreen =
-      false; // Variable to track if video is in full screen mode
+  double _startPosition = 0.0;
+  bool _isFullScreen = false;
 
   @override
   void initState() {

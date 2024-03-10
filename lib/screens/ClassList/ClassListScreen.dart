@@ -26,7 +26,6 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
   void updateClassInDatabase(String selectedClass) async {
     try {
-      // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
