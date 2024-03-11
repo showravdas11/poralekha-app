@@ -21,23 +21,23 @@ class _ChatScreenState extends State<ChatScreen> {
   ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   int _perPage = 15;
-  List<DocumentSnapshot> _messages = [];
+  List<Map<String, dynamic>> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    // _scrollController.addListener(_scrollListener);
     _fetchUserData(); // Fetch user data including isAdmin
-    _getMessages();
+    // _getMessages();
   }
 
-  void _scrollListener() {
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      _getMessages();
-    }
-  }
+  // void _scrollListener() {
+  //   if (_scrollController.offset >=
+  //           _scrollController.position.maxScrollExtent &&
+  //       !_scrollController.position.outOfRange) {
+  //     _getMessages();
+  //   }
+  // }
 
   void _fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -52,54 +52,65 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  void _getMessages() async {
-    print("hello");
-    if (_isLoadingMore) return;
-    setState(() {
-      _isLoadingMore = true;
-    });
+  // void _getMessages() async {
+  //   print("hello");
+  //   if (_isLoadingMore) return;
+  //   setState(() {
+  //     _isLoadingMore = true;
+  //   });
 
-    final user = FirebaseAuth.instance.currentUser;
-    final collectionRef = FirebaseFirestore.instance
-        .collection('chats')
-        .doc(widget.chatRoomName)
-        .collection('messages');
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   final collectionRef = FirebaseFirestore.instance
+  //       .collection('chats')
+  //       .doc(widget.chatRoomName)
+  //       .collection('messages');
 
-    QuerySnapshot querySnapshot;
+  //   QuerySnapshot querySnapshot;
 
-    if (_messages.isEmpty) {
-      querySnapshot = await collectionRef
-          .orderBy('createdAt', descending: true)
-          .limit(_perPage)
-          .get();
-    } else {
-      querySnapshot = await collectionRef
-          .orderBy('createdAt', descending: true)
-          .startAfterDocument(_messages.last)
-          .limit(_perPage)
-          .get();
-    }
+  //   if (_messages.isEmpty) {
+  //     querySnapshot = await collectionRef
+  //         .orderBy('createdAt', descending: true)
+  //         .limit(_perPage)
+  //         .get();
+  //   } else {
+  //     querySnapshot = await collectionRef
+  //         .orderBy('createdAt', descending: true)
+  //         .startAfterDocument(_messages.last)
+  //         .limit(_perPage)
+  //         .get();
+  //   }
 
-    setState(() {
-      _isLoadingMore = false;
-      _messages.addAll(querySnapshot.docs);
-    });
-  }
+  //   setState(() {
+  //     _isLoadingMore = false;
+  //     _messages.addAll(querySnapshot.docs);
+  //   });
+  // }
 
   void _sendMessage() async {
     final messageText = _messageController.text.trim();
+    _messageController.clear();
 
     if (messageText.isEmpty) {
       return;
     }
 
+    // TODO: get user information only once
     final user = FirebaseAuth.instance.currentUser;
     final userData = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get();
 
+    final data = {
+      'text': messageText,
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+      'name': userData['name'],
+      'isAdmin': userData['isAdmin']
+    };
+
     setState(() {
+      _messages.insert(0, data);
       _isSending = true;
     });
 
@@ -108,18 +119,12 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('chats')
           .doc(widget.chatRoomName)
           .collection('messages')
-          .add({
-        'text': messageText,
-        'createdAt': Timestamp.now(),
-        'userId': user.uid,
-        'name': userData['name'],
-        'isAdmin': userData['isAdmin']
-      });
+          .add(data);
 
       DocumentSnapshot sentMessageSnapshot = await messageRef.get();
 
       setState(() {
-        _messages.insert(0, sentMessageSnapshot);
+        _messages[0] = sentMessageSnapshot as Map<String, dynamic>;
         _isSending = false;
         _msg = "";
       });
@@ -129,8 +134,6 @@ class _ChatScreenState extends State<ChatScreen> {
         _isSending = false;
       });
     }
-
-    _messageController.clear();
   }
 
   @override
@@ -326,64 +329,78 @@ class _MessageBubbleState extends State<MessageBubble> {
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ), // Limit width to 70% of screen width
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.username,
-                        style: const TextStyle(
-                          color: Color(0xFF128C7E),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      if (widget.isAdmin)
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xFF146C43),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 3.0, vertical: 1.0),
-                            child: Text(
-                              "Admin",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.username,
+                            style: const TextStyle(
+                              color: Color(0xFF128C7E),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
                             ),
                           ),
-                        )
+                          SizedBox(
+                            width: 5,
+                          ),
+                          if (widget.isAdmin)
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF146C43),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 3.0, vertical: 1.0),
+                                child: Text(
+                                  "Admin",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            )
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        widget.message,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        _formatTimestamp(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: const Color.fromARGB(255, 0, 0, 0)
+                              .withOpacity(0.7),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 5),
-                  Text(
-                    widget.message,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                  if (widget.isSending)
-                    Text(
-                      'Sending...',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  const SizedBox(height: 5),
-                  Text(
-                    _formatTimestamp(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color:
-                          const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Row(
+                      children: [
+                        widget.isSending
+                            ? Icon(
+                                Icons.done,
+                                size: 16,
+                                color: Color(0xFF146C43),
+                              )
+                            : Icon(
+                                Icons.done_all,
+                                size: 16,
+                                color: Color(0xFF146C43),
+                              )
+                      ],
                     ),
                   ),
                 ],

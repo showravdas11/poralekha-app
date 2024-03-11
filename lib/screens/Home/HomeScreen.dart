@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
+import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
@@ -21,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _state = "running";
   late Stream<QuerySnapshot> _lectureStream;
-
   final String documentId;
 
   _HomeScreenState({required this.documentId});
@@ -155,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
-                        Get.to(UpdateProfileScreen(userData: userData));
+                        Get.to(ProfileScreen());
                       },
                       child: CircleAvatar(
                         backgroundImage: userProfileImageUrl.isNotEmpty
