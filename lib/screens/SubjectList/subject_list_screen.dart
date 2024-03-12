@@ -68,6 +68,12 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
               );
             }
 
+            if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+              return Center(
+                  child:
+                      CircularProgressIndicator()); // Show loader instead of "No chat rooms found"
+            }
+
             if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),

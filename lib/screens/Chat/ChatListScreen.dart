@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poralekha_app/screens/Chat/ChatScreen.dart';
+import 'package:intl/intl.dart';
 
 class ChatListScreen extends StatefulWidget {
   @override
@@ -27,8 +30,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
       final isAdmin = userData.get('isAdmin') as bool;
       if (isAdmin) {
         setState(() {
-          _chatroomsStream =
-              FirebaseFirestore.instance.collection("chats").snapshots();
+          _chatroomsStream = FirebaseFirestore.instance
+              .collection("chats")
+              .orderBy('serial')
+              .snapshots();
         });
       } else {
         final className = userData.get('class') as String;
@@ -41,14 +46,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
       }
     }
   }
-
-  // final List<String> avatarImages = [
-  //   'assets/images/six.png',
-  //   'assets/images/seven.png',
-  //   'assets/images/eight.png',
-  //   'assets/images/nine.png',
-  //   'assets/images/ten.png',
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +67,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
               return Center(child: CircularProgressIndicator());
             }
             if (chatSnapshot.data == null || chatSnapshot.data!.docs.isEmpty) {
-              return Center(child: Text('No chat rooms found.'));
+              return Center(
+                  child:
+                      CircularProgressIndicator()); // Show loader instead of "No chat rooms found"
             }
             final chatDocs = chatSnapshot.data!.docs;
             return ListView.builder(
@@ -83,26 +82,55 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     ),
                   );
                 },
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.grey[300],
-                        backgroundImage: NetworkImage(
-                          chatDocs[index]['image'],
+                child: FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('chats')
+                      .doc(chatDocs[index].id)
+                      .collection('messages')
+                      .orderBy('createdAt', descending: true)
+                      .limit(1)
+                      .get()
+                      .then((value) => value.docs.first),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Opacity(
+                        opacity: 0.0,
+                      );
+                    }
+                    final lastMessage = snapshot.data!;
+                    String lastMessageText = lastMessage['text'] ?? '';
+                    final lastMessageTime = lastMessage['createdAt'] ?? '';
+                    final formattedTime = DateFormat.jm().format(
+                      (lastMessageTime as Timestamp).toDate(),
+                    );
+
+                    if (lastMessageText.length > 20) {
+                      lastMessageText =
+                          '${lastMessageText.substring(0, 20)}...';
+                    }
+
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage: AssetImage(
+                              'assets/images/${chatDocs[index]['image']}',
+                            ),
+                          ),
+                          title: Text(chatDocs[index]['name']),
+                          subtitle: Text(lastMessageText),
+                          trailing: Text(formattedTime),
                         ),
-                      ),
-                      title: Text(chatDocs[index]['name']),
-                      subtitle: Text('Last message'),
-                      trailing: Text('11:30 PM'),
-                    ),
-                    Divider(
-                      height: 0,
-                      thickness: 0.5,
-                      color: Colors.grey[300],
-                    ),
-                  ],
+                        Divider(
+                          height: 0,
+                          thickness: 0.5,
+                          color: Colors.grey[300],
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             );
