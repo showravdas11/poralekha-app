@@ -77,7 +77,7 @@ class _ImportantTopicScreenState extends State<ImportantTopicScreen> {
                     ),
                   );
                 },
-                child: const Text("Click Here"),
+                child: Text("Click Here".tr),
               ),
             ],
           ),

@@ -53,7 +53,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "Your Subjects".tr,
+          "Subjects".tr,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
@@ -107,17 +107,27 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Center(
-                        child: Text(
-                          subjects[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/subsbg1.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Center(
+                          child: Text(
+                            subjects[index],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),

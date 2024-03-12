@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
             if (userData['isApproved'] == true) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const MainScreen()),
+                MaterialPageRoute(builder: (context) => MainScreen()),
               );
             } else {
               Navigator.pushReplacement(
