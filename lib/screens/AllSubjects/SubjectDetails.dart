@@ -76,7 +76,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
 
                     return Container(
                       padding: EdgeInsets.all(screenWidth * 0.05),
-                      height: screenHeight * 0.21,
+                      height: Get.height * 0.20,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(screenWidth * 0.05),
@@ -115,7 +115,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                   subjectName: subjectData?['name'] ?? 'N/A',
                                   className: subjectData?['class'] ?? 'N/A'));
                             },
-                            child: const Text("Update Subject"),
+                            child: const Text("Edit"),
                           )
                         ],
                       ),

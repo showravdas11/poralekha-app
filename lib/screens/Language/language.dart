@@ -31,7 +31,7 @@ class Languages extends Translations {
           'Class Ten': 'Class Ten',
           'HSC': 'HSC',
           'Select Your Class': 'Select Your Class',
-          'Class Subjects': 'Class Subjects',
+          'Subjects': 'Subjects',
           'Chapters': 'Chapters',
           //Payment Screen
           'Choose your payment method': 'Choose your payment method',
@@ -80,7 +80,6 @@ class Languages extends Translations {
           'Link': 'Link',
           'Platform': 'Platform',
           'Select Class Platform': 'Select Class Platform',
-          'Add Lectures': 'Add Lectures',
         },
         'bd_BAN': {
           //Profile Screen
@@ -110,16 +109,16 @@ class Languages extends Translations {
           'Class Ten': 'দশম শ্রেণি',
           'HSC': 'এইচএসসি',
           'Select Your Class': 'আপনার শ্রেণি নির্বাচন করুন',
-          'Class Subjects': 'ক্লাসের বিষয়সমূহ',
+          'Subjects': 'বিষয়সমূহ',
           'Chapters': 'অধ্যায়সমূহ ',
           //Payment Screen
           'Choose your payment method': 'আপনার পরিশোধের পদ্ধতি পছন্দ করুন',
           'bKash': 'বিকাশ',
           'Nagad': 'নগদ',
           //Drawer List
-          'Approve User': 'ব্যবহারকারী অনুমোদন',
-          'Manage Admin': 'অ্যাডমিন পরিচালনা',
-          'Add Lecture': 'বক্তৃতা অ্যাড করুন',
+          'Approve User': 'এপ্রোভ ইউজার',
+          'Manage Admin': 'ম্যানেজ অ্যাডমিন',
+          'Add Lecture': 'অ্যাড লেকচার',
           'All Students': 'সকল শিক্ষার্থী',
           'All lectures': 'সব লেকচার',
           'All subjects': 'সব বিষয়',
@@ -163,7 +162,12 @@ class Languages extends Translations {
           'Paste Link': 'লিঙ্ক পেস্ট করুন',
           'Platform': 'প্ল্যাটফর্ম',
           'Select Class Platform': 'ক্লাস প্ল্যাটফর্ম নির্বাচন করুন',
-          'Add Lectures': 'বক্তৃতা যোগ করুন',
+          //chapter topics screen
+          'Chapter Topics': 'চ্যাপ্টার টপিকস',
+          'PDF Book': 'পিডিএফ বুক',
+          'Important Topics': 'ইম্পরট্যান্ট টপিকস',
+          'Online Tutorials': 'অনলাইন টিউটোরিয়ালস',
+          'Watch Now': 'ওয়াচ নাউ',
         },
       };
 

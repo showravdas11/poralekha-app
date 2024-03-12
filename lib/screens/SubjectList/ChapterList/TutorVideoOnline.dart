@@ -52,7 +52,7 @@ class TutorVideoOnline extends StatelessWidget {
                 onPressed: () {
                   Get.to(TutorVideoScreen(tutorial: tutorial));
                 },
-                child: const Text("Watch Now"),
+                child: Text("Watch Now".tr),
               ),
             ],
           ),

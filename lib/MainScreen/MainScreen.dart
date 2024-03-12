@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Chat/ChatListScreen.dart';
-import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
+
 import 'package:poralekha_app/screens/Home/HomeScreen.dart';
 import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
 import 'package:poralekha_app/screens/SubjectList/subject_list_screen.dart';
