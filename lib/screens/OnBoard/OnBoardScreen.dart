@@ -88,10 +88,10 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 ),
               ),
               if (_pageIndex == 0) // Show only on the first screen
-                LanguageSelection(),
-              SizedBox(
-                height: 20,
-              ),
+                // LanguageSelection(),
+                SizedBox(
+                  height: 20,
+                ),
               Row(
                 children: [
                   ...List.generate(
@@ -142,7 +142,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   }
 }
 
-class DotIndicator extends StatelessWidget {
+class DotIndicator extends StatefulWidget {
   const DotIndicator({
     Key? key,
     required this.isActive,
@@ -151,13 +151,18 @@ class DotIndicator extends StatelessWidget {
   final bool isActive;
 
   @override
+  State<DotIndicator> createState() => _DotIndicatorState();
+}
+
+class _DotIndicatorState extends State<DotIndicator> {
+  @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
-      height: isActive ? 12 : 4,
+      height: widget.isActive ? 12 : 4,
       width: 4,
       decoration: BoxDecoration(
-        color: isActive
+        color: widget.isActive
             ? MyTheme.buttonColor
             : MyTheme.buttonColor.withOpacity(0.4),
         borderRadius: BorderRadius.circular(12),
@@ -180,24 +185,23 @@ final List<Onboard> demo_data = [
   Onboard(
     image: "assets/images/onb4.png",
     title: "Education For All",
-    description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+    description: "Education is the movement from darkness to light.",
   ),
   Onboard(
     image: "assets/images/onb3.png",
     title: "Discover Your Power",
     description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+        "Education is the key to unlocking the world, a passport to freedom.",
   ),
   Onboard(
     image: "assets/images/onb1.png",
     title: "Findout Your Creativity",
     description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia molestiae quas",
+        "Creativity is the power to connect the seemingly unconnected.",
   )
 ];
 
-class OnboardContent extends StatelessWidget {
+class OnboardContent extends StatefulWidget {
   const OnboardContent({
     Key? key,
     required this.image,
@@ -208,17 +212,22 @@ class OnboardContent extends StatelessWidget {
   final String image, title, description;
 
   @override
+  State<OnboardContent> createState() => _OnboardContentState();
+}
+
+class _OnboardContentState extends State<OnboardContent> {
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Spacer(),
         Image.asset(
-          image,
+          widget.image,
           height: MediaQuery.of(context).size.height * 0.4,
         ),
         Spacer(),
         Text(
-          title,
+          widget.title,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.08,
@@ -230,9 +239,9 @@ class OnboardContent extends StatelessWidget {
           height: MediaQuery.of(context).size.height * 0.01,
         ),
         Text(
-          description,
+          widget.description,
           textAlign: TextAlign.center,
-          style: TextStyle(),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         Spacer(),
       ],
@@ -240,125 +249,125 @@ class OnboardContent extends StatelessWidget {
   }
 }
 
-class LanguageSelection extends StatefulWidget {
-  const LanguageSelection({Key? key}) : super(key: key);
+// class LanguageSelection extends StatefulWidget {
+//   const LanguageSelection({Key? key}) : super(key: key);
 
-  @override
-  State<LanguageSelection> createState() => _LanguageSelectionState();
-}
+//   @override
+//   State<LanguageSelection> createState() => _LanguageSelectionState();
+// }
 
-class _LanguageSelectionState extends State<LanguageSelection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<Offset> _slideAnimation;
+// class _LanguageSelectionState extends State<LanguageSelection>
+//     with SingleTickerProviderStateMixin {
+//   late AnimationController _animationController;
+//   late Animation<Offset> _slideAnimation;
 
-  bool isEnglishSelected = true;
-  bool isRunningSelected = true;
+//   bool isEnglishSelected = true;
+//   bool isRunningSelected = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500),
-    );
+//   @override
+//   void initState() {
+//     super.initState();
+//     _animationController = AnimationController(
+//       vsync: this,
+//       duration: Duration(milliseconds: 500),
+//     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(0.6, 0),
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
-  }
+//     _slideAnimation = Tween<Offset>(
+//       begin: Offset.zero,
+//       end: Offset(0.6, 0),
+//     ).animate(
+//       CurvedAnimation(
+//         parent: _animationController,
+//         curve: Curves.easeInOut,
+//       ),
+//     );
+//   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _animationController.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenHeight = MediaQuery.of(context).size.height;
+//     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Container(
-      width: screenWidth * 0.6,
-      padding: EdgeInsets.symmetric(
-          vertical: screenHeight * 0.010, horizontal: screenWidth * 0.03),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(screenWidth * 0.02),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              Get.updateLocale(const Locale('en', 'US'));
-              setState(() {
-                isRunningSelected = true;
-                _animationController.reverse();
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isRunningSelected
-                  ? MyTheme.buttonColor
-                  : MyTheme.buttonColor.withOpacity(0.6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(screenWidth * 0.02),
-              ),
-            ),
-            child: Text(
-              "English",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: screenWidth * 0.04,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 7,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Get.updateLocale(const Locale('bd', 'BAN'));
-              setState(() {
-                isRunningSelected = false;
-                _animationController.forward();
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isRunningSelected
-                  ? MyTheme.buttonColor.withOpacity(0.6)
-                  : MyTheme.buttonColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(screenWidth * 0.02),
-              ),
-            ),
-            child: Text(
-              "বাংলা",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: screenWidth * 0.04,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          // SlideTransition(
-          //   position: _slideAnimation,
-          //   child: Container(
-          //     height: 40,
-          //     width: 4,
-          //     color: MyTheme.buttonColor,
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-}
+//     return Container(
+//       width: screenWidth * 0.6,
+//       padding: EdgeInsets.symmetric(
+//           vertical: screenHeight * 0.010, horizontal: screenWidth * 0.03),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//       ),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           ElevatedButton(
+//             onPressed: () {
+//               Get.updateLocale(const Locale('en', 'US'));
+//               setState(() {
+//                 isRunningSelected = true;
+//                 _animationController.reverse();
+//               });
+//             },
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: isRunningSelected
+//                   ? MyTheme.buttonColor
+//                   : MyTheme.buttonColor.withOpacity(0.6),
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//               ),
+//             ),
+//             child: Text(
+//               "English",
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: screenWidth * 0.04,
+//                 fontWeight: FontWeight.w500,
+//               ),
+//             ),
+//           ),
+//           SizedBox(
+//             width: 7,
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               Get.updateLocale(const Locale('bd', 'BAN'));
+//               setState(() {
+//                 isRunningSelected = false;
+//                 _animationController.forward();
+//               });
+//             },
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: isRunningSelected
+//                   ? MyTheme.buttonColor.withOpacity(0.6)
+//                   : MyTheme.buttonColor,
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//               ),
+//             ),
+//             child: Text(
+//               "বাংলা",
+//               style: TextStyle(
+//                 color: Colors.white,
+//                 fontSize: screenWidth * 0.04,
+//                 fontWeight: FontWeight.w500,
+//               ),
+//             ),
+//           ),
+//           // SlideTransition(
+//           //   position: _slideAnimation,
+//           //   child: Container(
+//           //     height: 40,
+//           //     width: 4,
+//           //     color: MyTheme.buttonColor,
+//           //   ),
+//           // ),
+//         ],
+//       ),
+//     );
+//   }
+// }

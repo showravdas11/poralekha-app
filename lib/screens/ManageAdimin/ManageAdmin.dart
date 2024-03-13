@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:poralekha_app/theme/myTheme.dart';
 
-class ManageAdminScreen extends StatelessWidget {
+class ManageAdminScreen extends StatefulWidget {
+  @override
+  State<ManageAdminScreen> createState() => _ManageAdminScreenState();
+}
+
+class _ManageAdminScreenState extends State<ManageAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,8 +34,6 @@ class ManageAdminScreen extends StatelessWidget {
           }
 
           List<QueryDocumentSnapshot> users = snapshot.data!.docs;
-
-          // Get the current user's ID
           String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 
           return ListView.builder(
@@ -37,7 +41,6 @@ class ManageAdminScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var user = users[index].data() as Map<String, dynamic>;
 
-              // Check if the user is the current user, and skip if so
               if (user['email'] == currentUserEmail) {
                 return const SizedBox.shrink();
               }
@@ -102,10 +105,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
         widget.onPressed();
       },
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: 10,
-          right: 10,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Card(
           elevation: 4,
           shape: RoundedRectangleBorder(
@@ -140,7 +140,6 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -154,12 +153,23 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     ],
                   ),
                 ),
-                IconButton(
-                  onPressed: widget.onPressed,
-                  icon: Icon(
-                    widget.isAdmin ? Icons.remove_circle : Icons.add_circle,
-                    color: widget.isAdmin ? Colors.white : Colors.green,
-                    size: 30,
+                ElevatedButton(
+                  onPressed: () {
+                    _showConfirmationDialog();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        widget.isAdmin ? Colors.red : MyTheme.buttonColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    widget.isAdmin ? 'Revert' : 'Make Admin',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
@@ -167,6 +177,96 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          content: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  widget.isAdmin
+                      ? Icons.admin_panel_settings
+                      : Icons.person_add,
+                  size: MediaQuery.of(context).size.width * 0.1,
+                  color: widget.isAdmin ? Colors.red : Colors.green,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.05),
+                Text(
+                  widget.isAdmin ? 'Revert Admin' : 'Make Admin',
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width *
+                        0.05, // Adjust font size
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.025),
+                Text(
+                  widget.isAdmin
+                      ? 'Do you want to revert admin privileges?'
+                      : 'Do you want to make this user an admin?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width *
+                        0.04, // Adjust font size
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.05),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        widget.onPressed();
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

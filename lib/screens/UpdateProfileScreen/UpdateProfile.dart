@@ -34,26 +34,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   // late Future<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
-  late Timer _timer;
-  List<String> quotes = [
-    """"The expert in anything was once a beginner." - Helen Hayes """,
-    """ "The only way to do great work is to love what you do." - Steve Jobs """,
-    """ "The secret of getting ahead is getting started." - Mark Twain """,
-    """ "Success is the sum of small efforts, repeated day in and day out." - Robert Collier """,
-    // Add more quotes here as needed
-  ];
   int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the timer to change the quote every 5 seconds
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        // Increment the currentIndex to display the next quote
-        currentIndex = (currentIndex + 1) % quotes.length;
-      });
-    });
 
     nameController.text = widget.userData['name'] ?? 'N/A';
     addressController.text = widget.userData['address'] ?? 'N/A';
@@ -65,8 +50,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   void dispose() {
-    // Cancel the timer to prevent memory leaks
-    _timer.cancel();
     super.dispose();
   }
 
