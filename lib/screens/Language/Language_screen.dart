@@ -94,6 +94,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
     setState(() {
       currentOption = languageCode == 'en_US' ? 'English' : 'বাংলা';
     });
+    Get.back(); // Close the bottom sheet
     Get.updateLocale(Locale.fromSubtags(languageCode: languageCode));
   }
 }

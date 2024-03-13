@@ -135,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          userClass.tr,
+                          userClass,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
@@ -191,17 +191,15 @@ class _HomeScreenState extends State<HomeScreen> {
           if (isAdmin) {
             return SizedBox(
               width: Get.width * 0.60,
+              height: Get.height * 0.60,
               child: const Drawer(
                 backgroundColor: Color.fromARGB(255, 240, 248, 255),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 50),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      MyDrawerHeader(),
-                      MyDrawerList(),
-                    ],
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyDrawerHeader(),
+                    MyDrawerList(),
+                  ],
                 ),
               ),
             );
@@ -217,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HomeBanner(),
-              SizedBox(height: screenHeight * 0.03),
+              SizedBox(height: screenHeight * 0.02),
               Center(
                 child: Text(
                   "Class Lectures",
@@ -295,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.01),
               StreamBuilder(
                 stream: _lectureStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
