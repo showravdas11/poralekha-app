@@ -31,7 +31,7 @@ class _AllSubjectsScreenState extends State<AllSubjectsScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: "All subjects".tr,
+        title: "All Subjects".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },

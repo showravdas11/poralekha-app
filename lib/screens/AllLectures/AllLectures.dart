@@ -25,7 +25,7 @@ class _AllLectureScreenState extends State<AllLectureScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: CustomAppBar(
-        title: "All lectures".tr,
+        title: "All Lectures".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },

@@ -46,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
             rippleColor: Colors.grey[300]!,
             hoverColor: Colors.grey[100]!,
             gap: 8,
-            activeColor: const Color.fromARGB(255, 78, 116, 249),
+            activeColor: const Color(0xFF7E59FD),
             iconSize: 24,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             tabBackgroundColor: Colors.grey[100]!,
