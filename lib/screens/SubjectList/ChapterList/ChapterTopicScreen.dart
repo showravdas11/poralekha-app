@@ -32,9 +32,9 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "ChapterTopic",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          "Chapter Topics".tr,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: Padding(
@@ -59,9 +59,9 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
                   child: Container(
                     width: 150,
                     padding: const EdgeInsets.all(10),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'PDF Book',
+                        'PDF Book'.tr,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -71,8 +71,8 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                const Text(
-                  'Important Topics',
+                Text(
+                  'Important Topics'.tr,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -88,8 +88,8 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  'Online Tutorials',
+                Text(
+                  'Online Tutorials'.tr,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

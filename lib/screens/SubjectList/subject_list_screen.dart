@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
 
@@ -13,6 +14,15 @@ class SubjectListScreen extends StatefulWidget {
 
 class _SubjectListScreenState extends State<SubjectListScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? _subjectsStream;
+  List<Color> _tileColors = [
+    const Color(0xFFFE7B33),
+    const Color(0xFF616FEA),
+    const Color(0xFF9736E5),
+    const Color(0xFF3BBDF9),
+    const Color(0xFF3DC88A),
+    const Color(0xFFE84D51),
+    // Add more colors as needed
+  ];
 
   @override
   void initState() {
@@ -41,9 +51,10 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Class Subject",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        centerTitle: true,
+        title: Text(
+          "Subjects".tr,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: Padding(
@@ -57,6 +68,12 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
               );
             }
 
+            if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+              return const Center(
+                  child:
+                      CircularProgressIndicator()); // Show loader instead of "No chat rooms found"
+            }
+
             if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
@@ -67,52 +84,52 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     .map((doc) => doc['name'] as String)
                     .toList() ??
                 [];
-            if (subjects.isEmpty) {
-              return const Center(
-                child: Text("Sorry. There is no subject for you"),
-              );
-            }
 
-            return ListView.builder(
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 1.5,
+              ),
               itemCount: subjects.length,
               itemBuilder: (BuildContext context, int index) {
+                // Get the color for the current tile
+                Color tileColor = _tileColors[index % _tileColors.length];
                 return GestureDetector(
                   onTap: () {
                     // Handle the onTap event
                     String selectedSubjectId = snapshot.data!.docs[index].id;
                     Get.to(ChapterListScreen(subjectId: selectedSubjectId));
                   },
-                  child: Container(
-                    height: 60,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(15),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 126, 89, 253),
+                  child: Card(
+                    color: tileColor,
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
-                      boxShadow: const [
-                        // BoxShadow(
-                        //   color: Colors.grey.withOpacity(0.5),
-                        //   spreadRadius: 1,
-                        //   blurRadius: 1,
-                        // ),
-                      ],
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          subjects[index],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        // image: const DecorationImage(
+                        //   image: AssetImage('assets/images/subsbg1.png'),
+                        //   fit: BoxFit.cover,
+                        // ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Center(
+                          child: Text(
+                            subjects[index],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 );

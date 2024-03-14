@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -20,68 +21,96 @@ class _ChatScreenState extends State<ChatScreen> {
   ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   int _perPage = 15;
-  List<DocumentSnapshot> _messages = [];
+  List<Map<String, dynamic>> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
-    _getMessages();
+    // _scrollController.addListener(_scrollListener);
+    _fetchUserData(); // Fetch user data including isAdmin
+    // _getMessages();
   }
 
-  void _scrollListener() {
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      _getMessages();
-    }
-  }
+  // void _scrollListener() {
+  //   if (_scrollController.offset >=
+  //           _scrollController.position.maxScrollExtent &&
+  //       !_scrollController.position.outOfRange) {
+  //     _getMessages();
+  //   }
+  // }
 
-  void _getMessages() async {
-    if (_isLoadingMore) return;
-    setState(() {
-      _isLoadingMore = true;
-    });
+  void _fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
-    final collectionRef = FirebaseFirestore.instance
-        .collection('chats')
-        .doc(widget.chatRoomName)
-        .collection('messages');
-
-    QuerySnapshot querySnapshot;
-    if (_messages.isEmpty) {
-      querySnapshot = await collectionRef
-          .orderBy('createdAt', descending: true)
-          .limit(_perPage)
+    if (user != null) {
+      final userDataDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
           .get();
-    } else {
-      querySnapshot = await collectionRef
-          .orderBy('createdAt', descending: true)
-          .startAfterDocument(_messages.last)
-          .limit(_perPage)
-          .get();
+      setState(() {
+        userData = userDataDoc;
+      });
     }
-
-    setState(() {
-      _isLoadingMore = false;
-      _messages.addAll(querySnapshot.docs);
-    });
   }
+
+  // void _getMessages() async {
+  //   print("hello");
+  //   if (_isLoadingMore) return;
+  //   setState(() {
+  //     _isLoadingMore = true;
+  //   });
+
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   final collectionRef = FirebaseFirestore.instance
+  //       .collection('chats')
+  //       .doc(widget.chatRoomName)
+  //       .collection('messages');
+
+  //   QuerySnapshot querySnapshot;
+
+  //   if (_messages.isEmpty) {
+  //     querySnapshot = await collectionRef
+  //         .orderBy('createdAt', descending: true)
+  //         .limit(_perPage)
+  //         .get();
+  //   } else {
+  //     querySnapshot = await collectionRef
+  //         .orderBy('createdAt', descending: true)
+  //         .startAfterDocument(_messages.last)
+  //         .limit(_perPage)
+  //         .get();
+  //   }
+
+  //   setState(() {
+  //     _isLoadingMore = false;
+  //     _messages.addAll(querySnapshot.docs);
+  //   });
+  // }
 
   void _sendMessage() async {
     final messageText = _messageController.text.trim();
+    _messageController.clear();
 
     if (messageText.isEmpty) {
       return;
     }
 
+    // TODO: get user information only once
     final user = FirebaseAuth.instance.currentUser;
     final userData = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get();
 
+    final data = {
+      'text': messageText,
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+      'name': userData['name'],
+      'isAdmin': userData['isAdmin']
+    };
+
     setState(() {
+      _messages.insert(0, data);
       _isSending = true;
     });
 
@@ -90,17 +119,12 @@ class _ChatScreenState extends State<ChatScreen> {
           .collection('chats')
           .doc(widget.chatRoomName)
           .collection('messages')
-          .add({
-        'text': messageText,
-        'createdAt': Timestamp.now(),
-        'userId': user.uid,
-        'name': userData['name'],
-      });
+          .add(data);
 
       DocumentSnapshot sentMessageSnapshot = await messageRef.get();
 
       setState(() {
-        _messages.insert(0, sentMessageSnapshot);
+        _messages[0] = sentMessageSnapshot as Map<String, dynamic>;
         _isSending = false;
         _msg = "";
       });
@@ -110,22 +134,22 @@ class _ChatScreenState extends State<ChatScreen> {
         _isSending = false;
       });
     }
-
-    _messageController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFEAE2),
       appBar: AppBar(
-        title: Text(widget.chatRoomName),
+        centerTitle: true,
+        title: Text(
+          widget.chatRoomName.tr,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image:
-                NetworkImage("https://cdn.wallpapersafari.com/4/11/WofyVJ.png"),
+            image: AssetImage("assets/images/chatbg.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -134,28 +158,51 @@ class _ChatScreenState extends State<ChatScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  itemCount: _messages.length + 1,
-                  itemBuilder: (ctx, index) {
-                    if (index < _messages.length) {
-                      return MessageBubble(
-                        _messages[index]['text'],
-                        _messages[index]['name'],
-                        _messages[index]['userId'] ==
-                            FirebaseAuth.instance.currentUser!.uid,
-                        _messages[index]['createdAt'],
-                        isSending: _isSending && index == 0,
-                        key: ValueKey(_messages[index].id),
-                      );
-                    } else {
-                      return _isLoadingMore
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : SizedBox();
-                    }
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chats')
+                      .doc(widget.chatRoomName)
+                      .collection('messages')
+                      .orderBy('createdAt', descending: true)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    // if (snapshot.connectionState == ConnectionState.waiting) {
+                    //   return Center(
+                    //     child: CircularProgressIndicator(),
+                    //   );
+                    // }
+
+                    final messages = snapshot.data?.docs ?? [];
+                    print(
+                        'Message count: ${messages.length + (_isLoadingMore ? 1 : 0)}');
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      reverse: true,
+                      itemCount: messages.length + (_isLoadingMore ? 1 : 0),
+                      itemBuilder: (BuildContext ctx, int index) {
+                        if (index < messages.length) {
+                          final message = messages[index];
+                          return MessageBubble(
+                            message['text'],
+                            message['name'],
+                            message['userId'] ==
+                                FirebaseAuth.instance.currentUser!.uid,
+                            message['createdAt'],
+                            isAdmin: message['isAdmin'],
+                            isSending: _isSending && index == 0,
+                            key: ValueKey(message.id),
+                          );
+                        } else {
+                          return _isLoadingMore
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : SizedBox();
+                        }
+                      },
+                    );
                   },
                 ),
               ),
@@ -236,6 +283,7 @@ class MessageBubble extends StatefulWidget {
   final bool belongsToCurrentUser;
   final Timestamp timestamp;
   final bool isSending;
+  final bool isAdmin;
 
   MessageBubble(
     this.message,
@@ -243,6 +291,7 @@ class MessageBubble extends StatefulWidget {
     this.belongsToCurrentUser,
     this.timestamp, {
     required this.isSending,
+    required this.isAdmin,
     Key? key,
   }) : super(key: key);
 
@@ -276,42 +325,82 @@ class _MessageBubbleState extends State<MessageBubble> {
                 : Colors.white,
             elevation: 1,
             child: Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7,
+              ), // Limit width to 70% of screen width
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  if (!widget.belongsToCurrentUser)
-                    Text(
-                      widget.username,
-                      style: const TextStyle(
-                        color: Color(0xFF128C7E),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.username,
+                            style: const TextStyle(
+                              color: Color(0xFF128C7E),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          if (widget.isAdmin)
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xFF146C43),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 3.0, vertical: 1.0),
+                                child: Text(
+                                  "Admin",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            )
+                        ],
                       ),
-                    ),
-                  const SizedBox(height: 5),
-                  Text(
-                    widget.message,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
+                      const SizedBox(height: 5),
+                      Text(
+                        widget.message,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        _formatTimestamp(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: const Color.fromARGB(255, 0, 0, 0)
+                              .withOpacity(0.7),
+                        ),
+                      ),
+                    ],
                   ),
-                  if (widget.isSending)
-                    Text(
-                      'Sending...',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  const SizedBox(height: 5),
-                  Text(
-                    _formatTimestamp(),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color:
-                          const Color.fromARGB(255, 0, 0, 0).withOpacity(0.7),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Row(
+                      children: [
+                        widget.isSending
+                            ? Icon(
+                                Icons.done,
+                                size: 16,
+                                color: Color(0xFF146C43),
+                              )
+                            : Icon(
+                                Icons.done_all,
+                                size: 16,
+                                color: Color(0xFF146C43),
+                              )
+                      ],
                     ),
                   ),
                 ],

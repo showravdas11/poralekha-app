@@ -8,6 +8,7 @@ import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
+import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
@@ -60,17 +61,31 @@ class _LoginScreenState extends State<LoginScreen> {
           final userClass = userData.get('class') as String;
 
           if (userClass == "") {
+            print("My user login  datatata1 ${userData}");
+            print(123);
             // Redirect to ClassListScreen if class field is empty
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => ClassListScreen()),
+              MaterialPageRoute(builder: (context) => const ClassListScreen()),
             );
           } else {
-            // Redirect to MainScreen if class field is not empty
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
-            );
+            print("My user login  datatata2 ${userData}");
+            print(124);
+            if (userData['isApproved'] == true) {
+              print("My user login  datatata3 ${userData}");
+              print(125);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MainScreen()),
+              );
+            } else {
+              print("My user login  datatata3 ${userData}");
+              print(126);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const WaitingScreen()),
+              );
+            }
           }
         } else {
           await userCredential.user?.sendEmailVerification();
@@ -88,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context: context,
           dialogType: DialogType.error,
           animType: AnimType.rightSlide,
-          title: ex.code.toString(),
+          title: ex.message.toString(),
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {},
         )..show();
@@ -123,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     "assets/images/poralekha-splash-screen-logo.png",
                     width: screenWidth * 0.4,
                   ),
-                  SizedBox(height: screenHeight * 0.02),
+                  SizedBox(height: screenHeight * 0.04),
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
@@ -139,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: emailController,
                     text: "Email",
                     obscure: false,
-                    suffixIcon: Icon(Icons.email),
+                    suffixIcon: const Icon(Icons.email),
                     textInputType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: screenHeight * 0.01),
@@ -179,11 +194,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ForgetPasswordScreen(),
+                              builder: (context) =>
+                                  const ForgetPasswordScreen(),
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           "Forgot Password ?",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -221,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUpScreen(),
+                              builder: (context) => const SignUpScreen(),
                             ),
                           );
                         },
@@ -230,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: screenWidth * 0.04,
-                            color: Color(0xFF7E59FD),
+                            color: const Color(0xFF7E59FD),
                           ),
                         ),
                       ),
@@ -242,8 +258,8 @@ class _LoginScreenState extends State<LoginScreen> {
             if (isLoading)
               Container(
                 color: Colors.black.withOpacity(0.5),
-                child: Center(
-                  child: const AlertDialog(
+                child: const Center(
+                  child: AlertDialog(
                     backgroundColor: Colors.transparent,
                     content: SpinKitCircle(color: Colors.white, size: 50.0),
                   ),

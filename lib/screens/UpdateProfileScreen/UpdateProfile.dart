@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
@@ -33,26 +34,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   // late Future<QuerySnapshot> _usersStream;
   final auth = FirebaseAuth.instance;
 
-  late Timer _timer;
-  List<String> quotes = [
-    """"The expert in anything was once a beginner." - Helen Hayes """,
-    """ "The only way to do great work is to love what you do." - Steve Jobs """,
-    """ "The secret of getting ahead is getting started." - Mark Twain """,
-    """ "Success is the sum of small efforts, repeated day in and day out." - Robert Collier """,
-    // Add more quotes here as needed
-  ];
   int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the timer to change the quote every 5 seconds
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
-      setState(() {
-        // Increment the currentIndex to display the next quote
-        currentIndex = (currentIndex + 1) % quotes.length;
-      });
-    });
 
     nameController.text = widget.userData['name'] ?? 'N/A';
     addressController.text = widget.userData['address'] ?? 'N/A';
@@ -64,8 +50,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   void dispose() {
-    // Cancel the timer to prevent memory leaks
-    _timer.cancel();
     super.dispose();
   }
 
@@ -76,7 +60,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       if (user != null) {
         // Upload image to Firebase Storage
         String imagePath = 'profile_images/${user.uid}_profile.jpg';
-        Reference storageReference = FirebaseStorage.instance.ref().child(imagePath);
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child(imagePath);
         String imageUrl = widget.userData['img'];
         if (_selectedImage != null) {
           await storageReference.putFile(_selectedImage!);
@@ -126,12 +111,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Image'),
+          title: const Text('Select Image'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 GestureDetector(
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Iconsax.gallery_add,
@@ -154,9 +139,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     Navigator.of(context).pop(File(pickedFile!.path));
                   },
                 ),
-                Padding(padding: EdgeInsets.all(8.0)),
+                const Padding(padding: EdgeInsets.all(8.0)),
                 GestureDetector(
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(
                         Icons.camera,
@@ -220,16 +205,29 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       alignment: Alignment.center,
                     ),
                   ),
-                  const Positioned(
-                    top: 50,
-                    left: 20,
-                    child: Text(
-                      "Edit Profile",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Positioned(
+                    top: 30,
+                    left: 10,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "Edit Profile".tr,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Positioned(
@@ -314,11 +312,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 children: [
                   Column(
                     children: [
-                      const Align(
-                      alignment: Alignment.topLeft,
+                      Align(
+                        alignment: Alignment.topLeft,
                         child: Text(
-                          "Name",
-                          style: TextStyle(
+                          "Name".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -338,11 +336,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Gender",
-                          style: TextStyle(
+                          "Gender".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -370,11 +368,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               selectGender = newValue;
                             });
                           },
-                          items: [
-                            'Male',
-                            'Female',
-                            'Other'
-                          ].map<DropdownMenuItem<String>>((String value) {
+                          items: ['Male', 'Female', 'Other']
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
@@ -397,11 +392,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Address",
-                          style: TextStyle(
+                          "Address".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -419,11 +414,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             color: Color(0xFF7E59FD)),
                       ),
                       const SizedBox(height: 6),
-                      const Align(
+                      Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Age",
-                          style: TextStyle(
+                          "Age".tr,
+                          style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.w500),
@@ -444,7 +439,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   RoundedButton(
-                    title: "Update",
+                    title: "Update".tr,
                     onTap: () {
                       if (nameController.text.trim().isEmpty ||
                           addressController.text.trim().isEmpty ||

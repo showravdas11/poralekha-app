@@ -26,7 +26,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
   late TextEditingController endTimeController;
   late TextEditingController stateController;
   late TextEditingController linkController;
-  String? selectState;
 
   @override
   void initState() {
@@ -88,9 +87,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
         dateController.text.trim().isEmpty ||
         startTimeController.text.trim().isEmpty ||
         endTimeController.text.trim().isEmpty ||
-        linkController.text.trim().isEmpty ||
-        selectState == null) {
-      // Show an info dialog if any required field is empty
+        linkController.text.trim().isEmpty) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.info,
@@ -103,14 +100,10 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
     }
 
     try {
-      // Get a reference to the Firestore database
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-      // Reference to the specific document within the 'lectures' collection
       DocumentReference lectureRef =
           firestore.collection('lecture').doc(widget.lectureId);
 
-      // Update the document
       await lectureRef.update({
         'topic': topicController.text,
         'teacherName': teacherNameController.text,
@@ -120,7 +113,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
         'link': linkController.text,
       });
 
-      // Show a success dialog
       AwesomeDialog(
         context: context,
         dialogType: DialogType.success,
@@ -132,7 +124,6 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
         },
       ).show();
     } catch (error) {
-      // Show an error dialog
       AwesomeDialog(
         context: context,
         dialogType: DialogType.error,

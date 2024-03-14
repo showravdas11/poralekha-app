@@ -51,7 +51,6 @@ class _CommonTextFieldState extends State<CommonTextField> {
                 suffixIcon: widget.suffixIcon,
                 hintText: widget.text,
                 labelText: widget.labelText,
-                hintStyle: TextStyle(wordSpacing: 2, letterSpacing: 2),
                 border: InputBorder.none,
               ),
         ),

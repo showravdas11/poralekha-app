@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
-import 'package:intl/intl.dart';
+import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
+import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
@@ -19,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String _state = "running";
   late Stream<QuerySnapshot> _lectureStream;
-
   final String documentId;
 
   _HomeScreenState({required this.documentId});
@@ -33,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final String formattedDate = dateFormatter.format(now);
     final String formattedTime = timeFormatter.format(now);
     print("Now formatted time $formattedDate $formattedTime");
-    _lectureStream = FirebaseFirestore.instance.collection('lecture').snapshots();
+    _lectureStream =
+        FirebaseFirestore.instance.collection('lecture').snapshots();
   }
 
   bool isRunningLecture(String date, String startTime, String endTime) {
@@ -44,17 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
       DateTime parsedDate = dateFormatter.parse(date);
       DateTime today = DateTime.now();
 
-      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
-        // final DateTime startDateTime = timeFormatter.parse(startTime);
-        // final DateTime endDateTime = timeFormatter.parse(endTime);
-        // DateTime now = DateTime.now();
-        // return now.isAfter(startDateTime) && now.isBefore(endDateTime);
+      if (parsedDate
+          .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
         return true;
       } else {
         return false;
       }
     } catch (e) {
-      print("object");
       print('Error occurred: $e');
       return false;
     }
@@ -67,8 +66,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0, // Remove elevation
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {}
+
+                if (!snapshot.hasData || snapshot.data!.data() == null) {
+                  return const Text('User data not found');
+                }
+
+                final userData = snapshot.data!.data() as Map<String, dynamic>;
+                final bool isAdmin = userData['isAdmin'] ?? false;
+
+                if (isAdmin) {
+                  return IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                } else {
+                  return Visibility(
+                    visible: !isAdmin,
+                    child: Image.asset(
+                      "assets/images/poralekha-splash-screen-logo.png",
+                      height: Get.height * 0.03,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
           StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
@@ -76,50 +113,56 @@ class _HomeScreenState extends State<HomeScreen> {
                 .doc(FirebaseAuth.instance.currentUser?.uid)
                 .snapshots(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
+              if (snapshot.connectionState == ConnectionState.waiting) {}
 
               if (!snapshot.hasData || snapshot.data!.data() == null) {
-                return Text('User data not found');
+                return const Text('User data not found');
               }
 
-              // Extract user data
               final userData = snapshot.data!.data() as Map<String, dynamic>;
-              final String userProfileImageUrl =
-                  userData['profileImageUrl'] ?? '';
+              final String userProfileImageUrl = userData['img'] ?? '';
               final String userName = userData['name'] ?? '';
               final String userClass = userData['class'] ?? '';
 
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      backgroundImage: userProfileImageUrl.isNotEmpty
-                          ? NetworkImage(userProfileImageUrl)
-                          : AssetImage(
-                                  'assets/images/default_profile_image.png')
-                              as ImageProvider,
-                    ),
-                    SizedBox(width: 10),
+                    if (userData['isAdmin'] == true) const SizedBox(),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          userName,
+                          userClass.tr,
                           style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black87), // Adjust text color
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                         Text(
-                          userClass,
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey), // Adjust text color
+                          userName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
                       ],
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(ProfileScreen());
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: userProfileImageUrl.isNotEmpty
+                            ? NetworkImage(userProfileImageUrl)
+                            : const AssetImage('assets/images/user.png')
+                                as ImageProvider,
+                      ),
                     ),
                   ],
                 ),
@@ -128,6 +171,42 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox();
+          }
+
+          if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return const Text('User data not found');
+          }
+
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final bool isAdmin = userData['isAdmin'] ?? true;
+
+          if (isAdmin) {
+            return SizedBox(
+              width: Get.width * 0.60,
+              child: const Drawer(
+                backgroundColor: Color.fromARGB(255, 240, 248, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    MyDrawerHeader(),
+                    MyDrawerList(),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -135,12 +214,12 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const HomeBanner(),
-              SizedBox(height: screenHeight * 0.03),
+              SizedBox(height: screenHeight * 0.02),
               Center(
                 child: Text(
-                  "Class Lectures",
+                  "Class Lectures".tr,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.07,
+                    fontSize: screenWidth * 0.06,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -148,8 +227,9 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: screenHeight * 0.02),
               Container(
                 padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.015,
-                    horizontal: screenWidth * 0.03),
+                  vertical: screenHeight * 0.015,
+                  horizontal: screenWidth * 0.03,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(screenWidth * 0.04),
@@ -171,11 +251,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             : MyTheme.buttonColor.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.circular(screenWidth * 0.02),
+                              BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
-                        "Running",
+                        "Running".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -197,11 +277,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             : MyTheme.buttonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.circular(screenWidth * 0.02),
+                              BorderRadius.circular(screenWidth * 0.02),
                         ),
                       ),
                       child: Text(
-                        "Upcoming",
+                        "Upcoming".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -212,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.01),
               StreamBuilder(
                 stream: _lectureStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -237,9 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final lectureData = snapshot.data!.docs[index].data()
-                      as Map<String, dynamic>;
-                      bool isRunning = isRunningLecture(lectureData['date'], lectureData['startTime'], lectureData['endTime']);
-                      if ((isRunning && _state == 'running') || (!isRunning && _state == 'upcoming')) {
+                          as Map<String, dynamic>;
+                      bool isRunning = isRunningLecture(lectureData['date'],
+                          lectureData['startTime'], lectureData['endTime']);
+                      if ((isRunning && _state == 'running') ||
+                          (!isRunning && _state == 'upcoming')) {
                         return Padding(
                           padding: EdgeInsets.only(top: screenHeight * 0.01),
                           child: LectureCard(
@@ -248,6 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             screen: "home",
                           ),
                         );
+                      } else {
+                        return const SizedBox();
                       }
                     },
                   );
@@ -255,15 +339,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-        ),
-      ),
-      drawer: const Drawer(
-        backgroundColor: Color.fromARGB(255, 240, 248, 255),
-        child: Column(
-          children: [
-            MyDrawerHeader(),
-            MyDrawerList(),
-          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:poralekha_app/common/AppBar.dart';
@@ -156,7 +157,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Add Lecture",
+        title: "Add Lecture".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -165,16 +166,16 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  const Align(
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Topic",
-                        style: TextStyle(
+                        "Topic".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -184,16 +185,16 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                   ),
                   CommonTextField(
                     controller: topicController,
-                    text: "Topic",
+                    text: "Enter Topic Name".tr,
                     textInputType: TextInputType.text,
                     obscure: false,
                   ),
-                  SizedBox(height: 6),
-                  const Align(
+                  const SizedBox(height: 6),
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Class",
-                        style: TextStyle(
+                        "Class".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -241,29 +242,26 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                               });
                             },
                             items: classItems,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: "Select Your Class",
-                              hintStyle: TextStyle(
-                                wordSpacing: 2,
-                                letterSpacing: 2,
-                              ),
+                              hintText: "Select Your Class".tr,
+                              hintStyle: const TextStyle(),
                               alignLabelWithHint: true,
-                              iconColor: Color(0xFF7E59FD),
+                              iconColor: const Color(0xFF7E59FD),
                             ),
                           ),
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                     },
                   ),
-                  SizedBox(height: 6),
-                  const Align(
+                  const SizedBox(height: 6),
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Date",
-                        style: TextStyle(
+                        "Date".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -290,39 +288,36 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                         border: InputBorder.none,
                         hintText: selectedDate != null
                             ? DateFormat('dd-MM-yyyy').format(selectedDate!)
-                            : "Select Your date",
-                        hintStyle: const TextStyle(
-                          wordSpacing: 2,
-                          letterSpacing: 2,
-                        ),
-                        suffixIcon: Icon(Icons.calendar_month),
+                            : "Select Class Date".tr,
+                        hintStyle: const TextStyle(),
+                        suffixIcon: const Icon(Icons.calendar_month),
                         alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
+                        iconColor: const Color(0xFF7E59FD),
                       ),
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Align(
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Teacher Name",
-                        style: TextStyle(
+                        "Teacher Name".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
                       )),
                   CommonTextField(
                     controller: teacherNameController,
-                    text: "Teacher Name",
+                    text: "Teacher Name".tr,
                     textInputType: TextInputType.text,
                     obscure: false,
                   ),
                   const SizedBox(height: 6),
-                  const Align(
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Start Time",
-                        style: TextStyle(
+                        "Start Time".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -351,23 +346,23 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                             ? selectedStartTime
                                 ?.format(context)
                                 .toLowerCase() // Customize as needed
-                            : "Select Start Time",
+                            : "Set Start Time".tr,
                         hintStyle: const TextStyle(
                           wordSpacing: 2,
                           letterSpacing: 2,
                         ),
-                        suffixIcon: Icon(Icons.timelapse),
+                        suffixIcon: const Icon(Icons.timelapse),
                         alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
+                        iconColor: const Color(0xFF7E59FD),
                       ),
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Align(
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "End Time ",
-                        style: TextStyle(
+                        "End Time".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -396,39 +391,36 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                             ? selectedEndTime
                                 ?.format(context)
                                 .toString() // Customize as needed
-                            : "Select End Time",
-                        hintStyle: const TextStyle(
-                          wordSpacing: 2,
-                          letterSpacing: 2,
-                        ),
-                        suffixIcon: Icon(Icons.timelapse),
+                            : "Set End Time".tr,
+                        hintStyle: const TextStyle(),
+                        suffixIcon: const Icon(Icons.timelapse),
                         alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
+                        iconColor: const Color(0xFF7E59FD),
                       ),
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Align(
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Class Link",
-                        style: TextStyle(
+                        "Class Link".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
                       )),
                   CommonTextField(
                     controller: linkController,
-                    text: "Link",
+                    text: "Paste Link".tr,
                     textInputType: TextInputType.text,
                     obscure: false,
                   ),
-                  SizedBox(height: 10),
-                  const Align(
+                  const SizedBox(height: 10),
+                  Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "Platform",
-                        style: TextStyle(
+                        "Platform".tr,
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -468,21 +460,18 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                           ),
                         );
                       }).toList(),
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Select Your Platform",
-                        hintStyle: TextStyle(
-                          wordSpacing: 2,
-                          letterSpacing: 2,
-                        ),
+                        hintText: "Select Class Platform".tr,
+                        hintStyle: const TextStyle(),
                         alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
+                        iconColor: const Color(0xFF7E59FD),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   RoundedButton(
-                    title: "Add Lecture",
+                    title: "Add Lectures".tr,
                     onTap: () {
                       if (topicController.text.trim().isEmpty ||
                           teacherNameController.text.trim().isEmpty ||
@@ -525,9 +514,11 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                           context: context,
                           dialogType: DialogType.success,
                           animType: AnimType.rightSlide,
-                          title: 'Data Added SuccessFully',
+                          title: 'Lecture Added Successfully',
                           btnOkColor: MyTheme.buttonColor,
-                          btnOkOnPress: () {},
+                          btnOkOnPress: () {
+                            Navigator.pop(context);
+                          },
                         ).show();
                       }
                     },

@@ -11,12 +11,13 @@ class HomeBanner extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: screenHeight * 0.2,
+      height: screenHeight * 0.25,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         // color: Colors.amber,
         image: const DecorationImage(
-          image: AssetImage('assets/images/Learn from home.jpg'),
+          image: AssetImage('assets/images/home-bg6.jpg'),
+
           fit: BoxFit.cover,
         ),
       ),

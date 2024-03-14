@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/EditLectures/EditLecturs.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:url_launcher/link.dart';
+import 'package:get/get.dart';
 
 class LectureCard extends StatefulWidget {
   const LectureCard(
@@ -55,26 +56,27 @@ class _LectureCardState extends State<LectureCard> {
                 children: [
                   buildTextWithIcon(
                     icon: Iconsax.book,
-                    text: "Topic: ${widget.lectureData["topic"]}",
+                    text: "${'Topic'.tr}: ${widget.lectureData["topic"]}".tr,
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
                     icon: Iconsax.user,
-                    text: "Teacher: ${widget.lectureData["teacherName"]}",
+                    text:
+                        "${"Teacher".tr}: ${widget.lectureData["teacherName"]}",
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
                     icon: Iconsax.calendar_add,
-                    text: "Date: ${widget.lectureData["date"]}",
+                    text: '${'Date'.tr}: ${widget.lectureData["date"]}',
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
                     icon: Iconsax.watch,
                     text:
-                        "Time: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}",
+                        '${'Time'.tr}: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}',
                     screenWidth: screenWidth,
                   ),
                 ],
@@ -109,7 +111,7 @@ class _LectureCardState extends State<LectureCard> {
                               ),
                             ),
                             child: Text(
-                              'Join Now',
+                              'Join Now'.tr,
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,
                                 fontFamily: "FontMain",
@@ -143,7 +145,7 @@ class _LectureCardState extends State<LectureCard> {
                             ),
                           ),
                           child: Text(
-                            'Edit info',
+                            'Edit info'.tr,
                             style: TextStyle(
                               fontSize: screenWidth * 0.04,
                               fontFamily: "FontMain",

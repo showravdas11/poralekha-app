@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth for user authentication
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 
 class ClassListScreen extends StatefulWidget {
   const ClassListScreen({Key? key}) : super(key: key);
@@ -13,6 +14,16 @@ class ClassListScreen extends StatefulWidget {
 
 class _ClassListScreenState extends State<ClassListScreen> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> _classesStream;
+
+  // Mapping of class names to corresponding image assets
+  final Map<String, String> classImages = {
+    'Class Ten': 'assets/images/rszten.png',
+    'Class Nine': 'assets/images/rsznine.png',
+    'Class Eight': 'assets/images/rszeight.png',
+    'Class Seven': 'assets/images/rszseven.png',
+    'Class Six': 'assets/images/rszsix.png',
+    'Class Five': 'assets/images/rszfive.png',
+  };
 
   @override
   void initState() {
@@ -25,23 +36,30 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
   void updateClassInDatabase(String selectedClass) async {
     try {
-      // Get the current user
       User? user = FirebaseAuth.instance.currentUser;
 
-      // Check if the user is logged in
       if (user != null) {
-        // Update the user's document in the Firestore database
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({'class': selectedClass});
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
+        final userData = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        if (userData['isApproved'] == true) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainScreen()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WaitingScreen()),
+          );
+        }
       }
     } catch (error) {
-      // Handle any errors that occur during the update process
       print("Error updating class: $error");
     }
   }
@@ -52,6 +70,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           "Select Your Class".tr,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -72,9 +91,7 @@ class _ClassListScreenState extends State<ClassListScreen> {
             );
           }
 
-          List<String> imgData =
-              snapshot.data!.docs.map((doc) => doc['img'] as String).toList();
-          List<String> name =
+          List<String> classNames =
               snapshot.data!.docs.map((doc) => doc['name'] as String).toList();
 
           return Padding(
@@ -86,12 +103,17 @@ class _ClassListScreenState extends State<ClassListScreen> {
                 crossAxisSpacing: 0,
               ),
               shrinkWrap: true,
-              itemCount: imgData.length,
+              itemCount: classNames.length,
               itemBuilder: (BuildContext context, int index) {
+                String className = classNames[index].tr;
+                String imageAsset = classImages[className] ??
+                    ''; // Retrieve corresponding image asset
+                if (imageAsset.isEmpty) {
+                  return SizedBox(); // If image asset not found, return an empty SizedBox
+                }
                 return GestureDetector(
                   onTap: () {
-                    String selectedClass = name[index];
-                    updateClassInDatabase(selectedClass);
+                    updateClassInDatabase(className);
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(
@@ -112,12 +134,12 @@ class _ClassListScreenState extends State<ClassListScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Image.network(
-                            imgData[index],
+                          Image.asset(
+                            imageAsset,
                             width: screenWidth * 0.20,
                           ),
                           Text(
-                            name[index].tr,
+                            className,
                             style: TextStyle(
                               fontSize: screenWidth * 0.04,
                               fontWeight: FontWeight.bold,

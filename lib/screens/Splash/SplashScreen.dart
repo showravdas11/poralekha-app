@@ -6,6 +6,7 @@ import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/screens/OnBoard/OnBoardScreen.dart';
+import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,17 +38,25 @@ class _SplashScreenState extends State<SplashScreen> {
               .collection('users')
               .doc(user.uid)
               .get();
-          final userClass = userData.get('class');
-          if (userClass == null || userClass == "") {
+          if (userData['class'] == null || userData['class'] == "") {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const ClassListScreen()),
             );
           } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MainScreen()),
-            );
+            print("My user datatata ${userData}");
+            print("fjslfjlfjslkfj");
+            if (userData['isApproved'] == true) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MainScreen()),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const WaitingScreen()),
+              );
+            }
           }
         } else {
           // Return a widget, for example, a Material widget containing LoginScreen

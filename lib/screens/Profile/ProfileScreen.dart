@@ -35,10 +35,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final appBarHeight = AppBar().preferredSize.height;
+    final screenHeight = screenSize.height - appBarHeight;
+    final screenWidth = screenSize.width;
+
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
       appBar: AppBar(
-        title: Text("Profile".tr),
+        centerTitle: true,
+        title: Text(
+          "Profile".tr,
+          style: TextStyle(
+            fontSize:
+                screenWidth * 0.05, // Adjust font size based on screen width
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: MyTheme.canvousColor,
       ),
       body: StreamBuilder(
@@ -178,13 +191,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: HeadingSection(
-                    title: "Utilities".tr,
+                    title: "Payment".tr,
                     showActionButton: false,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+
                 UtilitiesSection(
                   title: "Payment".tr,
                   subTitle: "Click Here".tr,
@@ -193,10 +204,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Get.to(const PaymentScreen());
                   },
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: HeadingSection(
+                    title: "Utilities".tr,
+                    showActionButton: false,
+                  ),
+                ),
+
                 UtilitiesSection(
                   title: "Language".tr,
-                  subTitle:
-                      Get.locale?.languageCode == 'en' ? 'English' : 'বাংলা',
+                  subTitle: Get.locale?.languageCode == 'en_US'
+                      ? 'English'.tr
+                      : 'বাংলা'.tr,
                   icon: Iconsax.language_square5,
                   onPressed: () {
                     Get.bottomSheet(
@@ -218,6 +241,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     });
                   },
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
               ],
             ),

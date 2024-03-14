@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'dart:convert';
@@ -20,8 +21,8 @@ class _AllStudentState extends State<AllStudent> {
   List _students = [];
 
   Future<void> _loadStudents() async {
-    final response =
-    await http.get(Uri.parse('https://poralekha-server-chi.vercel.app/api/data?page=$_currentPage&password=qwerty'));
+    final response = await http.get(Uri.parse(
+        'https://poralekha-server-chi.vercel.app/api/data?page=$_currentPage&password=qwerty'));
 
     if (response.statusCode == 200) {
       var body = json.decode(response.body) as Map<String, dynamic>;
@@ -49,7 +50,7 @@ class _AllStudentState extends State<AllStudent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "All Student",
+        title: "All Students".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -58,60 +59,56 @@ class _AllStudentState extends State<AllStudent> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (_isLoading)
-            const Center(child: CircularProgressIndicator()),
+          if (_isLoading) const Center(child: CircularProgressIndicator()),
           if (_isError)
             const Center(
-              child: Text(
-                'Something went wrong. Please try again.'
-              ),
+              child: Text('Something went wrong. Please try again.'),
             ),
           if (!_isLoading && !_isError)
             Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Center(
-                          child: Text(
-                            "Total Student: $_totalStudents",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "FontMain",
-                            ),
-                          ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: Text(
+                        "Total Student: $_totalStudents",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "FontMain",
                         ),
                       ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _students.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final student = _students[index] as Map<String, dynamic>;
-                          final name = student['name'];
-                          final mobileNumber = student['mobileNumber'];
-                          return Card(
-                            color: Colors.white,
-                            child: ListTile(
-                              title: Text(name),
-                              subtitle: Text(mobileNumber),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      _buildPagination(),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                    ],
+                    ),
                   ),
-                )
-            ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _students.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final student = _students[index] as Map<String, dynamic>;
+                      final name = student['name'];
+                      final mobileNumber = student['mobileNumber'];
+                      return Card(
+                        color: Colors.white,
+                        child: ListTile(
+                          title: Text(name),
+                          subtitle: Text(mobileNumber),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  _buildPagination(),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                ],
+              ),
+            )),
         ],
       ),
     );

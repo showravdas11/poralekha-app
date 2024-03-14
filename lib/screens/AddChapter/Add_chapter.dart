@@ -47,9 +47,8 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 
     _tutorialNameControllers.add(TextEditingController());
     _tutorialLinkControllers.add(TextEditingController());
-    _tutorialWidgets.add(
-        _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
-    );
+    _tutorialWidgets.add(_tutorialHolder(
+        _tutorialNameControllers.last, _tutorialLinkControllers.last));
   }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -226,7 +225,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 borderRadius: BorderRadius.circular(screenWidth * 0.05),
               ),
               child: Container(
-                padding: EdgeInsets.all(screenWidth * 0.04),
+                padding: EdgeInsets.all(screenWidth * 0.05),
                 height: screenHeight * 0.15,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -245,20 +244,20 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Subject: ${widget.subjectData['name']}",
+                      "${"Subject".tr}: ${widget.subjectData['name']}",
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.bold,
                         // color: Colors
                         //     .white, // Adjust text color to make it visible on the background image
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      "${widget.subjectData['class']}",
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.04,
-                      ), // Adjust text color
+                      "${"Class".tr}: ${widget.subjectData['class']}",
+                      style: TextStyle(fontSize: screenWidth * 0.04),
                     ),
                   ],
                 ),
@@ -360,9 +359,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     setState(() {
                       _tutorialNameControllers.add(TextEditingController());
                       _tutorialLinkControllers.add(TextEditingController());
-                      _tutorialWidgets.add(
-                          _tutorialHolder(_tutorialNameControllers.last, _tutorialLinkControllers.last)
-                      );
+                      _tutorialWidgets.add(_tutorialHolder(
+                          _tutorialNameControllers.last,
+                          _tutorialLinkControllers.last));
                     });
                   },
                   child: const Text("Add More"),
@@ -447,7 +446,8 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     );
   }
 
-  Widget _tutorialHolder(TextEditingController nameController, TextEditingController linkController) {
+  Widget _tutorialHolder(TextEditingController nameController,
+      TextEditingController linkController) {
     return Column(
       children: [
         CommonTextField(

@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ImportantTopicScreen extends StatefulWidget {
   final String documentId;
   final List<dynamic> topics;
+
   const ImportantTopicScreen({
     Key? key,
     required this.documentId,
@@ -21,9 +21,13 @@ class _ImportantTopicScreenState extends State<ImportantTopicScreen> {
     return Column(
       children: widget.topics.map((topic) {
         return Container(
-          height: 65,
-          width: double.infinity,
-          margin: const EdgeInsets.symmetric(vertical: 8),
+          height: MediaQuery.of(context).size.height *
+              0.1, // Adjust height as needed
+          width:
+              MediaQuery.of(context).size.width * 0.9, // Adjust width as needed
+          margin: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height *
+                  0.01), // Adjust margin as needed
           decoration: BoxDecoration(
             color: const Color.fromARGB(255, 255, 255, 255),
             borderRadius: BorderRadius.circular(10),
@@ -37,23 +41,29 @@ class _ImportantTopicScreenState extends State<ImportantTopicScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    // Image.asset(
-                    //   'assets/images/Bookgif.gif',
-                    //   width: 40,
-                    //   height: 40,
-                    // ),
-                    const SizedBox(width: 10),
-                    Text(
-                      topic['topicName'] ?? '',
-                      style: const TextStyle(
-                        fontSize: 18,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      // Image.asset(
+                      //   'assets/images/Bookgif.gif',
+                      //   width: 40,
+                      //   height: 40,
+                      // ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          topic['topicName'] ?? '',
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               TextButton(
@@ -77,7 +87,7 @@ class _ImportantTopicScreenState extends State<ImportantTopicScreen> {
                     ),
                   );
                 },
-                child: const Text("Click Here"),
+                child: Text("Click Here".tr),
               ),
             ],
           ),

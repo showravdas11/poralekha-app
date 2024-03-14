@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({
@@ -11,8 +12,23 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
+  late SharedPreferences _preferences;
   List<String> options = ['English', 'বাংলা'];
   String currentOption = 'English';
+
+  @override
+  void initState() {
+    super.initState();
+    _initPreferences();
+  }
+
+  void _initPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
+    String savedLanguage = _preferences.getString('language') ?? 'en_US';
+    setState(() {
+      currentOption = savedLanguage == 'en_US' ? 'English' : 'বাংলা';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +71,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ListTile(
             title: const Text("English"),
             onTap: () {
-              Get.updateLocale(Locale('en', 'US'));
+              _saveLanguage('en_US');
             },
           ),
           Divider(
@@ -65,11 +81,20 @@ class _LanguageScreenState extends State<LanguageScreen> {
           ListTile(
             title: const Text("বাংলা"),
             onTap: () {
-              Get.updateLocale(Locale('bd', 'BAN'));
+              _saveLanguage('bd_BAN');
             },
           ),
         ],
       ),
     );
+  }
+
+  void _saveLanguage(String languageCode) {
+    _preferences.setString('language', languageCode);
+    setState(() {
+      currentOption = languageCode == 'en_US' ? 'English' : 'বাংলা';
+    });
+    Get.back(); // Close the bottom sheet
+    Get.updateLocale(Locale.fromSubtags(languageCode: languageCode));
   }
 }

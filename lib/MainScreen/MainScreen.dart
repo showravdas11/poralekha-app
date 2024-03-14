@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Chat/ChatListScreen.dart';
@@ -50,22 +51,22 @@ class _MainScreenState extends State<MainScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             tabBackgroundColor: Colors.grey[100]!,
             color: Colors.black,
-            tabs: const [
+            tabs: [
               GButton(
                 icon: Iconsax.home,
-                text: "Home",
+                text: "Home".tr,
               ),
               GButton(
                 icon: Iconsax.message,
-                text: "Chat",
+                text: "Chat".tr,
               ),
               GButton(
                 icon: Iconsax.book,
-                text: "Book",
+                text: "Book".tr,
               ),
               GButton(
                 icon: Iconsax.user,
-                text: "Profile",
+                text: "Profile".tr,
               ),
             ],
             selectedIndex: _selectedIndex,

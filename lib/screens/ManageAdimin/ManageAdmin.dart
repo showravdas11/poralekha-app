@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:poralekha_app/common/AppBar.dart';
+import 'package:poralekha_app/theme/myTheme.dart';
 
-class ManageAdminScreen extends StatelessWidget {
+class ManageAdminScreen extends StatefulWidget {
+  @override
+  State<ManageAdminScreen> createState() => _ManageAdminScreenState();
+}
+
+class _ManageAdminScreenState extends State<ManageAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Admin'),
+      appBar: CustomAppBar(
+        title: "Manage Admin".tr,
+        leadingOnPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -28,8 +39,6 @@ class ManageAdminScreen extends StatelessWidget {
           }
 
           List<QueryDocumentSnapshot> users = snapshot.data!.docs;
-
-          // Get the current user's ID
           String? currentUserEmail = FirebaseAuth.instance.currentUser?.email;
 
           return ListView.builder(
@@ -37,7 +46,6 @@ class ManageAdminScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var user = users[index].data() as Map<String, dynamic>;
 
-              // Check if the user is the current user, and skip if so
               if (user['email'] == currentUserEmail) {
                 return const SizedBox.shrink();
               }
@@ -95,17 +103,14 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isTapped = !_isTapped;
-        });
-        widget.onPressed();
-      },
+      // onTap: () {
+      //   setState(() {
+      //     _isTapped = !_isTapped;
+      //   });
+      //   widget.onPressed();
+      // },
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: 10,
-          right: 10,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Card(
           elevation: 4,
           shape: RoundedRectangleBorder(
@@ -120,7 +125,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
             decoration: BoxDecoration(
               gradient: widget.isAdmin
                   ? LinearGradient(
-                      colors: [Colors.red.withOpacity(0.8), Colors.red],
+                      colors: [Colors.green.withOpacity(0.8), Colors.green],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     )
@@ -136,16 +141,15 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Name: ${widget.name}',
+                        '${'Name'.tr}: ${widget.name}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Email: ${widget.email}',
+                        '${'E-mail'.tr}: ${widget.email}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontSize: 16,
@@ -154,12 +158,23 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     ],
                   ),
                 ),
-                IconButton(
-                  onPressed: widget.onPressed,
-                  icon: Icon(
-                    widget.isAdmin ? Icons.remove_circle : Icons.add_circle,
-                    color: widget.isAdmin ? Colors.white : Colors.green,
-                    size: 30,
+                ElevatedButton(
+                  onPressed: () {
+                    _showConfirmationDialog();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        widget.isAdmin ? Colors.red : MyTheme.buttonColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    widget.isAdmin ? 'Revert'.tr : 'Make Admin'.tr,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
@@ -167,6 +182,126 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  margin: const EdgeInsets.only(top: 20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      const BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        offset: Offset(0.0, 10.0),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        widget.isAdmin ? 'Confirm Revert' : 'Make Admin',
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        widget.isAdmin
+                            ? 'Do you want to revert admin privileges?'
+                            : 'Do you want to make this user an admin?',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.black,
+                        ),
+                      ),
+
+                      const SizedBox(height: 24.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'No',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              widget.onPressed();
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 16,
+                  right: 16,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    radius: 20,
+                    child: Icon(
+                      widget.isAdmin ? Icons.check : Icons.undo,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
