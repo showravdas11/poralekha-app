@@ -12,10 +12,12 @@ import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class AddChapterScreen extends StatefulWidget {
-  final Map<String, dynamic> subjectData;
-  final String docId;
+  final String documentId;
+  final String className;
+  final String subjectName;
+
   const AddChapterScreen(
-      {Key? key, required this.subjectData, required this.docId})
+      {Key? key, required this.documentId, required this.className, required this.subjectName})
       : super(key: key);
 
   @override
@@ -166,7 +168,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 
       CollectionReference chapterCollection = FirebaseFirestore.instance
           .collection('subjects')
-          .doc(widget.docId)
+          .doc(widget.documentId)
           .collection('chapters');
       try {
         await chapterCollection.add({
@@ -244,7 +246,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "${"Subject".tr}: ${widget.subjectData['name']}",
+                      "${"Subject"}: ${widget.subjectName}",
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.bold,
@@ -256,7 +258,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      "${"Class".tr}: ${widget.subjectData['class']}",
+                      "${"Class"}: ${widget.className}",
                       style: TextStyle(fontSize: screenWidth * 0.04),
                     ),
                   ],

@@ -121,8 +121,8 @@ class _EditSubjectState extends State<EditSubject> {
               stream:
                   FirebaseFirestore.instance.collection('classes').snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<DropdownMenuItem<String>> classItems = [];
+                List<DropdownMenuItem<String>> classItems = [];
+                if(snapshot.hasData) {
                   for (var doc in snapshot.data!.docs) {
                     String className = doc.get('name');
                     classItems.add(
@@ -138,39 +138,37 @@ class _EditSubjectState extends State<EditSubject> {
                       ),
                     );
                   }
-                  return Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: DropdownButtonFormField<String>(
-                      value: selectClass,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectClass = newValue;
-                        });
-                      },
-                      items: classItems,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Select Your Class".tr,
-                        hintStyle: TextStyle(),
-                        alignLabelWithHint: true,
-                        iconColor: Color(0xFF7E59FD),
-                      ),
-                    ),
-                  );
-                } else {
-                  return const CircularProgressIndicator();
                 }
+                return Container(
+                  height: 45,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: DropdownButtonFormField<String>(
+                    value: selectClass,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectClass = newValue;
+                      });
+                    },
+                    items: classItems,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Select Your Class".tr,
+                      hintStyle: TextStyle(),
+                      alignLabelWithHint: true,
+                      iconColor: Color(0xFF7E59FD),
+                    ),
+                  ),
+                );
               },
             ),
             const Spacer(),

@@ -77,50 +77,6 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
     }
   }
 
-  // Future<void> _selectEndTime(BuildContext context) async {
-  //   if (selectedStartTime != null) {
-  //     final TimeOfDay? pickedTime = await showTimePicker(
-  //       context: context,
-  //       initialTime: selectedEndTime ??
-  //           selectedStartTime!, // Set initial time to selected end time or start time
-  //     );
-  //     if (pickedTime != null) {
-  //       // Calculate the maximum selectable time (5 hours after the selected start time)
-  //       final maxSelectableTime = TimeOfDay(
-  //         hour: selectedStartTime!.hour + 5,
-  //         minute: selectedStartTime!.minute,
-  //       );
-  //       // Convert TimeOfDay to DateTime for comparison
-  //       final pickedDateTime =
-  //           DateTime(1, 1, 1, pickedTime.hour, pickedTime.minute);
-  //       final maxSelectableDateTime =
-  //           DateTime(1, 1, 1, maxSelectableTime.hour, maxSelectableTime.minute);
-  //       // Check if the picked time is before or equal to the maximum selectable time
-  //       if (pickedDateTime.isBefore(maxSelectableDateTime) ||
-  //           pickedDateTime == maxSelectableDateTime) {
-  //         setState(() {
-  //           selectedEndTime = pickedTime;
-  //         });
-  //       } else {
-  //         // Inform the user that the selected time is not within the allowed range
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(
-  //             content:
-  //                 Text('End time should be within 5 hours of the start time.'),
-  //           ),
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     // Inform the user to select the start time first
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Please select the start time first.'),
-  //       ),
-  //     );
-  //   }
-  // }
-
   Future<void> _selectEndTime(BuildContext context) async {
     if (selectedStartTime != null) {
       final TimeOfDay? pickedTime = await showTimePicker(
