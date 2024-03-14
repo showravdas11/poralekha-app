@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ManageAdminScreen extends StatefulWidget {
@@ -12,8 +14,11 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Admin'),
+      appBar: CustomAppBar(
+        title: "Manage Admin".tr,
+        leadingOnPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -136,7 +141,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Name: ${widget.name}',
+                        '${'Name'.tr}: ${widget.name}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
@@ -144,7 +149,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Email: ${widget.email}',
+                        '${'E-mail'.tr}: ${widget.email}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontSize: 16,
@@ -165,7 +170,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     ),
                   ),
                   child: Text(
-                    widget.isAdmin ? 'Revert' : 'Make Admin',
+                    widget.isAdmin ? 'Revert'.tr : 'Make Admin'.tr,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -192,6 +197,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           backgroundColor: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
+
             child: Stack(
               children: <Widget>[
                 Container(
@@ -231,6 +237,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                           color: Colors.black,
                         ),
                       ),
+
                       const SizedBox(height: 24.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

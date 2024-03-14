@@ -17,6 +17,7 @@ class HomeBanner extends StatelessWidget {
         // color: Colors.amber,
         image: const DecorationImage(
           image: AssetImage('assets/images/home-bg6.jpg'),
+
           fit: BoxFit.cover,
         ),
       ),

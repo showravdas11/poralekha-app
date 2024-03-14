@@ -67,6 +67,7 @@ class Languages extends Translations {
           'Date': 'Date',
           'Time': 'Time',
           'Edit info': 'Edit info',
+          'Join Now': 'Join Now',
           //Add Lecture Screen
           'Enter Topic Name': 'Enter Topic Name',
           'Select Class Date': 'Select Class Date',
@@ -80,6 +81,27 @@ class Languages extends Translations {
           'Link': 'Link',
           'Platform': 'Platform',
           'Select Class Platform': 'Select Class Platform',
+          //home screen
+          'Class Lectures': 'Class Lectures',
+          'Running': 'Running',
+          'Upcoming': 'Upcoming',
+          //aprove user
+          'Revert': 'Revert',
+          'Approve': 'Approve',
+          'Confirm Revert': 'Confirm Revert',
+          'Confirm Approval': 'Confirm Approval',
+          'Do you want to approve this student?':
+              'Do you want to approve this student?',
+          'Do you want to revert the approval of this student?':
+              'Do you want to revert the approval of this student?',
+          'Yes': 'Yes',
+          'No': 'No',
+          //manage Admin
+          'Revert Admin': 'Revert Admin',
+          'Make Admin': 'Make Admin',
+          'Are you sure?': 'Are you sure?',
+          'Do you want to make this user an admin?':
+              'Do you want to make this user an admin?',
         },
         'bd_BAN': {
           //Profile Screen
@@ -146,6 +168,7 @@ class Languages extends Translations {
           'Date': 'তারিখ',
           'Time': 'সময়',
           'Edit info': 'এডিট ইনফো',
+          'Join Now': 'জয়েন নাউ',
           //Add ChapterScreen
           'Add Chapter': 'অধ্যায় যোগ করুন',
           'Enter Chapter Name': 'অধ্যায় যোগ করুন',
@@ -168,6 +191,27 @@ class Languages extends Translations {
           'Important Topics': 'ইম্পরট্যান্ট টপিকস',
           'Online Tutorials': 'অনলাইন টিউটোরিয়ালস',
           'Watch Now': 'ওয়াচ নাউ',
+          //home screen
+          'Class Lectures': 'ক্লাস লেকচার',
+          'Running': 'রানিং',
+          'Upcoming': 'আপকামিং',
+          //aprove user
+          'Revert': 'রিভার্ট',
+          'Approve': ' এপ্রোভ',
+          'Confirm Revert': 'কন্ফার্ম‌ রিভার্ট',
+          'Confirm Approval': 'কনফার্ম এপ্রোভাল',
+          'Do you want to approve this student?':
+              'আপনি কি এই স্টুডেন্ট কে এপ্রোভ করতে চান?',
+          'Do you want to revert the approval of this student?':
+              'আপনি কি এই স্টুডেন্ট এর এপ্রোভ ফিরিয়ে দিতে চান?',
+          'Yes': 'হ্যাঁ',
+          'No': 'না',
+          //manage Admin
+          'Revert Admin': 'রিভার্ট অ্যাডমিন',
+          'Make Admin': 'মেক অ্যাডমিন',
+          'Are you sure?': 'আপনি কি নিশ্চত?',
+          'Do you want to make this user an admin?':
+              'আপনি কি এই ব্যবহারকারীকে অ্যাডমিন বানাতে চান?',
         },
       };
 
