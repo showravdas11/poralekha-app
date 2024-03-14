@@ -197,7 +197,6 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           backgroundColor: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-
             child: Stack(
               children: <Widget>[
                 Container(
@@ -237,7 +236,6 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                           color: Colors.black,
                         ),
                       ),
-
                       const SizedBox(height: 24.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
