@@ -83,7 +83,7 @@ class _EditSubjectState extends State<EditSubject> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Edit Subject",
+        title: "Edit Subject".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -122,7 +122,7 @@ class _EditSubjectState extends State<EditSubject> {
                   FirebaseFirestore.instance.collection('classes').snapshots(),
               builder: (context, snapshot) {
                 List<DropdownMenuItem<String>> classItems = [];
-                if(snapshot.hasData) {
+                if (snapshot.hasData) {
                   for (var doc in snapshot.data!.docs) {
                     String className = doc.get('name');
                     classItems.add(
@@ -173,7 +173,7 @@ class _EditSubjectState extends State<EditSubject> {
             ),
             const Spacer(),
             RoundedButton(
-              title: "Save Changes",
+              title: "Save Changes".tr,
               onTap: updateSubject,
               width: double.infinity,
             ),

@@ -55,13 +55,13 @@ class _LectureCardState extends State<LectureCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildTextWithIcon(
-                    icon: Iconsax.book,
+                    icon: Iconsax.book_14,
                     text: "${'Topic'.tr}: ${widget.lectureData["topic"]}".tr,
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.user,
+                    icon: Iconsax.teacher,
                     text:
                         "${"Teacher".tr}: ${widget.lectureData["teacherName"]}",
                     screenWidth: screenWidth,
