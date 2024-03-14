@@ -111,7 +111,7 @@ class _LectureCardState extends State<LectureCard> {
                               ),
                             ),
                             child: Text(
-                              'Join Now',
+                              'Join Now'.tr,
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,
                                 fontFamily: "FontMain",

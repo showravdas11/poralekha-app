@@ -175,7 +175,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Topic".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -194,7 +194,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Class".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -245,9 +245,9 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintText: "Select Your Class".tr,
-                              hintStyle: TextStyle(),
+                              hintStyle: const TextStyle(),
                               alignLabelWithHint: true,
-                              iconColor: Color(0xFF7E59FD),
+                              iconColor: const Color(0xFF7E59FD),
                             ),
                           ),
                         );
@@ -261,7 +261,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Date".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -301,7 +301,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Teacher Name".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -317,7 +317,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Start Time".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -362,7 +362,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "End Time".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -404,7 +404,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Class Link".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),
@@ -420,7 +420,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Platform".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500),

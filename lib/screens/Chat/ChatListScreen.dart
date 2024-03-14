@@ -52,7 +52,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Chat Rooms',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
@@ -64,10 +64,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
           builder: (ctx,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot) {
             if (chatSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (chatSnapshot.data == null || chatSnapshot.data!.docs.isEmpty) {
-              return Center(
+              return const Center(
                   child:
                       CircularProgressIndicator()); // Show loader instead of "No chat rooms found"
             }
@@ -93,7 +93,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       .then((value) => value.docs.first),
                   builder: (ctx, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Opacity(
+                      return const Opacity(
                         opacity: 0.0,
                       );
                     }
@@ -119,7 +119,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                               'assets/images/${chatDocs[index]['image']}',
                             ),
                           ),
-                          title: Text(chatDocs[index]['name']),
+                          title: Text(
+                            chatDocs[index]['name'],
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
                           subtitle: Text(lastMessageText),
                           trailing: Text(formattedTime),
                         ),
