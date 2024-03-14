@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ManageAdminScreen extends StatefulWidget {
@@ -12,8 +14,11 @@ class _ManageAdminScreenState extends State<ManageAdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Admin'),
+      appBar: CustomAppBar(
+        title: "Manage Admin".tr,
+        leadingOnPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -136,7 +141,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Name: ${widget.name}',
+                        '${'Name'.tr}: ${widget.name}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
@@ -144,7 +149,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Email: ${widget.email}',
+                        '${'E-mail'.tr}: ${widget.email}',
                         style: TextStyle(
                           color: widget.isAdmin ? Colors.white : Colors.black,
                           fontSize: 16,
@@ -165,7 +170,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     ),
                   ),
                   child: Text(
-                    widget.isAdmin ? 'Revert' : 'Make Admin',
+                    widget.isAdmin ? 'Revert'.tr : 'Make Admin'.tr,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -205,7 +210,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width * 0.05),
                 Text(
-                  widget.isAdmin ? 'Revert Admin' : 'Make Admin',
+                  widget.isAdmin ? 'Revert Admin'.tr : 'Make Admin'.tr,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width *
                         0.05, // Adjust font size
@@ -216,8 +221,8 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                 SizedBox(height: MediaQuery.of(context).size.width * 0.025),
                 Text(
                   widget.isAdmin
-                      ? 'Do you want to revert admin privileges?'
-                      : 'Do you want to make this user an admin?',
+                      ? 'Are you sure?'.tr
+                      : 'Do you want to make this user an admin?'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width *
@@ -234,7 +239,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                         Navigator.of(context).pop();
                       },
                       child: Text(
-                        'No',
+                        'No'.tr,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           color: Colors.black,
@@ -253,7 +258,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                         ),
                       ),
                       child: Text(
-                        'Yes',
+                        'Yes'.tr,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           color: Colors.white,

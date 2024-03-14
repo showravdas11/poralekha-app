@@ -15,12 +15,12 @@ class SubjectListScreen extends StatefulWidget {
 class _SubjectListScreenState extends State<SubjectListScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? _subjectsStream;
   List<Color> _tileColors = [
-    Color(0xFFFE7B33),
-    Color(0xFF616FEA),
-    Color(0xFF9736E5),
-    Color(0xFF3BBDF9),
-    Color(0xFF3DC88A),
-    Color(0xFFE84D51),
+    const Color(0xFFFE7B33),
+    const Color(0xFF616FEA),
+    const Color(0xFF9736E5),
+    const Color(0xFF3BBDF9),
+    const Color(0xFF3DC88A),
+    const Color(0xFFE84D51),
     // Add more colors as needed
   ];
 
@@ -69,7 +69,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
             }
 
             if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-              return Center(
+              return const Center(
                   child:
                       CircularProgressIndicator()); // Show loader instead of "No chat rooms found"
             }
@@ -86,7 +86,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                 [];
 
             return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.0,
                 mainAxisSpacing: 10.0,
@@ -110,10 +110,10 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/subsbg1.png'),
-                          fit: BoxFit.cover,
-                        ),
+                        // image: const DecorationImage(
+                        //   image: AssetImage('assets/images/subsbg1.png'),
+                        //   fit: BoxFit.cover,
+                        // ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(15),

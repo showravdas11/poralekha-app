@@ -2,14 +2,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class ApproveUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Approve User".tr),
+      appBar: CustomAppBar(
+        title: "Approve User".tr,
+        leadingOnPressed: () {
+          Navigator.pop(context);
+        },
       ),
       body: ApproveUserList(),
     );
@@ -92,14 +96,14 @@ class ApproveUserTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
         title: Text(
-          'Name: $name',
+          '${'Name'.tr}: $name',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Email: $email'),
-            Text('Class: $Class'),
+            Text('${'E-mail'.tr}: $email'),
+            Text('${'Class'.tr}: ${Class.tr}'),
           ],
         ),
         trailing: isApproved
@@ -111,8 +115,8 @@ class ApproveUserTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
-                  'Revert',
+                child: Text(
+                  'Revert'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -127,8 +131,8 @@ class ApproveUserTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Text(
-                  'Approve',
+                child: Text(
+                  'Approve'.tr,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -173,7 +177,9 @@ class ApproveUserTile extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        isApproveAction ? 'Confirm Approval' : 'Confirm Revert',
+                        isApproveAction
+                            ? 'Confirm Approval'.tr
+                            : 'Confirm Revert'.tr,
                         style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -183,8 +189,9 @@ class ApproveUserTile extends StatelessWidget {
                       const SizedBox(height: 16.0),
                       Text(
                         isApproveAction
-                            ? 'Do you want to approve this student?'
-                            : 'Do you want to revert the approval of this student?',
+                            ? 'Do you want to approve this student?'.tr
+                            : 'Do you want to revert the approval of this student?'
+                                .tr,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 18.0,
@@ -205,8 +212,8 @@ class ApproveUserTile extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Text(
-                              'No',
+                            child: Text(
+                              'No'.tr,
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.white,
@@ -224,8 +231,8 @@ class ApproveUserTile extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Text(
-                              'Yes',
+                            child: Text(
+                              'Yes'.tr,
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.white,

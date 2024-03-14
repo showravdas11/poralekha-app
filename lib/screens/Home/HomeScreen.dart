@@ -135,10 +135,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          userClass,
+                          userClass.tr,
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: Colors.grey.shade700,
                           ),
                         ),
@@ -191,11 +191,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (isAdmin) {
             return SizedBox(
               width: Get.width * 0.60,
-              height: Get.height * 0.60,
               child: const Drawer(
                 backgroundColor: Color.fromARGB(255, 240, 248, 255),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     MyDrawerHeader(),
                     MyDrawerList(),
@@ -218,9 +217,9 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: screenHeight * 0.02),
               Center(
                 child: Text(
-                  "Class Lectures",
+                  "Class Lectures".tr,
                   style: TextStyle(
-                    fontSize: screenWidth * 0.07,
+                    fontSize: screenWidth * 0.06,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -256,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Running",
+                        "Running".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -282,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Upcoming",
+                        "Upcoming".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,

@@ -13,63 +13,66 @@ class MyDrawerList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: const Icon(Iconsax.user),
-          title: Text("Approve User".tr),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ApproveUser()));
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.admin_panel_settings_outlined),
-          title: Text("Manage Admin".tr),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ManageAdminScreen()));
-          },
-        ),
-        ListTile(
-          leading: const Icon(Iconsax.add_circle),
-          title: Text("Add Lecture".tr),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddLectureScreen()));
-          },
-        ),
-        ListTile(
-          leading: const Icon(Iconsax.lamp),
-          title: Text("All Students".tr),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AllStudent()));
-          },
-        ),
-        ListTile(
-          leading: const Icon(Iconsax.lamp),
-          title: Text("All lectures".tr),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AllLectureScreen()));
-          },
-        ),
-        ListTile(
-          leading: const Icon(Iconsax.book),
-          title: Text("All subjects".tr),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AllSubjectsScreen()));
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 50),
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Iconsax.user),
+            title: Text("Approve User".tr),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ApproveUser()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.admin_panel_settings_outlined),
+            title: Text("Manage Admin".tr),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ManageAdminScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.add_circle),
+            title: Text("Add Lecture".tr),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddLectureScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.lamp),
+            title: Text("All Students".tr),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AllStudent()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.lamp),
+            title: Text("All lectures".tr),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllLectureScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.book),
+            title: Text("All subjects".tr),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllSubjectsScreen()));
+            },
+          ),
+        ],
+      ),
     );
   }
 }
