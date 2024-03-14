@@ -57,6 +57,9 @@ class Languages extends Translations {
           'Class:': 'Class:',
           'Chapter List': 'Chapter List',
           'See Details': 'See Details',
+          'Edit Subject': 'Edit Subject',
+          'Save Changes': 'Save Changes',
+          'Subject Name': 'Subject Name',
           //Bottam NavBar
           'Home': 'Home',
           'Chat': 'Chat',
@@ -102,6 +105,17 @@ class Languages extends Translations {
           'Are you sure?': 'Are you sure?',
           'Do you want to make this user an admin?':
               'Do you want to make this user an admin?',
+          //Add ChapterScreen
+          'Add Chapter': 'Add Chapter',
+          'Enter Chapter Name': 'Enter Chapter Name',
+          'Select Chapter PDF': 'Select Chapter PDF',
+
+          'Select Topic Animation': 'Select Topic Animation',
+          'Enter Tutorials Name': 'Enter Tutorials Name',
+          'Paste Tutorials Link': 'Paste Tutorials Link',
+          'Add Topics': 'Add Topics',
+          'Add Tutorials': 'Add Tutorials',
+          'Add More': 'Add More',
         },
         'bd_BAN': {
           //Profile Screen
@@ -158,6 +172,9 @@ class Languages extends Translations {
           'Class:': 'শ্রেণি:',
           'Chapter List': 'অধ্যায় তালিকা',
           'Show Details': 'বিস্তারিত দেখুন',
+          'Edit Subject': 'এডিট সাবজেক্ট',
+          'Save Changes': 'সেভ চেঞ্জেস',
+          'Subject Name': 'সাবজেক্ট নাম',
           //Bottam NavBar
           'Home': 'হোম',
           'Chat': 'চ্যাট',
@@ -170,8 +187,17 @@ class Languages extends Translations {
           'Edit info': 'এডিট ইনফো',
           'Join Now': 'জয়েন নাউ',
           //Add ChapterScreen
-          'Add Chapter': 'অধ্যায় যোগ করুন',
-          'Enter Chapter Name': 'অধ্যায় যোগ করুন',
+          'Add Chapter': 'অ্যাড চ্যাপ্টার',
+          'Enter Chapter Name': 'এন্টার চ্যাপ্টার নাম',
+          'Select Chapter PDF': 'সিলেক্ট চ্যাপ্টার পিডিএফ',
+
+          'Select Topic Animation': 'সিলেক্ট টপিক অ্যানিমেশন',
+          'Enter Tutorials Name': 'এন্টার টিউটোরিয়ালস নাম',
+          'Paste Tutorials Link': 'পেস্ট টিউটোরিয়ালস লিংক',
+          'Add Topics': 'অ্যাড টপিকস',
+          'Add Tutorials': 'অ্যাড টিউটোরিয়ালস',
+          'Add More': 'অ্যাড মোর',
+
           //All Lecture Screen
           'Enter Topic Name': 'বিষয়ের নাম লিখুন',
           'Select Class Date': 'ক্লাসের তারিখ নির্বাচন করুন',

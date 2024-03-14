@@ -124,10 +124,7 @@ class _AddSubjectsScreenState extends State<AddSubjectsScreen> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: "Select Class".tr,
-                          hintStyle: const TextStyle(
-                            wordSpacing: 2,
-                            letterSpacing: 2,
-                          ),
+                          hintStyle: const TextStyle(),
                           alignLabelWithHint: true,
                           iconColor: const Color(0xFF7E59FD),
                         ),
