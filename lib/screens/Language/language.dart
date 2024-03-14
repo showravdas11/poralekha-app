@@ -148,7 +148,7 @@ class Languages extends Translations {
           'Subjects': 'বিষয়সমূহ',
           'Chapters': 'অধ্যায়সমূহ ',
           //Payment Screen
-          'Choose your payment method': 'আপনার পরিশোধের পদ্ধতি পছন্দ করুন',
+          'Choose your payment method': 'আপনার পেমেন্ট পদ্ধতি নির্বাচন করুন',
           'bKash': 'বিকাশ',
           'Nagad': 'নগদ',
           //Drawer List
@@ -203,14 +203,14 @@ class Languages extends Translations {
           'Select Class Date': 'ক্লাসের তারিখ নির্বাচন করুন',
           'Teacher Name': 'শিক্ষকের নাম',
           'Enter Teacher Name': 'শিক্ষকের নাম লিখুন',
-          'Start Time': 'সময় শুরু',
-          'Set Start Time': 'শুরুর সময় সেট করুন',
+          'Start Time': 'স্টার্ট টাইম',
+          'Set Start Time': 'স্টার্ট টাইম সেট করুন',
           'End Time': 'শেষ সময়',
-          'Set End Time': 'শেষ সময় সেট করুন',
+          'Set End Time': 'এন্ড টাইম সেট করুন',
           'Class Link': 'ক্লাস লিঙ্ক',
           'Paste Link': 'লিঙ্ক পেস্ট করুন',
           'Platform': 'প্ল্যাটফর্ম',
-          'Select Class Platform': 'ক্লাস প্ল্যাটফর্ম নির্বাচন করুন',
+          'Select Class Platform': 'আপনার ক্লাস নির্বাচন করুন',
           //chapter topics screen
           'Chapter Topics': 'চ্যাপ্টার টপিকস',
           'PDF Book': 'পিডিএফ বুক',
@@ -224,8 +224,8 @@ class Languages extends Translations {
           //aprove user
           'Revert': 'রিভার্ট',
           'Approve': ' এপ্রোভ',
-          'Confirm Revert': 'কন্ফার্ম‌ রিভার্ট',
-          'Confirm Approval': 'কনফার্ম এপ্রোভাল',
+          'Confirm Revert': 'কনফার্ম রিভার্ট',
+          'Confirm Approval': 'কনফার্ম এপ্রোভ',
           'Do you want to approve this student?':
               'আপনি কি এই স্টুডেন্ট কে এপ্রোভ করতে চান?',
           'Do you want to revert the approval of this student?':
