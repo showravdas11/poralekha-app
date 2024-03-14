@@ -42,8 +42,8 @@ class Languages extends Translations {
           'Manage Admin': 'Manage Admin',
           'Add Lecture': 'Add Lecture',
           'All Students': 'All Students',
-          'All lectures': 'All lectures',
-          'All subjects': 'All subjects',
+          'All Lectures': 'All Lectures',
+          'All Subjects': 'All Subjects',
           //Add Subject
           'Subject': 'Subject',
           'Class': 'Class',
@@ -139,11 +139,11 @@ class Languages extends Translations {
           'Nagad': 'নগদ',
           //Drawer List
           'Approve User': 'এপ্রোভ ইউজার',
-          'Manage Admin': 'ম্যানেজ অ্যাডমিন',
+          'Manage Admin': 'ম্যানেজ এডমিন',
           'Add Lecture': 'অ্যাড লেকচার',
           'All Students': 'সকল শিক্ষার্থী',
-          'All lectures': 'সব লেকচার',
-          'All subjects': 'সব বিষয়',
+          'All Lectures': 'সব লেকচার',
+          'All Subjects': 'সব বিষয়',
           //Add Subject
           'Subject': 'বিষয়',
           'Class': 'শ্রেণি',
@@ -207,8 +207,8 @@ class Languages extends Translations {
           'Yes': 'হ্যাঁ',
           'No': 'না',
           //manage Admin
-          'Revert Admin': 'রিভার্ট অ্যাডমিন',
-          'Make Admin': 'মেক অ্যাডমিন',
+          'Revert Admin': 'রিভার্ট এডমিন',
+          'Make Admin': 'মেইক এডমিন',
           'Are you sure?': 'আপনি কি নিশ্চত?',
           'Do you want to make this user an admin?':
               'আপনি কি এই ব্যবহারকারীকে অ্যাডমিন বানাতে চান?',

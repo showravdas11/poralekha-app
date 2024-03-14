@@ -197,7 +197,6 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           backgroundColor: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-
             child: Stack(
               children: <Widget>[
                 Container(
@@ -219,7 +218,7 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        widget.isAdmin ? 'Confirm Revert' : 'Make Admin',
+                        widget.isAdmin ? 'Confirm Revert'.tr : 'Make Admin'.tr,
                         style: const TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -229,15 +228,14 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                       const SizedBox(height: 16.0),
                       Text(
                         widget.isAdmin
-                            ? 'Do you want to revert admin privileges?'
-                            : 'Do you want to make this user an admin?',
+                            ? 'Are you sure?'.tr
+                            : 'Do you want to make this user an admin?'.tr,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 18.0,
                           color: Colors.black,
                         ),
                       ),
-
                       const SizedBox(height: 24.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -252,8 +250,8 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Text(
-                              'No',
+                            child: Text(
+                              'No'.tr,
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.white,
@@ -271,8 +269,8 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
-                            child: const Text(
-                              'Yes',
+                            child: Text(
+                              'Yes'.tr,
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.white,
