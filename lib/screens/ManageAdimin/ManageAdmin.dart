@@ -103,12 +103,12 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isTapped = !_isTapped;
-        });
-        widget.onPressed();
-      },
+      // onTap: () {
+      //   setState(() {
+      //     _isTapped = !_isTapped;
+      //   });
+      //   widget.onPressed();
+      // },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Card(
@@ -189,83 +189,113 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          backgroundColor: Colors.white,
-          contentPadding: EdgeInsets.zero,
-          content: Container(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  widget.isAdmin
-                      ? Icons.admin_panel_settings
-                      : Icons.person_add,
-                  size: MediaQuery.of(context).size.width * 0.1,
-                  color: widget.isAdmin ? Colors.red : Colors.green,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.05),
-                Text(
-                  widget.isAdmin ? 'Revert Admin'.tr : 'Make Admin'.tr,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width *
-                        0.05, // Adjust font size
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  margin: const EdgeInsets.only(top: 20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(20.0),
+                    boxShadow: [
+                      const BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        offset: Offset(0.0, 10.0),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.025),
-                Text(
-                  widget.isAdmin
-                      ? 'Are you sure?'.tr
-                      : 'Do you want to make this user an admin?'.tr,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width *
-                        0.04, // Adjust font size
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        'No'.tr,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        widget.isAdmin ? 'Confirm Revert' : 'Make Admin',
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Text(
+                        widget.isAdmin
+                            ? 'Do you want to revert admin privileges?'
+                            : 'Do you want to make this user an admin?',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18.0,
                           color: Colors.black,
                         ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        widget.onPressed();
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+
+                      const SizedBox(height: 24.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'No',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              widget.onPressed();
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            child: const Text(
+                              'Yes',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Text(
-                        'Yes'.tr,
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          color: Colors.white,
-                        ),
-                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 16,
+                  right: 16,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    radius: 20,
+                    child: Icon(
+                      widget.isAdmin ? Icons.check : Icons.undo,
+                      color: Colors.white,
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
