@@ -115,7 +115,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                   subjectName: subjectData?['name'] ?? 'N/A',
                                   className: subjectData?['class'] ?? 'N/A'));
                             },
-                            child: const Text("Edit"),
+                            child: const Text("Update Subject"),
                           )
                         ],
                       ),
@@ -206,13 +206,17 @@ class _SubjectDetailsState extends State<SubjectDetails> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         AddChapterScreen(subjectData: _subjectData, docId: _docId),
-          //   ),
-          // );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AddChapterScreen(
+                      documentId: widget.documentId,
+                      className: widget.className,
+                      subjectName: widget.subjectName
+                  ),
+            ),
+          );
         },
         backgroundColor: Colors.white,
         foregroundColor: MyTheme.buttonColor,

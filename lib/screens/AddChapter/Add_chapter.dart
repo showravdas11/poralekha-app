@@ -4,22 +4,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
-import 'package:poralekha_app/screens/AddTutorial/AddTutorials.dart';
-
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:get/get.dart';
 
 class AddChapterScreen extends StatefulWidget {
-  final Map<String, dynamic> subjectData;
-  final String docId;
+  final String documentId;
+  final String className;
+  final String subjectName;
+
   const AddChapterScreen(
-      {Key? key, required this.subjectData, required this.docId})
+      {Key? key,
+      required this.documentId,
+      required this.className,
+      required this.subjectName})
       : super(key: key);
 
   @override
@@ -28,15 +30,15 @@ class AddChapterScreen extends StatefulWidget {
 
 class _AddChapterScreenState extends State<AddChapterScreen> {
   TextEditingController chapterNameController = TextEditingController();
-  String? _filePath;
-  String? _gifPath;
-  bool _uploading = false;
-  late File _selectedFile;
-  late File _gifSelectedFile;
+  File? _selectedPdf;
+  String _pdfPath = "";
 
   final List<Widget> _topicWidgets = [];
   final List<TextEditingController> _topicNameControllers = [];
-  final List<String> _gifUrls = [];
+  final List<String> _gifPaths = [];
+  final List<File?> _gifs = [];
+  BuildContext? dialogContext;
+
   final List<Widget> _tutorialWidgets = [];
   final List<TextEditingController> _tutorialNameControllers = [];
   final List<TextEditingController> _tutorialLinkControllers = [];
@@ -44,8 +46,10 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
   @override
   void initState() {
     super.initState();
+    _gifs.add(null);
+    _gifPaths.add("");
     _topicNameControllers.add(TextEditingController());
-    _topicWidgets.add(_buildTopicHolder(_topicNameControllers.last));
+    _topicWidgets.add(_buildTopicHolder(_topicNameControllers.last, 0));
 
     _tutorialNameControllers.add(TextEditingController());
     _tutorialLinkControllers.add(TextEditingController());
@@ -55,82 +59,64 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<String> uploadPdf(String fileName, File file) async {
-    final reference =
-        FirebaseStorage.instance.ref().child("pdfs/$fileName/.pdf");
-
-    final uploadTask = reference.putFile(file);
-
-    await uploadTask.whenComplete(() {});
-
-    final downloadLink = await reference.getDownloadURL();
-
-    return downloadLink;
-  }
-
-  void pickFile() async {
-    setState(() {
-      _uploading = true;
-    });
-
+  void pickFile(String type, {gifIndex = -1}) async {
     final pickedFile = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf'],
+      allowedExtensions: [type],
     );
 
     if (pickedFile != null) {
-      _selectedFile = File(pickedFile.files[0].path!);
+      if (type == 'pdf') {
+        _selectedPdf = File(pickedFile.files[0].path!);
+      } else {
+        _gifs[gifIndex] = File(pickedFile.files[0].path!);
+      }
+
       setState(() {
-        _filePath = pickedFile.files[0].path;
-        _uploading = false;
-      });
-    } else {
-      setState(() {
-        _uploading = false;
+        if (type == 'pdf') {
+          _pdfPath = pickedFile.files[0].path?.split('/').last ?? "";
+        } else {
+          setState(() {
+            _gifPaths[gifIndex] =
+                pickedFile.files[0].path?.split('/').last ?? "";
+          });
+        }
       });
     }
   }
 
-  // upload gif
-  Future<String> uploadGif(String fileName, File file) async {
-    final reference =
-        FirebaseStorage.instance.ref().child("gifs/$fileName/.gif");
-
-    final uploadTask = reference.putFile(file);
-
-    await uploadTask.whenComplete(() {});
-
-    final downloadLink = await reference.getDownloadURL();
-
-    return downloadLink;
-  }
-
-  void pickGifFile() async {
-    setState(() {
-      _uploading = true;
-    });
-
-    final pickedFile = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['gif'],
-    );
-
-    if (pickedFile != null) {
-      _gifSelectedFile = File(pickedFile.files[0].path!);
-      setState(() {
-        _gifPath =
-            pickedFile.files[0].path; // Correcting the variable assignment
-        _uploading = false;
-      });
-    } else {
-      setState(() {
-        _uploading = false;
-      });
+  Future<String> uploadFile(File? file, String type) async {
+    if (file == null) {
+      return "";
     }
+    String fileName = file.path.split('/').last;
+    final reference =
+        FirebaseStorage.instance.ref().child("${type}s/$fileName");
+    final uploadTask = reference.putFile(file);
+    await uploadTask.whenComplete(() {});
+    final downloadLink = await reference.getDownloadURL();
+    print("${type} download link: $downloadLink");
+    return downloadLink;
   }
 
   void addChapter() async {
-    if (chapterNameController.text.isEmpty || _selectedFile == null) {
+    bool isTopicOk = true;
+    for (int i = 0; i < _topicWidgets.length; i++) {
+      if (_topicNameControllers[i].text == "" || _gifs[i] == null) {
+        isTopicOk = false;
+      }
+    }
+    bool isTutorialOk = true;
+    for (int i = 0; i < _tutorialWidgets.length; i++) {
+      if (_tutorialNameControllers[i].text == "" ||
+          _tutorialLinkControllers[i].text == "") {
+        isTutorialOk = false;
+      }
+    }
+    if (chapterNameController.text.isEmpty ||
+        _selectedPdf == null ||
+        !isTopicOk ||
+        !isTutorialOk) {
       // If any required field is empty, show dialog
       AwesomeDialog(
         context: context,
@@ -144,39 +130,87 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       return;
     }
 
-    setState(() {
-      _uploading = true;
-    });
-
-    String fileName = _selectedFile.path.split('/').last;
-    final downloadLink = await uploadPdf(fileName, _selectedFile);
-
-    CollectionReference chapterCollection = FirebaseFirestore.instance
-        .collection('subjects')
-        .doc(widget.docId)
-        .collection('chapters');
-
-    await chapterCollection.add({
-      "name": chapterNameController.text,
-      "pdfLink": downloadLink,
-    });
-
-    setState(() {
-      _uploading = false;
-    });
-
-    // chapnameController.clear();
-    _filePath = null;
-    _selectedFile = File('');
-
-    AwesomeDialog(
+    showDialog(
       context: context,
-      dialogType: DialogType.success,
-      animType: AnimType.rightSlide,
-      title: 'Pdf Uploaded Successfully',
-      btnOkColor: MyTheme.buttonColor,
-      btnOkOnPress: () {},
-    ).show();
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        dialogContext = context;
+        return const AlertDialog(
+          backgroundColor: Colors.transparent,
+          content: SpinKitCircle(color: Colors.white, size: 50.0),
+        );
+      },
+    );
+
+    String pdfLink = await uploadFile(_selectedPdf, 'pdf');
+    List<String> gifLinks = [];
+    for (File? gif in _gifs) {
+      String gifLink = await uploadFile(gif, 'gif');
+      gifLinks.add(gifLink);
+    }
+
+    if (pdfLink == "" && _gifs.length != gifLinks.length) {
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.error,
+        animType: AnimType.rightSlide,
+        title: 'Something went wrong uploading pdf',
+        btnOkColor: MyTheme.buttonColor,
+        btnOkOnPress: () {},
+      ).show();
+    } else {
+      List<Map<String, String>> topicData = [];
+      for (int i = 0; i < _topicWidgets.length; i++) {
+        topicData.add({
+          'animationUrl': gifLinks[i],
+          'topicName': _topicNameControllers[i].text
+        });
+      }
+
+      List<Map<String, String>> tutorialData = [];
+      for (int i = 0; i < _tutorialWidgets.length; i++) {
+        tutorialData.add({
+          'name': _tutorialNameControllers[i].text,
+          'videoLink': _tutorialLinkControllers[i].text
+        });
+      }
+
+      CollectionReference chapterCollection = FirebaseFirestore.instance
+          .collection('subjects')
+          .doc(widget.documentId)
+          .collection('chapters');
+      try {
+        await chapterCollection.add({
+          "name": chapterNameController.text,
+          "pdfLink": pdfLink,
+          "topics": topicData,
+          "tutorials": tutorialData
+        });
+
+        Navigator.pop(dialogContext!);
+
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.rightSlide,
+          title: 'Chapter added successfully',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {
+            Navigator.pop(context);
+          },
+        )..show();
+      } catch (e) {
+        Navigator.pop(dialogContext!);
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.rightSlide,
+          title: 'Something went wrong',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    }
   }
 
   @override
@@ -185,10 +219,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     final appBarHeight = AppBar().preferredSize.height;
     final screenHeight = screenSize.height - appBarHeight;
     final screenWidth = screenSize.width;
-    TextEditingController topicController = TextEditingController();
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Add Chapter",
+        title: "Add Chapter".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -216,17 +249,13 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                       offset: const Offset(0, 1),
                     ),
                   ],
-                  // image: const DecorationImage(
-                  //   image: AssetImage("assets/images/aaa.png"),
-                  //   fit: BoxFit.cover,
-                  // ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "${"Subject".tr}: ${widget.subjectData['name']}",
+                      "${"Subject".tr}: ${widget.subjectName}",
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.bold,
@@ -238,7 +267,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      "${"Class".tr}: ${widget.subjectData['class']}",
+                      "${"Class".tr}: ${widget.className}",
                       style: TextStyle(fontSize: screenWidth * 0.04),
                     ),
                   ],
@@ -248,7 +277,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             const SizedBox(height: 15),
             CommonTextField(
               controller: chapterNameController,
-              text: "Enter Chapter Name",
+              text: "Enter Chapter Name".tr,
               textInputType: TextInputType.text,
               obscure: false,
               suffixIcon: const Icon(Iconsax.add_circle),
@@ -269,19 +298,18 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               ),
               child: TextFormField(
                 onTap: () {
-                  pickFile();
+                  pickFile('pdf');
                 },
                 readOnly: true,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: _filePath ?? "Select Chapter PDF",
-                  hintStyle: const TextStyle(
-                    wordSpacing: 2,
-                    letterSpacing: 2,
-                  ),
+                  hintText: _pdfPath != "" ? _pdfPath : "Select Chapter PDF".tr,
+                  hintStyle: const TextStyle(),
                   suffixIcon: IconButton(
                     icon: const Icon(Iconsax.book_14),
-                    onPressed: pickFile,
+                    onPressed: () {
+                      pickFile('pdf');
+                    },
                   ),
                   alignLabelWithHint: true,
                   iconColor: const Color(0xFF7E59FD),
@@ -292,9 +320,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Add Topics",
-                  style: TextStyle(
+                Text(
+                  "Add Topics".tr,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -302,14 +330,15 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      TextEditingController topicNameController =
-                          TextEditingController();
-                      _topicNameControllers.add(topicNameController);
-                      _topicWidgets
-                          .add(_buildTopicHolder(_topicNameControllers.last));
+                      int len = _topicWidgets.length;
+                      _topicNameControllers.add(TextEditingController());
+                      _gifs.add(null);
+                      _gifPaths.add("");
+                      _topicWidgets.add(
+                          _buildTopicHolder(_topicNameControllers.last, len));
                     });
                   },
-                  child: const Text("Add More"),
+                  child: Text("Add More".tr),
                 ),
               ],
             ),
@@ -327,9 +356,9 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Add Tutorials",
-                  style: TextStyle(
+                Text(
+                  "Add Tutorials".tr,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -344,7 +373,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                           _tutorialLinkControllers.last));
                     });
                   },
-                  child: const Text("Add More"),
+                  child: Text("Add More".tr),
                 ),
               ],
             ),
@@ -362,8 +391,10 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
             const SizedBox(height: 15),
             Center(
               child: RoundedButton(
-                title: "Add Chapter",
-                onTap: addChapter,
+                title: "Add Chapter".tr,
+                onTap: () {
+                  addChapter();
+                },
                 width: double.infinity,
               ),
             ),
@@ -373,12 +404,13 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
     );
   }
 
-  Widget _buildTopicHolder(TextEditingController topicNameController) {
+  Widget _buildTopicHolder(
+      TextEditingController topicNameController, int index) {
     return Column(
       children: [
         CommonTextField(
           controller: topicNameController,
-          text: "Enter Topic Name",
+          text: "Enter Topic Name".tr,
           textInputType: TextInputType.text,
           obscure: false,
           suffixIcon: const Icon(Iconsax.add_circle),
@@ -399,22 +431,21 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
           ),
           child: TextFormField(
             onTap: () {
-              pickGifFile();
+              pickFile('gif', gifIndex: index);
             },
             readOnly: true,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: _gifPath ?? "Select topic Animation",
-              hintStyle: const TextStyle(
-                wordSpacing: 2,
-                letterSpacing: 2,
+              hintText: _gifPaths[index] != ""
+                  ? _gifPaths[index]
+                  : "Select Topic Animation".tr,
+              hintStyle: const TextStyle(),
+              suffixIcon: IconButton(
+                icon: const Icon(Iconsax.gallery_add),
+                onPressed: () {
+                  pickFile('gif', gifIndex: index);
+                },
               ),
-              suffixIcon: _uploading
-                  ? const CircularProgressIndicator()
-                  : IconButton(
-                      icon: const Icon(Iconsax.gallery_add),
-                      onPressed: pickGifFile,
-                    ),
               alignLabelWithHint: true,
               iconColor: const Color(0xFF7E59FD),
             ),
@@ -430,7 +461,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       children: [
         CommonTextField(
           controller: nameController,
-          text: "Enter Tutorials Name",
+          text: "Enter Tutorials Name".tr,
           textInputType: TextInputType.text,
           obscure: false,
           suffixIcon: const Icon(Iconsax.text),
@@ -438,7 +469,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
         const SizedBox(height: 15),
         CommonTextField(
           controller: linkController,
-          text: "Paste Tutorials Link",
+          text: "Paste Tutorials Link".tr,
           textInputType: TextInputType.text,
           obscure: false,
           suffixIcon: const Icon(Iconsax.link),

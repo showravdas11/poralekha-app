@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/AllLectures/AllLectures.dart';
@@ -8,67 +9,76 @@ import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
 import 'package:poralekha_app/screens/AllStudents/AllStudents.dart';
 import 'package:poralekha_app/screens/ManageAdimin/ManageAdmin.dart';
 
+import 'package:poralekha_app/widgets/DrawerListMenu.dart';
+
+import 'package:ficonsax/ficonsax.dart';
+
 class MyDrawerList extends StatelessWidget {
   const MyDrawerList({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 50),
+      padding: const EdgeInsets.symmetric(
+        vertical: 50,
+      ),
       child: Column(
         children: [
-          ListTile(
-            leading: const Icon(Iconsax.user),
-            title: Text("Approve User".tr),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "Approve User".tr,
+              icon: Iconsax.user,
+            ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ApproveUser()));
+              Get.to(ApproveUser());
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.admin_panel_settings_outlined),
-            title: Text("Manage Admin".tr),
+          // SizedBox(
+          //   height: Get.height * 0.01,
+          // ),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "Manage Admin".tr,
+              icon: Iconsax.teacher,
+            ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ManageAdminScreen()));
+              Get.to(ManageAdminScreen());
             },
           ),
-          ListTile(
-            leading: const Icon(Iconsax.add_circle),
-            title: Text("Add Lecture".tr),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "Add Lecture".tr,
+              icon: Iconsax.video,
+            ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AddLectureScreen()));
+              Get.to(const AddLectureScreen());
             },
           ),
-          ListTile(
-            leading: const Icon(Iconsax.lamp),
-            title: Text("All Students".tr),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "All Students".tr,
+              icon: Iconsax.people,
+            ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AllStudent()));
+              Get.to(const AllStudent());
             },
           ),
-          ListTile(
-            leading: const Icon(Iconsax.lamp),
-            title: Text("All lectures".tr),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "All Lectures".tr,
+              icon: Iconsax.video,
+            ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AllLectureScreen()));
+              Get.to(const AllLectureScreen());
             },
           ),
-          ListTile(
-            leading: const Icon(Iconsax.book),
-            title: Text("All subjects".tr),
+          GestureDetector(
+            child: DrawerListMenu(
+              title: "All Subjects".tr,
+              icon: Iconsax.book_14,
+            ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AllSubjectsScreen()));
+              Get.to(const AllSubjectsScreen());
             },
           ),
         ],
