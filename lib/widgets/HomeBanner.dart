@@ -16,7 +16,7 @@ class HomeBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         // color: Colors.amber,
         image: const DecorationImage(
-          image: AssetImage('assets/images/poralekha-home-bg.jpg'),
+          image: AssetImage('assets/images/home-bg6.jpg'),
           fit: BoxFit.cover,
         ),
       ),
