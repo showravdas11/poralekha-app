@@ -42,14 +42,28 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isRunningLecture(String date, String startTime, String endTime) {
     try {
       final DateFormat dateFormatter = DateFormat('dd-MM-yyyy');
-      final DateFormat timeFormatter = DateFormat('hh:mm a');
 
       DateTime parsedDate = dateFormatter.parse(date);
       DateTime today = DateTime.now();
 
-      if (parsedDate
-          .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
-        return true;
+      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
+        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+        DateFormat dateFormat = DateFormat('h:mm a');
+        DateTime parsedStartTime = dateFormat.parse(startTime);
+        DateTime parsedEndTime = dateFormat.parse(endTime);
+
+        DateFormat twentyFourHourFormat = DateFormat('HH:mm:ss');
+        String formattedStartTime = twentyFourHourFormat.format(parsedStartTime);
+        String formattedEndTime = twentyFourHourFormat.format(parsedEndTime);
+
+        DateTime startDateTime = DateTime.parse("$formattedDate $formattedStartTime");
+        DateTime endDateTime = DateTime.parse("$formattedDate $formattedEndTime");
+
+        if(startDateTime.isBefore(DateTime.now()) && endDateTime.isAfter(DateTime.now())) {
+          return true;
+        }
+        return false;
       } else {
         return false;
       }
@@ -239,14 +253,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (_state != "running") {
+                        if (_state != "upcoming") {
                           setState(() {
-                            _state = "running";
+                            _state = "upcoming";
                           });
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _state == "running"
+                        backgroundColor: _state == "upcoming"
                             ? MyTheme.buttonColor
                             : MyTheme.buttonColor.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
@@ -255,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Running".tr,
+                        "Upcoming".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -265,14 +279,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (_state != "upcoming") {
+                        if (_state != "running") {
                           setState(() {
-                            _state = "upcoming";
+                            _state = "running";
                           });
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _state == "running"
+                        backgroundColor: _state == "upcoming"
                             ? MyTheme.buttonColor.withOpacity(0.6)
                             : MyTheme.buttonColor,
                         shape: RoundedRectangleBorder(
@@ -281,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Upcoming".tr,
+                        "Running".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
