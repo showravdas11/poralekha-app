@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
-import 'package:poralekha_app/screens/Payment/Successfull/SuccessfullScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class EditSubject extends StatefulWidget {

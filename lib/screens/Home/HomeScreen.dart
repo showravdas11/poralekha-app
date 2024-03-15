@@ -11,45 +11,66 @@ import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:poralekha_app/widgets/HomeBanner.dart';
 import 'package:poralekha_app/widgets/LecturesCard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState(documentId: '');
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _state = "running";
+  String _state = "upcoming";
   late Stream<QuerySnapshot> _lectureStream;
-  final String documentId;
-
-  _HomeScreenState({required this.documentId});
+  late SharedPreferences _preferences;
+  bool? isAdmin = false;
+  String? name = "";
+  String? className = "";
+  String? img = "";
 
   @override
   void initState() {
     super.initState();
-    final DateTime now = DateTime.now();
-    final DateFormat dateFormatter = DateFormat('dd-MM-yyyy');
-    final DateFormat timeFormatter = DateFormat('hh:mm a');
-    final String formattedDate = dateFormatter.format(now);
-    final String formattedTime = timeFormatter.format(now);
-    print("Now formatted time $formattedDate $formattedTime");
-    _lectureStream =
-        FirebaseFirestore.instance.collection('lecture').snapshots();
+    _getDataFromSharedPreferences();
+    _lectureStream = FirebaseFirestore.instance.collection('lecture').snapshots();
+  }
+
+  Future<void> _getDataFromSharedPreferences() async {
+    SharedPreferences _preferences = await SharedPreferences.getInstance();
+    setState(() {
+      isAdmin = _preferences.getBool('isAdmin');
+      name = _preferences.getString('name');
+      className = _preferences.getString('class');
+      img = _preferences.getString('img');
+    });
   }
 
   bool isRunningLecture(String date, String startTime, String endTime) {
     try {
       final DateFormat dateFormatter = DateFormat('dd-MM-yyyy');
-      final DateFormat timeFormatter = DateFormat('hh:mm a');
 
       DateTime parsedDate = dateFormatter.parse(date);
       DateTime today = DateTime.now();
 
-      if (parsedDate
-          .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
-        return true;
+      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
+        String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+        DateFormat dateFormat = DateFormat('h:mm a');
+        DateTime parsedStartTime = dateFormat.parse(startTime);
+        DateTime parsedEndTime = dateFormat.parse(endTime);
+
+        DateFormat twentyFourHourFormat = DateFormat('HH:mm:ss');
+        String formattedStartTime = twentyFourHourFormat.format(parsedStartTime);
+        String formattedEndTime = twentyFourHourFormat.format(parsedEndTime);
+
+        DateTime startDateTime = DateTime.parse("$formattedDate $formattedStartTime");
+        DateTime endDateTime = DateTime.parse("$formattedDate $formattedEndTime");
+
+        if(startDateTime.isBefore(DateTime.now()) && endDateTime.isAfter(DateTime.now())) {
+          return true;
+        }
+        return false;
       } else {
         return false;
       }
@@ -69,143 +90,76 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(FirebaseAuth.instance.currentUser?.uid)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {}
-
-                if (!snapshot.hasData || snapshot.data!.data() == null) {
-                  return const Text('User data not found');
-                }
-
-                final userData = snapshot.data!.data() as Map<String, dynamic>;
-                final bool isAdmin = userData['isAdmin'] ?? false;
-
-                if (isAdmin) {
-                  return IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                } else {
-                  return Visibility(
-                    visible: !isAdmin,
-                    child: Image.asset(
-                      "assets/images/poralekha-splash-screen-logo.png",
-                      height: Get.height * 0.03,
-                    ),
-                  );
-                }
+            isAdmin == true ? IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
               },
-            ),
+            ) : Image.asset(
+              "assets/images/poralekha-splash-screen-logo.png",
+              height: Get.height * 0.03,
+            )
           ],
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection('users')
-                .doc(FirebaseAuth.instance.currentUser?.uid)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {}
-
-              if (!snapshot.hasData || snapshot.data!.data() == null) {
-                return const Text('User data not found');
-              }
-
-              final userData = snapshot.data!.data() as Map<String, dynamic>;
-              final String userProfileImageUrl = userData['img'] ?? '';
-              final String userName = userData['name'] ?? '';
-              final String userClass = userData['class'] ?? '';
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (userData['isAdmin'] == true) const SizedBox(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          userClass.tr,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
-                        Text(
-                          userName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      className ?? "".tr,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade700,
+                      ),
                     ),
-                    const SizedBox(width: 10),
-                    GestureDetector(
-                      onTap: () {
-                        Get.to(ProfileScreen());
-                      },
-                      child: CircleAvatar(
-                        backgroundImage: userProfileImageUrl.isNotEmpty
-                            ? NetworkImage(userProfileImageUrl)
-                            : const AssetImage('assets/images/user.png')
-                                as ImageProvider,
+                    Text(
+                      name!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black87,
                       ),
                     ),
                   ],
                 ),
-              );
-            },
-          ),
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(ProfileScreen());
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: img != null || img != ""
+                        ? NetworkImage(img ?? "")
+                        : const AssetImage('assets/images/user.png')
+                    as ImageProvider,
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
-      drawer: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox();
-          }
-
-          if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return const Text('User data not found');
-          }
-
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
-          final bool isAdmin = userData['isAdmin'] ?? true;
-
-          if (isAdmin) {
-            return SizedBox(
-              width: Get.width * 0.60,
-              child: const Drawer(
-                backgroundColor: Color.fromARGB(255, 240, 248, 255),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    MyDrawerHeader(),
-                    MyDrawerList(),
-                  ],
-                ),
-              ),
-            );
-          } else {
-            return const SizedBox();
-          }
-        },
+      drawer: SizedBox(
+        width: Get.width * 0.60,
+        child: const Drawer(
+          backgroundColor: Color.fromARGB(255, 240, 248, 255),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              MyDrawerHeader(),
+              MyDrawerList(),
+            ],
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -239,14 +193,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (_state != "running") {
+                        if (_state != "upcoming") {
                           setState(() {
-                            _state = "running";
+                            _state = "upcoming";
                           });
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _state == "running"
+                        backgroundColor: _state == "upcoming"
                             ? MyTheme.buttonColor
                             : MyTheme.buttonColor.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
@@ -255,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Running".tr,
+                        "Upcoming".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -265,14 +219,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (_state != "upcoming") {
+                        if (_state != "running") {
                           setState(() {
-                            _state = "upcoming";
+                            _state = "running";
                           });
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _state == "running"
+                        backgroundColor: _state == "upcoming"
                             ? MyTheme.buttonColor.withOpacity(0.6)
                             : MyTheme.buttonColor,
                         shape: RoundedRectangleBorder(
@@ -281,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       child: Text(
-                        "Upcoming".tr,
+                        "Running".tr,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: screenWidth * 0.04,
@@ -326,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: EdgeInsets.only(top: screenHeight * 0.01),
                           child: LectureCard(
                             lectureData: lectureData,
-                            documentId: documentId,
+                            documentId: "",
                             screen: "home",
                           ),
                         );

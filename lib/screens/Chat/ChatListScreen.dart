@@ -82,22 +82,21 @@ class _ChatListScreenState extends State<ChatListScreen> {
                     ),
                   );
                 },
-                child: FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
                       .collection('chats')
                       .doc(chatDocs[index].id)
                       .collection('messages')
                       .orderBy('createdAt', descending: true)
                       .limit(1)
-                      .get()
-                      .then((value) => value.docs.first),
+                      .snapshots(),
                   builder: (ctx, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Opacity(
                         opacity: 0.0,
                       );
                     }
-                    final lastMessage = snapshot.data!;
+                    final lastMessage = snapshot.data!.docs.first;
                     String lastMessageText = lastMessage['text'] ?? '';
                     final lastMessageTime = lastMessage['createdAt'] ?? '';
                     final formattedTime = DateFormat.jm().format(

@@ -185,7 +185,7 @@ class Languages extends Translations {
           'Date': 'তারিখ',
           'Time': 'সময়',
           'Edit info': 'এডিট ইনফো',
-          'Join Now': 'জয়েন নাউ',
+          'Join Now': 'জয়েন করুন',
           //Add ChapterScreen
           'Add Chapter': 'অ্যাড চ্যাপ্টার',
           'Enter Chapter Name': 'এন্টার চ্যাপ্টার নাম',

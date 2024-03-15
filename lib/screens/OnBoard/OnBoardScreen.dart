@@ -64,7 +64,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                       style: TextStyle(
                         fontSize: screenWidth * 0.05,
                         fontWeight: FontWeight.w600,
-                        fontFamily: "FontMain",
                         color: MyTheme.buttonColor,
                       ),
                     ),
@@ -232,7 +231,6 @@ class _OnboardContentState extends State<OnboardContent> {
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.08,
             fontWeight: FontWeight.bold,
-            fontFamily: "FontMain",
           ),
         ),
         SizedBox(

@@ -11,8 +11,6 @@ import 'package:poralekha_app/screens/ManageAdimin/ManageAdmin.dart';
 
 import 'package:poralekha_app/widgets/DrawerListMenu.dart';
 
-import 'package:ficonsax/ficonsax.dart';
-
 class MyDrawerList extends StatelessWidget {
   const MyDrawerList({Key? key});
 
@@ -20,7 +18,7 @@ class MyDrawerList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 50,
+        vertical: 20,
       ),
       child: Column(
         children: [

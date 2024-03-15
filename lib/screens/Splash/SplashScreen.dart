@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
-import 'package:poralekha_app/screens/Login/LoginScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:poralekha_app/screens/OnBoard/OnBoardScreen.dart';
 import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
@@ -18,11 +18,17 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double opacity = 1.0;
+  late SharedPreferences _preferences;
 
   @override
   void initState() {
     super.initState();
     _startFadeOut();
+    _initPreferences();
+  }
+
+  void _initPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
   }
 
   void _startFadeOut() {
@@ -38,14 +44,18 @@ class _SplashScreenState extends State<SplashScreen> {
               .collection('users')
               .doc(user.uid)
               .get();
+
+          _preferences.setBool('isAdmin', userData['isAdmin']);
+          _preferences.setString('name', userData['name']);
+          _preferences.setString('class', userData['class']);
+          _preferences.setString('img', userData['img']);
+
           if (userData['class'] == null || userData['class'] == "") {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const ClassListScreen()),
             );
           } else {
-            print("My user datatata ${userData}");
-            print("fjslfjlfjslkfj");
             if (userData['isApproved'] == true) {
               Navigator.pushReplacement(
                 context,
