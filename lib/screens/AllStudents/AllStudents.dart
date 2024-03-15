@@ -77,7 +77,6 @@ class _AllStudentState extends State<AllStudent> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          fontFamily: "FontMain",
                         ),
                       ),
                     ),

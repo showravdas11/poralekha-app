@@ -11,6 +11,7 @@ import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
 import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -20,11 +21,21 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late SharedPreferences _preferences;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
-
   bool _isPasswordVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPreferences();
+  }
+
+  void _initPreferences() async {
+    _preferences = await SharedPreferences.getInstance();
+  }
 
   login(String email, String password) async {
     setState(() {
@@ -53,16 +64,21 @@ class _LoginScreenState extends State<LoginScreen> {
         User? user = userCredential.user;
 
         if (user != null && user.emailVerified) {
+
           // Check if the 'class' field is empty
           final userData = await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
               .get();
+
+          _preferences.setBool('isAdmin', userData['isAdmin']);
+          _preferences.setString('name', userData['name']);
+          _preferences.setString('class', userData['class']);
+          _preferences.setString('img', userData['img']);
+
           final userClass = userData.get('class') as String;
 
           if (userClass == "") {
-            print("My user login  datatata1 ${userData}");
-            print(123);
             // Redirect to ClassListScreen if class field is empty
             Navigator.pushReplacement(
               context,

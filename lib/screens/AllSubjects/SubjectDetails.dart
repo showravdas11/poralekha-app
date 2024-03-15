@@ -162,9 +162,7 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                 children: [
                                   Text(
                                     "$chapterName",
-                                    style: TextStyle(
-                                        fontSize: screenWidth * 0.04,
-                                        fontFamily: "FontMain"),
+                                    style: TextStyle(fontSize: screenWidth * 0.04),
                                   ),
                                 ],
                               ),

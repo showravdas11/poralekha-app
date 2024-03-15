@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
       translations: Languages(),
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: 'HindShiliguri',
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
           color: Color.fromARGB(255, 240, 248, 255),

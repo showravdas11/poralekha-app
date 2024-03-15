@@ -128,7 +128,6 @@ class SubjectsCard extends StatelessWidget {
                     "${"Subject".tr}: ${subjectData['name'].toString()}",
                     style: TextStyle(
                       fontSize: screenWidth * 0.04,
-                      fontFamily: "FontMain",
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

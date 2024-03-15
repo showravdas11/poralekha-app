@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
-import 'package:poralekha_app/screens/Payment/Successfull/SuccessfullScreen.dart';
+import 'package:poralekha_app/screens/Payment/Successful/SuccessfulScreen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({Key? key}) : super(key: key);
@@ -80,7 +80,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: RoundedButton(
                 title: "Pay",
                 onTap: () {
-                  Get.to(SuccessfullScreen());
+                  Get.to(const SuccessfulScreen());
                 },
                 width: double.infinity),
           )

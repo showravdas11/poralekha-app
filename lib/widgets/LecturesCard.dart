@@ -114,7 +114,6 @@ class _LectureCardState extends State<LectureCard> {
                               'Join Now'.tr,
                               style: TextStyle(
                                 fontSize: screenWidth * 0.04,
-                                fontFamily: "FontMain",
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -148,7 +147,6 @@ class _LectureCardState extends State<LectureCard> {
                             'Edit info'.tr,
                             style: TextStyle(
                               fontSize: screenWidth * 0.04,
-                              fontFamily: "FontMain",
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -181,7 +179,6 @@ class _LectureCardState extends State<LectureCard> {
               fontSize: screenWidth * 0.04,
               fontWeight: FontWeight.w500,
               color: Colors.black,
-              fontFamily: "FontMain",
             ),
             maxLines: 2,
           ),

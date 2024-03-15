@@ -1,9 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/Chat/ChatListScreen.dart';
-import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/Home/HomeScreen.dart';
 import 'package:poralekha_app/screens/Profile/ProfileScreen.dart';
 import 'package:poralekha_app/screens/SubjectList/subject_list_screen.dart';
@@ -27,56 +29,98 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 20,
-              color: Colors.black.withOpacity(0.1),
-            )
-          ],
-        ),
-        child: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-          child: GNav(
-            rippleColor: Colors.grey[300]!,
-            hoverColor: Colors.grey[100]!,
-            gap: 8,
-            activeColor: const Color(0xFF7E59FD),
-            iconSize: 24,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            tabBackgroundColor: Colors.grey[100]!,
-            color: Colors.black,
-            tabs: [
-              GButton(
-                icon: Iconsax.home,
-                text: "Home".tr,
+
+    void _showBackDialog() {
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Are you sure?'),
+            content: const Text(
+              'Are you sure you want to leave this page?',
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('No'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              GButton(
-                icon: Iconsax.message,
-                text: "Chat".tr,
-              ),
-              GButton(
-                icon: Iconsax.book,
-                text: "Book".tr,
-              ),
-              GButton(
-                icon: Iconsax.user,
-                text: "Profile".tr,
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.labelLarge,
+                ),
+                child: const Text('Yes'),
+                onPressed: ()=> SystemNavigator.pop(),
               ),
             ],
-            selectedIndex: _selectedIndex,
-            onTabChange: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
+          );
+        },
+      );
+    }
+
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) {
+        if (didPop) {
+          return;
+        }
+        _showBackDialog();
+      },
+      child: Scaffold(
+        body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 20,
+                color: Colors.black.withOpacity(0.1),
+              )
+            ],
           ),
-        )),
+          child: SafeArea(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            child: GNav(
+              rippleColor: Colors.grey[300]!,
+              hoverColor: Colors.grey[100]!,
+              gap: 8,
+              activeColor: const Color(0xFF7E59FD),
+              iconSize: 24,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              tabBackgroundColor: Colors.grey[100]!,
+              color: Colors.black,
+              tabs: [
+                GButton(
+                  icon: Iconsax.home,
+                  text: "Home".tr,
+                ),
+                GButton(
+                  icon: Iconsax.message,
+                  text: "Chat".tr,
+                ),
+                GButton(
+                  icon: Iconsax.book,
+                  text: "Book".tr,
+                ),
+                GButton(
+                  icon: Iconsax.user,
+                  text: "Profile".tr,
+                ),
+              ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+            ),
+          )),
+        ),
       ),
     );
   }
