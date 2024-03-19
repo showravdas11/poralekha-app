@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_Header.dart';
 import 'package:poralekha_app/screens/Home/My_Drawer_list.dart';
@@ -33,7 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _getDataFromSharedPreferences();
-    _lectureStream = FirebaseFirestore.instance.collection('lecture').snapshots();
+    _lectureStream =
+        FirebaseFirestore.instance.collection('lecture').snapshots();
   }
 
   Future<void> _getDataFromSharedPreferences() async {
@@ -53,7 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
       DateTime parsedDate = dateFormatter.parse(date);
       DateTime today = DateTime.now();
 
-      if (parsedDate.isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
+      if (parsedDate
+          .isAtSameMomentAs(DateTime(today.year, today.month, today.day))) {
         String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
         DateFormat dateFormat = DateFormat('h:mm a');
@@ -61,13 +64,17 @@ class _HomeScreenState extends State<HomeScreen> {
         DateTime parsedEndTime = dateFormat.parse(endTime);
 
         DateFormat twentyFourHourFormat = DateFormat('HH:mm:ss');
-        String formattedStartTime = twentyFourHourFormat.format(parsedStartTime);
+        String formattedStartTime =
+            twentyFourHourFormat.format(parsedStartTime);
         String formattedEndTime = twentyFourHourFormat.format(parsedEndTime);
 
-        DateTime startDateTime = DateTime.parse("$formattedDate $formattedStartTime");
-        DateTime endDateTime = DateTime.parse("$formattedDate $formattedEndTime");
+        DateTime startDateTime =
+            DateTime.parse("$formattedDate $formattedStartTime");
+        DateTime endDateTime =
+            DateTime.parse("$formattedDate $formattedEndTime");
 
-        if(startDateTime.isBefore(DateTime.now()) && endDateTime.isAfter(DateTime.now())) {
+        if (startDateTime.isBefore(DateTime.now()) &&
+            endDateTime.isAfter(DateTime.now())) {
           return true;
         }
         return false;
@@ -90,15 +97,17 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            isAdmin == true ? IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ) : Image.asset(
-              "assets/images/poralekha-splash-screen-logo.png",
-              height: Get.height * 0.03,
-            )
+            isAdmin == true
+                ? IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  )
+                : Image.asset(
+                    "assets/images/poralekha-splash-screen-logo.png",
+                    height: Get.height * 0.03,
+                  )
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -140,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     backgroundImage: img != null || img != ""
                         ? NetworkImage(img ?? "")
                         : const AssetImage('assets/images/user.png')
-                    as ImageProvider,
+                            as ImageProvider,
                   ),
                 ),
               ],

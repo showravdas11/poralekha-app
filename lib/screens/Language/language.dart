@@ -7,7 +7,7 @@ class Languages extends Translations {
         'en_US': {
           //Profile Screen
           'Profile': 'Profile',
-          'Personal Informatio': 'Personal Information',
+          'Personal Information': 'Personal Information',
           'Name': 'Name',
           'E-mail': 'E-mail',
           'Address': 'Address',
@@ -20,8 +20,8 @@ class Languages extends Translations {
           'Log Out': 'Log Out',
           'Logout': 'Logout',
           'Edit Profile': 'Edit Profile',
-          'Update': 'Update',
           'Edit': 'Edit',
+          'Update': 'Update',
           //Select class screen
           'Class Five': 'Class Five',
           'Class Six': 'Class Six',
@@ -51,19 +51,23 @@ class Languages extends Translations {
           'Enter Subject Name': 'Enter Subject Name',
           'Select Class': 'Select Class',
           'Add': 'Add',
+
           //Subject Details
           'Subject Details': 'Subject Details',
           'Subject:': 'Subject:',
           'Class:': 'Class:',
           'Chapter List': 'Chapter List',
-          'See Details': 'See Details',
+          'Show Details': 'Show Details',
           'Edit Subject': 'Edit Subject',
           'Save Changes': 'Save Changes',
           'Subject Name': 'Subject Name',
+          'No chapters available': 'No chapters available',
           //Bottam NavBar
           'Home': 'Home',
           'Chat': 'Chat',
+          'Chat Rooms': 'Chat Rooms',
           'Book': 'Book',
+
           //All Lecture Screen
           'Topic': 'Topic',
           'Teacher': 'Teacher',
@@ -71,7 +75,23 @@ class Languages extends Translations {
           'Time': 'Time',
           'Edit info': 'Edit info',
           'Join Now': 'Join Now',
-          //Add Lecture Screen
+          //Add ChapterScreen
+          'Add Chapter': 'Add Chapter',
+          'Enter Chapter Name': 'Enter Chapter Name',
+          'Select Chapter PDF': 'Select Chapter PDF',
+          'Select Topic Animation': 'Select Topic Animation',
+          'Enter Tutorials Name': 'Enter Tutorials Name',
+          'Paste Tutorials Link': 'Paste Tutorials Link',
+          'Add Topics': 'Add Topics',
+          'Add Tutorials': 'Add Tutorials',
+          'Add More': 'Add More',
+          'Chapter Name': 'Chapter Name',
+          'Select PDF': 'Select PDF',
+          'Topic Name': 'Topic Name',
+          'Select Animation': 'Select Animation',
+          'Tutorial Name': 'Tutorial Name',
+          'Tutorial Link': 'Tutorial Link',
+          //All Lecture Screen
           'Enter Topic Name': 'Enter Topic Name',
           'Select Class Date': 'Select Class Date',
           'Teacher Name': 'Teacher Name',
@@ -81,9 +101,20 @@ class Languages extends Translations {
           'End Time': 'End Time',
           'Set End Time': 'Set End Time',
           'Class Link': 'Class Link',
+          'Paste Link': 'Paste Link',
           'Link': 'Link',
           'Platform': 'Platform',
           'Select Class Platform': 'Select Class Platform',
+          'Update Lectures': 'Update Lectures',
+          'Edit Lecture': 'Edit Lecture',
+          //chapter topics screen
+          'Chapter Topics': 'Chapter Topics',
+          'PDF Book': 'PDF Book',
+          'Important Topics': 'Important Topics',
+          'Online Tutorials': 'Online Tutorials',
+          'Watch Now': 'Watch Now',
+          'No topics available': 'No topics available',
+          'No tutorials available': 'No tutorials available',
           //home screen
           'Class Lectures': 'Class Lectures',
           'Running': 'Running',
@@ -94,7 +125,7 @@ class Languages extends Translations {
           'Confirm Revert': 'Confirm Revert',
           'Confirm Approval': 'Confirm Approval',
           'Do you want to approve this student?':
-              'Do you want to approve this student?',
+              'আপনি কি এই স্টুডেন্ট কে এপ্রোভ করতে চান?',
           'Do you want to revert the approval of this student?':
               'Do you want to revert the approval of this student?',
           'Yes': 'Yes',
@@ -105,17 +136,6 @@ class Languages extends Translations {
           'Are you sure?': 'Are you sure?',
           'Do you want to make this user an admin?':
               'Do you want to make this user an admin?',
-          //Add ChapterScreen
-          'Add Chapter': 'Add Chapter',
-          'Enter Chapter Name': 'Enter Chapter Name',
-          'Select Chapter PDF': 'Select Chapter PDF',
-
-          'Select Topic Animation': 'Select Topic Animation',
-          'Enter Tutorials Name': 'Enter Tutorials Name',
-          'Paste Tutorials Link': 'Paste Tutorials Link',
-          'Add Topics': 'Add Topics',
-          'Add Tutorials': 'Add Tutorials',
-          'Add More': 'Add More',
         },
         'bd_BAN': {
           //Profile Screen
@@ -146,7 +166,7 @@ class Languages extends Translations {
           'HSC': 'এইচএসসি',
           'Select Your Class': 'আপনার শ্রেণি নির্বাচন করুন',
           'Subjects': 'বিষয়সমূহ',
-          'Chapters': 'অধ্যায়সমূহ ',
+          'Chapters': 'অধ্যায়সমূহ',
           //Payment Screen
           'Choose your payment method': 'আপনার পেমেন্ট পদ্ধতি নির্বাচন করুন',
           'bKash': 'বিকাশ',
@@ -175,10 +195,12 @@ class Languages extends Translations {
           'Edit Subject': 'এডিট সাবজেক্ট',
           'Save Changes': 'সেভ চেঞ্জেস',
           'Subject Name': 'সাবজেক্ট নাম',
+          'No chapters available': 'এখানে কোন অধ্যায় যোগ করা হয়নি',
           //Bottam NavBar
           'Home': 'হোম',
           'Chat': 'চ্যাট',
           'Book': 'বই',
+          'Chat Rooms': 'চ্যাট রুমস',
           //All Lecture Screen
           'Topic': 'বিষয়',
           'Teacher': 'শিক্ষক',
@@ -190,14 +212,18 @@ class Languages extends Translations {
           'Add Chapter': 'অ্যাড চ্যাপ্টার',
           'Enter Chapter Name': 'এন্টার চ্যাপ্টার নাম',
           'Select Chapter PDF': 'সিলেক্ট চ্যাপ্টার পিডিএফ',
-
           'Select Topic Animation': 'সিলেক্ট টপিক অ্যানিমেশন',
           'Enter Tutorials Name': 'এন্টার টিউটোরিয়ালস নাম',
           'Paste Tutorials Link': 'পেস্ট টিউটোরিয়ালস লিংক',
           'Add Topics': 'অ্যাড টপিকস',
           'Add Tutorials': 'অ্যাড টিউটোরিয়ালস',
           'Add More': 'অ্যাড মোর',
-
+          'Chapter Name': 'চ্যাপ্টার নাম',
+          'Select PDF': 'সিলেক্ট পিডিএফ',
+          'Topic Name': 'টপিকস নাম',
+          'Select Animation': 'সিলেক্ট অ্যানিমেশন',
+          'Tutorial Name': 'টিউটোরিয়ালস নাম',
+          'Tutorial Link': 'টিউটোরিয়ালস লিংক',
           //All Lecture Screen
           'Enter Topic Name': 'বিষয়ের নাম লিখুন',
           'Select Class Date': 'ক্লাসের তারিখ নির্বাচন করুন',
@@ -209,21 +235,26 @@ class Languages extends Translations {
           'Set End Time': 'এন্ড টাইম সেট করুন',
           'Class Link': 'ক্লাস লিঙ্ক',
           'Paste Link': 'লিঙ্ক পেস্ট করুন',
+          'Link': 'লিঙ্ক',
           'Platform': 'প্ল্যাটফর্ম',
           'Select Class Platform': 'আপনার ক্লাস নির্বাচন করুন',
+          'Update Lectures': 'আপডেট লেকচার',
+          'Edit Lecture': 'এডিট লেকচার',
           //chapter topics screen
           'Chapter Topics': 'চ্যাপ্টার টপিকস',
           'PDF Book': 'পিডিএফ বুক',
           'Important Topics': 'ইম্পরট্যান্ট টপিকস',
           'Online Tutorials': 'অনলাইন টিউটোরিয়ালস',
           'Watch Now': 'ওয়াচ নাউ',
+          'No topics available': 'এখানে কোন টপিকস যোগ করা হয়নি',
+          'No tutorials available': 'এখানে কোন টিউটোরিয়ালস যোগ করা হয়নি',
           //home screen
           'Class Lectures': 'ক্লাস লেকচার',
           'Running': 'রানিং',
           'Upcoming': 'আপকামিং',
           //aprove user
           'Revert': 'রিভার্ট',
-          'Approve': ' এপ্রোভ',
+          'Approve': 'এপ্রোভ',
           'Confirm Revert': 'কনফার্ম রিভার্ট',
           'Confirm Approval': 'কনফার্ম এপ্রোভ',
           'Do you want to approve this student?':

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/AddChapter/Add_chapter.dart';
 import 'package:poralekha_app/common/AppBar.dart';
@@ -115,7 +116,10 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                                   subjectName: subjectData?['name'] ?? 'N/A',
                                   className: subjectData?['class'] ?? 'N/A'));
                             },
-                            child: const Text("Update Subject"),
+                            child: const Text(
+                              "Edit",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           )
                         ],
                       ),
@@ -140,6 +144,12 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                     return Text('Error: ${snapshot.error}');
                   }
                   final chapters = snapshot.data?.docs ?? [];
+                  if (chapters.isEmpty) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: Get.height * 0.2),
+                      child: Center(child: Text('No chapters available'.tr)),
+                    );
+                  }
                   return Column(
                     children: chapters.map((chapter) {
                       final chapterData =
@@ -157,14 +167,19 @@ class _SubjectDetailsState extends State<SubjectDetails> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "$chapterName",
-                                    style: TextStyle(fontSize: screenWidth * 0.04),
-                                  ),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "$chapterName",
+                                      style: TextStyle(
+                                          fontSize: screenWidth * 0.04),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
@@ -207,12 +222,10 @@ class _SubjectDetailsState extends State<SubjectDetails> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  AddChapterScreen(
-                      documentId: widget.documentId,
-                      className: widget.className,
-                      subjectName: widget.subjectName
-                  ),
+              builder: (context) => AddChapterScreen(
+                  documentId: widget.documentId,
+                  className: widget.className,
+                  subjectName: widget.subjectName),
             ),
           );
         },

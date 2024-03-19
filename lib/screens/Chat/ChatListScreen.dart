@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/screens/Chat/ChatScreen.dart';
 import 'package:intl/intl.dart';
 
@@ -52,8 +53,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          'Chat Rooms',
+        title: Text(
+          'Chat Rooms'.tr,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
