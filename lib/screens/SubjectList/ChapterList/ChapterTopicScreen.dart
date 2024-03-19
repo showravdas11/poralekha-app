@@ -70,7 +70,9 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(
+                  height: Get.height * 0.05,
+                ),
                 Text(
                   'Important Topics'.tr,
                   style: TextStyle(
@@ -90,7 +92,7 @@ class _ChapterTopicScreenState extends State<ChapterTopicScreen> {
                 ),
                 Text(
                   'Online Tutorials'.tr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),

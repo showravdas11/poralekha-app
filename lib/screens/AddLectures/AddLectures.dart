@@ -427,7 +427,7 @@ class _AddLectureScreenState extends State<AddLectureScreen> {
                   ),
                   const SizedBox(height: 20),
                   RoundedButton(
-                    title: "Add Lectures".tr,
+                    title: "Add Lecture".tr,
                     onTap: () {
                       if (topicController.text.trim().isEmpty ||
                           teacherNameController.text.trim().isEmpty ||

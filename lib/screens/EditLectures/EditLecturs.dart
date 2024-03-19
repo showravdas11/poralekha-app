@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:poralekha_app/common/AppBar.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
@@ -143,7 +144,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
     return Scaffold(
       backgroundColor: MyTheme.canvousColor,
       appBar: CustomAppBar(
-        title: "Edit Lecture",
+        title: "Edit Lecture".tr,
         leadingOnPressed: () {
           Navigator.pop(context);
         },
@@ -155,7 +156,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Topic",
+                "Topic".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -164,13 +165,13 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               SizedBox(height: screenSize.height * 0.01),
               CommonTextField(
                 controller: topicController,
-                text: "Topic",
+                text: "Topic".tr,
                 textInputType: TextInputType.text,
                 obscure: false,
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
-                "Teacher",
+                "Teacher".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -179,13 +180,13 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               SizedBox(height: screenSize.height * 0.01),
               CommonTextField(
                 controller: teacherNameController,
-                text: "Teacher Name",
+                text: "Teacher Name".tr,
                 textInputType: TextInputType.text,
                 obscure: false,
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
-                "Date",
+                "Date".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -220,7 +221,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
-                "Start Time",
+                "Start Time".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -246,7 +247,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                   readOnly: true,
                   onTap: () => _selectStartTime(context),
                   decoration: InputDecoration(
-                    hintText: 'Select Start Time',
+                    hintText: 'Select Start Time'.tr,
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: screenSize.width * 0.01,
@@ -256,7 +257,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
-                "End Time",
+                "End Time".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -282,7 +283,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
                   readOnly: true,
                   onTap: () => _selectEndTime(context),
                   decoration: InputDecoration(
-                    hintText: 'Select End Time',
+                    hintText: 'Select End Time'.tr,
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                         horizontal: screenSize.width * 0.01),
@@ -291,7 +292,7 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               ),
               SizedBox(height: screenSize.height * 0.02),
               Text(
-                "Link",
+                "Link".tr,
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: screenSize.width * 0.04,
@@ -300,13 +301,13 @@ class _EditLecturesScreenState extends State<EditLecturesScreen> {
               SizedBox(height: screenSize.height * 0.01),
               CommonTextField(
                 controller: linkController,
-                text: "Link",
+                text: "Paste Link".tr,
                 textInputType: TextInputType.text,
                 obscure: false,
               ),
               SizedBox(height: screenSize.height * 0.02),
               RoundedButton(
-                title: "Update Lectures",
+                title: "Update Lectures".tr,
                 onTap: () {
                   updateLectureData();
                 },

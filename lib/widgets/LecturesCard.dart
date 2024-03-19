@@ -68,13 +68,13 @@ class _LectureCardState extends State<LectureCard> {
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.calendar_add,
+                    icon: Iconsax.calendar_1,
                     text: '${'Date'.tr}: ${widget.lectureData["date"]}',
                     screenWidth: screenWidth,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   buildTextWithIcon(
-                    icon: Iconsax.watch,
+                    icon: Iconsax.clock,
                     text:
                         '${'Time'.tr}: ${widget.lectureData["startTime"]}-${widget.lectureData["endTime"]}',
                     screenWidth: screenWidth,

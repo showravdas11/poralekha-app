@@ -103,6 +103,7 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
                     Get.to(ChapterListScreen(subjectId: selectedSubjectId));
                   },
                   child: Card(
+                    elevation: 0.5,
                     color: tileColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
