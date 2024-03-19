@@ -223,7 +223,7 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       appBar: CustomAppBar(
         title: "Add Chapter".tr,
         leadingOnPressed: () {
-          Navigator.pop(context);
+          Get.back();
         },
       ),
       body: SingleChildScrollView(
@@ -275,6 +275,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               ),
             ),
             const SizedBox(height: 15),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Chapter Name".tr,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500),
+                )),
+            const SizedBox(
+              height: 6,
+            ),
             CommonTextField(
               controller: chapterNameController,
               text: "Enter Chapter Name".tr,
@@ -282,7 +295,20 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
               obscure: false,
               suffixIcon: const Icon(Iconsax.add_circle),
             ),
-            SizedBox(height: screenSize.height * 0.02),
+            SizedBox(height: screenSize.height * 0.01),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Select PDF".tr,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w500),
+                )),
+            const SizedBox(
+              height: 6,
+            ),
             Container(
               height: 45,
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -342,7 +368,6 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
             Column(
               children: _topicWidgets.map((widget) {
                 return Column(
@@ -377,7 +402,6 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
             Column(
               children: _tutorialWidgets.map((widget) {
                 return Column(
@@ -408,6 +432,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       TextEditingController topicNameController, int index) {
     return Column(
       children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Topic Name".tr,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            )),
+        const SizedBox(
+          height: 6,
+        ),
         CommonTextField(
           controller: topicNameController,
           text: "Enter Topic Name".tr,
@@ -416,6 +453,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
           suffixIcon: const Icon(Iconsax.add_circle),
         ),
         const SizedBox(height: 15),
+        Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Select Animation".tr,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            )),
+        const SizedBox(
+          height: 6,
+        ),
         Container(
           height: 45,
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -459,6 +509,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
       TextEditingController linkController) {
     return Column(
       children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Tutorial Name".tr,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            )),
+        const SizedBox(
+          height: 6,
+        ),
         CommonTextField(
           controller: nameController,
           text: "Enter Tutorials Name".tr,
@@ -467,6 +530,19 @@ class _AddChapterScreenState extends State<AddChapterScreen> {
           suffixIcon: const Icon(Iconsax.text),
         ),
         const SizedBox(height: 15),
+        Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Tutorial Link".tr,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            )),
+        const SizedBox(
+          height: 6,
+        ),
         CommonTextField(
           controller: linkController,
           text: "Paste Tutorials Link".tr,

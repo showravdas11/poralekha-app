@@ -1,8 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
@@ -156,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: nameController,
                   text: "Name",
                   obscure: false,
-                  suffixIcon: const Icon(Icons.person),
+                  suffixIcon: const Icon(IconsaxBold.user),
                   textInputType: TextInputType.name,
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -177,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: emailController,
                   text: "Email",
                   obscure: false,
-                  suffixIcon: const Icon(Icons.email),
+                  suffixIcon: const Icon(IconsaxBold.sms),
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -198,7 +200,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: addressController,
                   text: "Address",
                   obscure: false,
-                  suffixIcon: const Icon(Icons.location_on),
+                  suffixIcon: const Icon(IconsaxBold.location),
                   textInputType: TextInputType.streetAddress,
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -219,7 +221,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   controller: ageController,
                   text: "Age",
                   obscure: false,
-                  suffixIcon: const Icon(Icons.calendar_today),
+                  suffixIcon: const Icon(IconsaxBold.calendar),
                   textInputType: TextInputType.number,
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -340,8 +342,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscure: _isPasswordVisible,
                   suffixIcon: IconButton(
                     icon: Icon(_isPasswordVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility),
+                        ? IconsaxBold.eye_slash
+                        : IconsaxBold.eye),
                     onPressed: () {
                       setState(() {
                         _isPasswordVisible = !_isPasswordVisible;
@@ -370,8 +372,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   obscure: _isConPasswordVisible,
                   suffixIcon: IconButton(
                     icon: Icon(_isConPasswordVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility),
+                        ? IconsaxBold.eye_slash
+                        : IconsaxBold.eye),
                     onPressed: () {
                       setState(() {
                         _isConPasswordVisible = !_isConPasswordVisible;

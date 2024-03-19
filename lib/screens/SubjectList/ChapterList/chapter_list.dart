@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/ChapterTopicScreen.dart';
 
@@ -55,6 +56,11 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
                 child: Text('Error: ${snapshot.error}'),
               );
             }
+            if (snapshot.data!.docs.isEmpty) {
+              return Center(
+                child: Text('No chapters available'.tr),
+              );
+            }
 
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
@@ -87,11 +93,15 @@ class _ChapterListScreenState extends State<ChapterListScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          chapter['name'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
+                        Expanded(
+                          child: Text(
+                            chapter['name'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         // Text(

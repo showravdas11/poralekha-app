@@ -110,9 +110,9 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
       //   widget.onPressed();
       // },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
         child: Card(
-          elevation: 4,
+          elevation: 0.5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),

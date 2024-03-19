@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ficonsax/ficonsax.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -162,27 +163,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileMenu(
                   title: "Name".tr,
                   subTitle: userData['name'],
-                  icon: Icons.person,
+                  icon: IconsaxBold.user,
                 ),
                 ProfileMenu(
                   title: "E-mail".tr,
                   subTitle: userData['email'],
-                  icon: Icons.email,
+                  icon: IconsaxBold.sms,
                 ),
                 ProfileMenu(
                   title: "Address".tr,
                   subTitle: userData['address'],
-                  icon: Icons.location_on,
+                  icon: IconsaxBold.location,
                 ),
                 ProfileMenu(
                   title: "Gender".tr,
                   subTitle: userData['gender'],
-                  icon: Icons.male,
+                  icon: IconsaxBold.man,
                 ),
                 ProfileMenu(
                   title: "Age".tr,
                   subTitle: userData['age'].toString(),
-                  icon: Icons.calendar_today,
+                  icon: IconsaxBold.calendar,
                 ),
                 // Add other ProfileMenu widgets as needed
                 const SizedBox(
@@ -199,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 UtilitiesSection(
                   title: "Payment".tr,
                   subTitle: "Click Here".tr,
-                  icon: Iconsax.card5,
+                  icon: IconsaxBold.card,
                   onPressed: () {
                     Get.to(const PaymentScreen());
                   },
@@ -220,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   subTitle: Get.locale?.languageCode == 'en_US'
                       ? 'English'.tr
                       : 'বাংলা'.tr,
-                  icon: Iconsax.language_square5,
+                  icon: IconsaxBold.language_square,
                   onPressed: () {
                     Get.bottomSheet(
                       const LanguageScreen(),
@@ -231,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 UtilitiesSection(
                   title: "Log Out".tr,
                   subTitle: "Logout".tr,
-                  icon: Iconsax.logout,
+                  icon: IconsaxBold.logout,
                   onPressed: () {
                     auth.signOut().then((value) {
                       Navigator.pushReplacement(
