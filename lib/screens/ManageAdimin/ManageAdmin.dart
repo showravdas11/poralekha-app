@@ -119,19 +119,6 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            transform: _isTapped
-                ? Matrix4.diagonal3Values(0.95, 0.95, 1.0)
-                : Matrix4.identity(),
-            decoration: BoxDecoration(
-              gradient: widget.isAdmin
-                  ? LinearGradient(
-                      colors: [Colors.green.withOpacity(0.8), Colors.green],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    )
-                  : null,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
             padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -143,7 +130,9 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                       Text(
                         '${'Name'.tr}: ${widget.name}',
                         style: TextStyle(
-                          color: widget.isAdmin ? Colors.white : Colors.black,
+                          color: widget.isAdmin
+                              ? const Color.fromARGB(255, 0, 0, 0)
+                              : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -151,7 +140,9 @@ class _ApproveUserTileState extends State<ApproveUserTile> {
                       Text(
                         '${'E-mail'.tr}: ${widget.email}',
                         style: TextStyle(
-                          color: widget.isAdmin ? Colors.white : Colors.black,
+                          color: widget.isAdmin
+                              ? const Color.fromARGB(255, 0, 0, 0)
+                              : Colors.black,
                           fontSize: 16,
                         ),
                       ),

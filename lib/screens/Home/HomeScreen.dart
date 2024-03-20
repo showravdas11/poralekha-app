@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? name = "";
   String? className = "";
   String? img = "";
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -93,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Row(
@@ -101,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
-                      Scaffold.of(context).openDrawer();
+                      _scaffoldKey.currentState?.openDrawer();
                     },
                   )
                 : Image.asset(

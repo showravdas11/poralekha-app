@@ -29,32 +29,56 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    void _showBackDialog() {
+    void _showBackDialog(BuildContext context) {
       showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Are you sure?'),
-            content: const Text(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            backgroundColor: Colors.white,
+            title: Text(
+              'Are you sure?',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
               'Are you sure you want to leave this page?',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+              ),
             ),
             actions: <Widget>[
               TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: Theme.of(context).textTheme.labelLarge,
-                ),
-                child: const Text('No'),
                 onPressed: () {
                   Navigator.pop(context);
                 },
+                child: Text(
+                  'No',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: Theme.of(context).textTheme.labelLarge,
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+                child: Text(
+                  'Yes',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: const Text('Yes'),
-                onPressed: ()=> SystemNavigator.pop(),
               ),
             ],
           );
@@ -68,7 +92,7 @@ class _MainScreenState extends State<MainScreen> {
         if (didPop) {
           return;
         }
-        _showBackDialog();
+        _showBackDialog(context);
       },
       child: Scaffold(
         body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
