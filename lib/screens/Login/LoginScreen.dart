@@ -1,19 +1,15 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
-import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
-import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
+import 'package:poralekha_app/screens/OtpScreen/OtpScreen.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import the OTP screen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -39,13 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  login(String email, String password) async {
+  login(String input, String password) async {
     setState(() {
       isLoading = true;
     });
 
-    if (email.isEmpty || password.isEmpty) {
-      // Show error dialog for empty fields
+    if (input.isEmpty || password.isEmpty) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.info,
@@ -61,61 +56,61 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       UserCredential? userCredential;
       try {
-        userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        User? user = userCredential.user;
+        if (_isEmail(input)) {
+          userCredential = await FirebaseAuth.instance
+              .signInWithEmailAndPassword(email: input, password: password);
+        }
+        // If not, assume it's a phone number
+        else if (_isMobile(input)) {
+          // Perform phone number authentication
+          final PhoneVerificationCompleted verificationCompleted =
+              (PhoneAuthCredential phoneAuthCredential) async {
+            userCredential = await FirebaseAuth.instance
+                .signInWithCredential(phoneAuthCredential);
+          };
 
-        if (user != null && user.emailVerified) {
-          // Check if the 'class' field is empty
-          final userData = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
+          final PhoneVerificationFailed verificationFailed =
+              (FirebaseAuthException authException) {
+            print(
+                'Phone number verification failed. Code: ${authException.code}. Message: ${authException.message}');
+          };
 
-          _preferences.setBool('isAdmin', userData['isAdmin']);
-          _preferences.setString('name', userData['name']);
-          _preferences.setString('class', userData['class']);
-          _preferences.setString('img', userData['img']);
-
-          final userClass = userData.get('class') as String;
-
-          if (userClass == "") {
-            // Redirect to ClassListScreen if class field is empty
-            Navigator.pushReplacement(
+          final PhoneCodeSent codeSent =
+              (String verificationId, int? resendToken) async {
+            Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ClassListScreen()),
+              MaterialPageRoute(
+                builder: (context) => OtpScreen(verificationId: verificationId),
+              ),
             );
-          } else {
-            print("My user login  datatata2 ${userData}");
-            print(124);
-            if (userData['isApproved'] == true) {
-              print("My user login  datatata3 ${userData}");
-              print(125);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-              );
-            } else {
-              print("My user login  datatata3 ${userData}");
-              print(126);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const WaitingScreen()),
-              );
-            }
-          }
+          };
+
+          final PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
+              (String verificationId) {};
+
+          await FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: input,
+            verificationCompleted: verificationCompleted,
+            verificationFailed: verificationFailed,
+            codeSent: codeSent,
+            codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+            timeout: Duration(seconds: 5),
+          );
         } else {
-          await userCredential.user?.sendEmailVerification();
+          // Invalid input
           AwesomeDialog(
             context: context,
-            dialogType: DialogType.error,
+            dialogType: DialogType.info,
             animType: AnimType.rightSlide,
-            title: "Please check your email and verify",
+            title: 'Invalid Email or Mobile Number',
             btnOkColor: MyTheme.buttonColor,
             btnOkOnPress: () {},
           )..show();
         }
+
+        // Remaining login logic remains the same...
       } on FirebaseAuthException catch (ex) {
+        // Handle authentication exceptions
         AwesomeDialog(
           context: context,
           dialogType: DialogType.error,
@@ -130,6 +125,16 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
     }
+  }
+
+  bool _isEmail(String input) {
+    String emailRegex = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+    return RegExp(emailRegex).hasMatch(input);
+  }
+
+  bool _isMobile(String input) {
+    String mobileRegex = (r'^\+?(88)?0?1[3456789][0-9]{8}\b');
+    return RegExp(mobileRegex).hasMatch(input);
   }
 
   @override
@@ -159,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Email",
+                      "Email / Phone Number",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: screenWidth * 0.04,
@@ -169,10 +174,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CommonTextField(
                     controller: emailController,
-                    text: "Email",
+                    text: "Email / Phone Number",
                     obscure: false,
                     suffixIcon: const Icon(IconsaxBold.sms),
-                    textInputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.text,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Align(

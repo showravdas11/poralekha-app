@@ -8,10 +8,11 @@ import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
+import 'package:poralekha_app/screens/OtpScreen/OtpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -19,29 +20,22 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
 
   String? selectedRole;
   BuildContext? dialogContext;
   String? selectGender;
 
-  bool _isPasswordVisible = true;
-  bool _isConPasswordVisible = true;
-
-  Future addUserDetails(String name, String email, String address, int age,
-      String role, String gender, UserCredential? userCredential) async {
+  Future addUserDetails(String name, String phone, String address, int age,
+      String role, String gender, User? user) async {
+    print("sdfjsj${name}");
+    print("eikhane asche");
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential?.user?.uid)
-          .set({
+      await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
         'name': name,
-        'email': email,
+        'phone': phone,
         'address': address,
         'age': age,
         'role': selectedRole,
@@ -55,70 +49,65 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } catch (e) {
       print('Adding user data error: $e');
     }
-    try {
-      await userCredential?.user?.sendEmailVerification();
-    } catch (e) {
-      print('Email verification send error: $e');
-    }
-
-    Navigator.pop(dialogContext!);
-
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.info,
-      animType: AnimType.rightSlide,
-      title: 'Please check your email and verify',
-      btnOkColor: MyTheme.buttonColor,
-      btnOkOnPress: () {
-        Navigator.pop(context);
-      },
-    ).show();
+    // Navigator.pop(dialogContext!);
   }
 
-  signUp(String name, String email, String password, String address, int age,
-      String role, String gender, String confirmPassword) async {
-    if (password != confirmPassword) {
-      // Passwords don't match, show alert
+  // signUp(String name, String phone, String address, int age, String role,
+  //     String gender, String confirmPassword) async {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (BuildContext context) {
+  //       dialogContext = context;
+  //       return const AlertDialog(
+  //         backgroundColor: Colors.transparent,
+  //         content: SpinKitCircle(color: Colors.white, size: 50.0),
+  //       );
+  //     },
+  //   );
+  //   // You can implement password validation or any other custom logic here if needed
+  // }
 
-      return AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        title: "The password and confirm password do not match.",
-        btnOkColor: MyTheme.buttonColor,
-        btnOkOnPress: () {},
-      )..show();
-    } else {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          dialogContext = context;
-          return const AlertDialog(
-            backgroundColor: Colors.transparent,
-            content: SpinKitCircle(color: Colors.white, size: 50.0),
-          );
-        },
-      );
-    }
+  //----------------------//
 
-    UserCredential? userCredential;
-
-    try {
-      userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      addUserDetails(name, email, address, age, role, gender, userCredential);
-    } on FirebaseAuthException catch (ex) {
-      Navigator.pop(dialogContext!);
-      return AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        title: ex.message.toString(),
-        btnOkColor: MyTheme.buttonColor,
-        btnOkOnPress: () {},
-      )..show();
-    }
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    await _auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Auto-retrieve verification code
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        // Call addUserDetails after verification is completed
+        addUserDetails(
+          nameController.text.trim(),
+          phoneController.text.trim(),
+          addressController.text.trim(),
+          int.parse(ageController.text.trim()),
+          selectedRole!,
+          selectGender!,
+          userCredential.user,
+        );
+      },
+      verificationFailed: (FirebaseAuthException ex) {
+        // Verification failed
+        print('Verification failed: $ex');
+        // You can handle the error here, such as displaying an error message to the user
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpScreen(
+              verificationId: verificationId,
+              // Pass phoneNumber to the OTP screen
+            ),
+          ),
+        );
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+      timeout: const Duration(seconds: 5),
+    );
   }
 
   @override
@@ -151,9 +140,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 CommonTextField(
                   controller: nameController,
                   text: "Name",
@@ -165,22 +151,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Email",
+                    "Phone Number",
                     style: TextStyle(
                         color: Colors.grey,
                         fontSize: screenWidth * 0.04,
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 CommonTextField(
-                  controller: emailController,
-                  text: "Email",
+                  controller: phoneController,
+                  text: "Phone Number",
                   obscure: false,
                   suffixIcon: const Icon(IconsaxBold.sms),
-                  textInputType: TextInputType.emailAddress,
+                  textInputType: TextInputType.phone,
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Align(
@@ -193,9 +176,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 CommonTextField(
                   controller: addressController,
                   text: "Address",
@@ -214,9 +194,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 CommonTextField(
                   controller: ageController,
                   text: "Age",
@@ -235,9 +212,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.06,
                   padding: EdgeInsets.symmetric(
@@ -265,11 +239,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     }).toList(),
                     decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        // labelText: 'Genderss',
-                        hintText: "Gender"
-                        // suffixIcon: Icon(Icons.arrow_drop_down),
-                        ),
+                        border: InputBorder.none, hintText: "Gender"),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.01),
@@ -283,9 +253,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.06,
                   padding: EdgeInsets.symmetric(
@@ -315,72 +282,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Text(value),
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Role",
                     ),
                   ),
-                ),
-
-                SizedBox(height: screenHeight * 0.01),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Password",
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
-                CommonTextField(
-                  controller: passwordController,
-                  text: "Password",
-                  obscure: _isPasswordVisible,
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible
-                        ? IconsaxBold.eye_slash
-                        : IconsaxBold.eye),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  ),
-                  textInputType: TextInputType.text,
-                ),
-                SizedBox(height: screenHeight * 0.01),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Confirm Password",
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: screenWidth * 0.04,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ),
-                // const SizedBox(
-                //   height: 6,
-                // ),
-                CommonTextField(
-                  controller: confirmPasswordController,
-                  text: "Confirm Password",
-                  obscure: _isConPasswordVisible,
-                  suffixIcon: IconButton(
-                    icon: Icon(_isConPasswordVisible
-                        ? IconsaxBold.eye_slash
-                        : IconsaxBold.eye),
-                    onPressed: () {
-                      setState(() {
-                        _isConPasswordVisible = !_isConPasswordVisible;
-                      });
-                    },
-                  ),
-                  textInputType: TextInputType.text,
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 RoundedButton(
@@ -388,8 +294,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   onTap: () {
                     if (nameController.text.trim().isEmpty ||
-                        emailController.text.trim().isEmpty ||
-                        passwordController.text.trim().isEmpty ||
+                        phoneController.text.trim().isEmpty ||
                         addressController.text.trim().isEmpty ||
                         ageController.text.trim().isEmpty ||
                         selectedRole == null ||
@@ -403,28 +308,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         btnOkOnPress: () {},
                       ).show();
                     } else {
-                      // showDialog(
-                      //   context: context,
-                      //   barrierDismissible: false,
-                      //   builder: (BuildContext context) {
-                      //     dialogContext = context;
-                      //     return const AlertDialog(
-                      //       backgroundColor: Colors.transparent,
-                      //       content:
-                      //           SpinKitCircle(color: Colors.white, size: 50.0),
-                      //     );
-                      //   },
-                      // );
-                      signUp(
-                        nameController.text.trim(),
-                        emailController.text.trim(),
-                        passwordController.text.trim(),
-                        addressController.text.trim(),
-                        int.parse(ageController.text.trim()),
-                        selectedRole ?? "Student",
-                        selectGender ?? "",
-                        confirmPasswordController.text.trim(),
-                      );
+                      // Set the values of selectedRole and selectGender
+                      selectedRole =
+                          selectedRole; // Set this to the actual value
+                      selectGender =
+                          selectGender; // Set this to the actual value
+                      if (_isMobile(phoneController.text.trim())) {
+                        verifyPhoneNumber(
+                          phoneController.text.trim(),
+                        );
+                      } else {
+                        // Invalid input
+                        AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.info,
+                          animType: AnimType.rightSlide,
+                          title: 'Invalid Mobile Number',
+                          btnOkColor: MyTheme.buttonColor,
+                          btnOkOnPress: () {},
+                        ).show();
+                      }
                     }
                   },
                 ),
@@ -463,9 +366,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _showLoadingDialog(BuildContext context, isLoading) {
-    if (isLoading) {
-      ;
-    }
+  final RegExp _mobileRegExp = RegExp(r'^\+?(88)?0?1[3456789][0-9]{8}\b');
+
+  bool _isMobile(String input) {
+    return _mobileRegExp.hasMatch(input);
   }
 }
