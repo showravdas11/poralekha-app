@@ -1,14 +1,17 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ficonsax/ficonsax.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
-import 'package:poralekha_app/screens/Login/LoginScreen.dart';
+import 'package:poralekha_app/screens/OtpScreen/OtpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:core';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,7 +22,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -33,91 +36,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isPasswordVisible = true;
   bool _isConPasswordVisible = true;
 
-  Future addUserDetails(String name, String email, String address, int age,
-      String role, String gender, UserCredential? userCredential) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential?.user?.uid)
-          .set({
-        'name': name,
-        'email': email,
-        'address': address,
-        'age': age,
-        'role': selectedRole,
-        'gender': selectGender,
-        'isAdmin': false,
-        'isApproved': false,
-        'class': '',
-        'timestamp': FieldValue.serverTimestamp(),
-        'img': ""
-      });
-    } catch (e) {
-      print('Adding user data error: $e');
-    }
-    try {
-      await userCredential?.user?.sendEmailVerification();
-    } catch (e) {
-      print('Email verification send error: $e');
-    }
-
-    Navigator.pop(dialogContext!);
-
-    AwesomeDialog(
-      context: context,
-      dialogType: DialogType.info,
-      animType: AnimType.rightSlide,
-      title: 'Please check your email and verify',
-      btnOkColor: MyTheme.buttonColor,
-      btnOkOnPress: () {
-        Navigator.pop(context);
-      },
-    ).show();
+  bool isValidMobile(String mobile) {
+    RegExp regExp = RegExp(r'^01\d{9}$');
+    return regExp.hasMatch(mobile);
   }
 
-  signUp(String name, String email, String password, String address, int age,
-      String role, String gender, String confirmPassword) async {
-    if (password != confirmPassword) {
-      // Passwords don't match, show alert
-
-      return AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        title: "The password and confirm password do not match.",
-        btnOkColor: MyTheme.buttonColor,
-        btnOkOnPress: () {},
-      )..show();
-    } else {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          dialogContext = context;
-          return const AlertDialog(
-            backgroundColor: Colors.transparent,
-            content: SpinKitCircle(color: Colors.white, size: 50.0),
-          );
-        },
-      );
-    }
-
-    UserCredential? userCredential;
-
+  signUp(String name, String mobileNumber, String password, String address,
+      int age, String role, String gender) async {
     try {
-      userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      addUserDetails(name, email, address, age, role, gender, userCredential);
-    } on FirebaseAuthException catch (ex) {
-      Navigator.pop(dialogContext!);
-      return AwesomeDialog(
-        context: context,
-        dialogType: DialogType.error,
-        animType: AnimType.rightSlide,
-        title: ex.message.toString(),
-        btnOkColor: MyTheme.buttonColor,
-        btnOkOnPress: () {},
-      )..show();
+      if (!isValidMobile(mobileNumber)) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'Invalid mobile number',
+          desc: 'Enter your right mobile number',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+        return;
+      }
+      final Map<String, dynamic> reqBody = {
+        'name': name,
+        'mobileNumber': mobileNumber,
+        'password': password,
+        'address': address,
+        'age': age,
+        'class': '',
+        'gender': gender,
+        'img': '',
+        'role': role,
+        'isVerified': false,
+        'isAdmin': false,
+      };
+
+      final response = await post(
+        Uri.parse('https://poralekha-server-chi.vercel.app/auth/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(reqBody),
+      );
+
+      print("status code ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.topSlide,
+          title: 'Account Created Successfully',
+          desc: 'Please enter your OTP.',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OtpScreen(),
+              ),
+            );
+          },
+        ).show();
+        final data = json.decode(response.body);
+        final String authToken = data['token'];
+        print(authToken);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('authToken', authToken);
+      } else if (response.statusCode == 409) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'Mobile number already used',
+          desc: 'Please use another mobile number',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    } catch (e) {
+      print(e.toString());
+      // Handle other exceptions
     }
   }
 
@@ -165,7 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Email",
+                    "Phone",
                     style: TextStyle(
                         color: Colors.grey,
                         fontSize: screenWidth * 0.04,
@@ -176,11 +176,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 //   height: 6,
                 // ),
                 CommonTextField(
-                  controller: emailController,
-                  text: "Email",
+                  controller: phoneController,
+                  text: "Phone",
                   obscure: false,
-                  suffixIcon: const Icon(IconsaxBold.sms),
-                  textInputType: TextInputType.emailAddress,
+                  suffixIcon: const Icon(IconsaxBold.mobile),
+                  textInputType: TextInputType.phone,
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 Align(
@@ -388,7 +388,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   onTap: () {
                     if (nameController.text.trim().isEmpty ||
-                        emailController.text.trim().isEmpty ||
+                        phoneController.text.trim().isEmpty ||
                         passwordController.text.trim().isEmpty ||
                         addressController.text.trim().isEmpty ||
                         ageController.text.trim().isEmpty ||
@@ -402,29 +402,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         btnOkColor: MyTheme.buttonColor,
                         btnOkOnPress: () {},
                       ).show();
+                    } else if (confirmPasswordController.text.trim() !=
+                        passwordController.text.trim()) {
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.info,
+                        animType: AnimType.rightSlide,
+                        title: "Password and Confirm password don't match",
+                        btnOkColor: MyTheme.buttonColor,
+                        btnOkOnPress: () {},
+                      ).show();
                     } else {
-                      // showDialog(
-                      //   context: context,
-                      //   barrierDismissible: false,
-                      //   builder: (BuildContext context) {
-                      //     dialogContext = context;
-                      //     return const AlertDialog(
-                      //       backgroundColor: Colors.transparent,
-                      //       content:
-                      //           SpinKitCircle(color: Colors.white, size: 50.0),
-                      //     );
-                      //   },
-                      // );
                       signUp(
-                        nameController.text.trim(),
-                        emailController.text.trim(),
-                        passwordController.text.trim(),
-                        addressController.text.trim(),
-                        int.parse(ageController.text.trim()),
-                        selectedRole ?? "Student",
-                        selectGender ?? "",
-                        confirmPasswordController.text.trim(),
-                      );
+                          nameController.text.trim(),
+                          phoneController.text.trim(),
+                          passwordController.text.trim(),
+                          addressController.text.trim(),
+                          int.parse(ageController.text.trim()),
+                          selectedRole ?? "Student",
+                          selectGender ?? "");
                     }
                   },
                 ),

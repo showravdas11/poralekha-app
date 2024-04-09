@@ -1,16 +1,14 @@
+import 'dart:convert';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ficonsax/ficonsax.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:http/http.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
-import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
-import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,23 +27,49 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool _isPasswordVisible = true;
 
+  bool isValidMobile(String mobile) {
+    RegExp regExp = RegExp(r'^01\d{9}$');
+    return regExp.hasMatch(mobile);
+  }
+
   @override
   void initState() {
     super.initState();
-    _initPreferences();
+    // _initPreferences();
   }
 
-  void _initPreferences() async {
-    _preferences = await SharedPreferences.getInstance();
-  }
+  // void _initPreferences() async {
+  //   _preferences = await SharedPreferences.getInstance();
+  //   final String? authToken = _preferences.getString('authToken');
+  //   if (authToken != null && authToken.isNotEmpty) {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => MainScreen()),
+  //     );
+  //   } else {
+  //     AwesomeDialog(
+  //       context: context,
+  //       dialogType: DialogType.error,
+  //       animType: AnimType.bottomSlide,
+  //       title: 'Please Sign Up',
+  //       desc: 'You need to sign up to access the app.',
+  //       btnOkText: 'Sign Up',
+  //       btnOkColor: MyTheme.buttonColor,
+  //       btnOkOnPress: () {
+  //         Navigator.push(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => SignUpScreen()),
+  //         );
+  //       },
+  //     )..show();
+  //   }
+  // }
 
-  login(String email, String password) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    if (email.isEmpty || password.isEmpty) {
-      // Show error dialog for empty fields
+  login(
+    String mobileNumber,
+    String password,
+  ) async {
+    if (mobileNumber.isEmpty || password.isEmpty) {
       AwesomeDialog(
         context: context,
         dialogType: DialogType.info,
@@ -54,81 +78,93 @@ class _LoginScreenState extends State<LoginScreen> {
         btnOkColor: MyTheme.buttonColor,
         btnOkOnPress: () {},
       )..show();
-
-      setState(() {
-        isLoading = false;
-      });
-    } else {
-      UserCredential? userCredential;
-      try {
-        userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        User? user = userCredential.user;
-
-        if (user != null && user.emailVerified) {
-          // Check if the 'class' field is empty
-          final userData = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-
-          _preferences.setBool('isAdmin', userData['isAdmin']);
-          _preferences.setString('name', userData['name']);
-          _preferences.setString('class', userData['class']);
-          _preferences.setString('img', userData['img']);
-
-          final userClass = userData.get('class') as String;
-
-          if (userClass == "") {
-            // Redirect to ClassListScreen if class field is empty
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const ClassListScreen()),
-            );
-          } else {
-            print("My user login  datatata2 ${userData}");
-            print(124);
-            if (userData['isApproved'] == true) {
-              print("My user login  datatata3 ${userData}");
-              print(125);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-              );
-            } else {
-              print("My user login  datatata3 ${userData}");
-              print(126);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const WaitingScreen()),
-              );
-            }
-          }
-        } else {
-          await userCredential.user?.sendEmailVerification();
-          AwesomeDialog(
-            context: context,
-            dialogType: DialogType.error,
-            animType: AnimType.rightSlide,
-            title: "Please check your email and verify",
-            btnOkColor: MyTheme.buttonColor,
-            btnOkOnPress: () {},
-          )..show();
-        }
-      } on FirebaseAuthException catch (ex) {
+    }
+    // else if (password.length < 6) {
+    //   AwesomeDialog(
+    //     context: context,
+    //     dialogType: DialogType.error,
+    //     animType: AnimType.rightSlide,
+    //     title: 'Password must be at least 6 characters long',
+    //     btnOkColor: MyTheme.buttonColor,
+    //     btnOkOnPress: () {},
+    //   )..show();
+    //   return;
+    // }
+    try {
+      if (!isValidMobile(mobileNumber)) {
         AwesomeDialog(
           context: context,
           dialogType: DialogType.error,
-          animType: AnimType.rightSlide,
-          title: ex.message.toString(),
+          animType: AnimType.topSlide,
+          title: 'Invalid mobile number',
+          desc: 'Enter your right mobile number',
+          btnOkText: 'OK',
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {},
-        )..show();
-      } finally {
-        setState(() {
-          isLoading = false;
-        });
+        ).show();
+        return;
       }
+      final Map<String, dynamic> reqBody = {
+        'mobileNumber': mobileNumber,
+        'password': password,
+      };
+
+      final response = await post(
+        Uri.parse('https://poralekha-server-chi.vercel.app/auth/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(reqBody),
+      );
+
+      print("status code ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.topSlide,
+          title: 'Account Created Successfully',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainScreen(),
+              ),
+            );
+          },
+        ).show();
+        final data = json.decode(response.body);
+        final String authToken = data['token'];
+        print(authToken);
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('authToken', authToken);
+      } else if (response.statusCode == 409) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'User Not Found',
+          desc: 'Please use right mobile number',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+      } else if (response.statusCode == 400) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'Incorrect password',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+      }
+    } catch (e) {
+      print(e.toString());
+      // Handle other exceptions
     }
   }
 
@@ -159,7 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Email",
+                      "Phone",
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: screenWidth * 0.04,
@@ -169,10 +205,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CommonTextField(
                     controller: emailController,
-                    text: "Email",
+                    text: "Phone",
                     obscure: false,
                     suffixIcon: const Icon(IconsaxBold.sms),
-                    textInputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.phone,
                   ),
                   SizedBox(height: screenHeight * 0.01),
                   Align(

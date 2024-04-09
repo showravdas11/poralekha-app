@@ -12,6 +12,7 @@ import 'package:poralekha_app/widgets/ProfileHeadingSection.dart';
 import 'package:poralekha_app/widgets/ProfileMenu.dart';
 import 'package:poralekha_app/widgets/UtilitiesSection.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Language/Language_screen.dart';
 
@@ -233,16 +234,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: "Log Out".tr,
                   subTitle: "Logout".tr,
                   icon: IconsaxBold.logout,
-                  onPressed: () {
-                    auth.signOut().then((value) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                      );
-                    });
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('authToken');
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
                   },
                 ),
+
                 const SizedBox(
                   height: 10,
                 ),
