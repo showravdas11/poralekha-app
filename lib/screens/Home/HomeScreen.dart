@@ -102,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? IconButton(
                     icon: const Icon(Icons.menu),
                     onPressed: () {
+                      print("drawer opening");
                       _scaffoldKey.currentState?.openDrawer();
                     },
                   )
@@ -158,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      drawer: SizedBox(
+      drawer: isAdmin == true ? SizedBox(
         width: Get.width * 0.60,
         child: const Drawer(
           backgroundColor: Color.fromARGB(255, 240, 248, 255),
@@ -170,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
+      ) : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
