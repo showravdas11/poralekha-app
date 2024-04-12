@@ -11,8 +11,10 @@ import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OtpScreen extends StatefulWidget {
+  final String mobileNumber;
   OtpScreen({
     Key? key,
+    required this.mobileNumber,
   }) : super(key: key);
 
   @override
@@ -22,21 +24,23 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
 
-  Future<void> otpCode(
-    String otp,
-  ) async {
+  Future<void> otpCode(String otp, String mobileNumber) async {
+    print("Mobile Number: $mobileNumber");
+    print("OTP: $otp");
     try {
       final Map<String, dynamic> reqBody = {
         "otp": otp,
+        "mobileNumber": mobileNumber,
       };
 
       final response = await post(
-        Uri.parse('https://poralekha-server-chi.vercel.app/auth/verify-otp'),
+        Uri.parse('https://poralekha-server-chi.vercel.app/otp/verify-otp'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(reqBody),
       );
 
       print("status code ${response.statusCode}");
+      print("My bodyrr ${response.body}");
 
       if (response.statusCode == 200) {
         AwesomeDialog(
@@ -67,6 +71,16 @@ class _OtpScreenState extends State<OtpScreen> {
           dialogType: DialogType.error,
           animType: AnimType.topSlide,
           title: 'invalid otp',
+          btnOkText: 'OK',
+          btnOkColor: MyTheme.buttonColor,
+          btnOkOnPress: () {},
+        ).show();
+      } else if (response.statusCode == 409) {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.topSlide,
+          title: 'Time Error',
           btnOkText: 'OK',
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {},
@@ -115,7 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
             RoundedButton(
               title: "Submit",
               onTap: () {
-                otpCode(otpController.text.trim());
+                otpCode(otpController.text.trim(), widget.mobileNumber);
               },
               width: double.infinity,
             ),

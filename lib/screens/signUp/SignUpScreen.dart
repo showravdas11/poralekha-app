@@ -92,7 +92,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(),
+                builder: (context) =>
+                    OtpScreen(mobileNumber: phoneController.text),
               ),
             );
           },
