@@ -8,12 +8,57 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:525587181466:android:e06c2744ecffd9e1171423",
+        "android_client_info": {
+          "package_name": "com.pora.lekha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525587181466-0h5ethjpb44vf09d6bqnmh7j8dbm5avp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pora.lekha",
+            "certificate_hash": "2fcdb4a444c83c8021f65adcc0711d381a3a5463"
+          }
+        },
+        {
+          "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6Yn0aeO_HPCpDvyNPz4dj6-hApPqbF5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:525587181466:android:1ef675ee215ddc2a171423",
         "android_client_info": {
           "package_name": "com.poralekha.app"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "525587181466-l68tj52sh26138pk5mpalugnfq3njd4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.poralekha.app",
+            "certificate_hash": "2fcdb4a444c83c8021f65adcc0711d381a3a5463"
+          }
+        },
         {
           "client_id": "525587181466-sipmap1ifkft908jsjitmg8bo6hdgv9v.apps.googleusercontent.com",
           "client_type": 3
@@ -36,5 +81,5 @@
       }
     }
   ],
-  "configuration_version":"1"
+  "configuration_version": "1"
 }

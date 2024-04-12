@@ -1,4 +1,4 @@
-package com.poralekha.app
+package com.pora.lekha
 
 import io.flutter.embedding.android.FlutterActivity
 
