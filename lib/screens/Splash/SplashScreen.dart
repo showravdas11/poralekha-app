@@ -18,17 +18,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double opacity = 1.0;
-  late SharedPreferences _preferences;
 
   @override
   void initState() {
     super.initState();
     _startFadeOut();
-    _initPreferences();
-  }
-
-  void _initPreferences() async {
-    _preferences = await SharedPreferences.getInstance();
   }
 
   void _startFadeOut() {
@@ -38,35 +32,20 @@ class _SplashScreenState extends State<SplashScreen> {
       });
 
       Future.delayed(const Duration(seconds: 1), () async {
-        final user = FirebaseAuth.instance.currentUser;
-        if (user != null && user.emailVerified) {
-          final userData = await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
-
-          _preferences.setBool('isAdmin', userData['isAdmin']);
-          _preferences.setString('name', userData['name']);
-          _preferences.setString('class', userData['class']);
-          _preferences.setString('img', userData['img']);
-
-          if (userData['class'] == null || userData['class'] == "") {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? authToken = prefs.getString('authToken');
+        String? className = prefs.getString('class');
+        if (authToken != null) {
+          if (className == null || className == "") {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const ClassListScreen()),
             );
           } else {
-            if (userData['isApproved'] == true) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MainScreen()),
-              );
-            } else {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const WaitingScreen()),
-              );
-            }
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+            );
           }
         } else {
           // Return a widget, for example, a Material widget containing LoginScreen

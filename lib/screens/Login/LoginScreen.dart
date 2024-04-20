@@ -8,7 +8,9 @@ import 'package:http/http.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
+import 'package:poralekha_app/screens/ClassList/ClassListScreen.dart';
 import 'package:poralekha_app/screens/ForgetPassword/ForgetPassword.dart';
+import 'package:poralekha_app/screens/OtpScreen/OtpScreen.dart';
 import 'package:poralekha_app/screens/signUp/SignUpScreen.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,10 +24,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late SharedPreferences _preferences;
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController ephoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
   bool _isPasswordVisible = true;
+  BuildContext? dialogContext;
 
   bool isValidMobile(String mobile) {
     RegExp regExp = RegExp(r'^01\d{9}$');
@@ -38,38 +41,17 @@ class _LoginScreenState extends State<LoginScreen> {
     // _initPreferences();
   }
 
-  // void _initPreferences() async {
-  //   _preferences = await SharedPreferences.getInstance();
-  //   final String? authToken = _preferences.getString('authToken');
-  //   if (authToken != null && authToken.isNotEmpty) {
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => MainScreen()),
-  //     );
-  //   } else {
-  //     AwesomeDialog(
-  //       context: context,
-  //       dialogType: DialogType.error,
-  //       animType: AnimType.bottomSlide,
-  //       title: 'Please Sign Up',
-  //       desc: 'You need to sign up to access the app.',
-  //       btnOkText: 'Sign Up',
-  //       btnOkColor: MyTheme.buttonColor,
-  //       btnOkOnPress: () {
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(builder: (context) => SignUpScreen()),
-  //         );
-  //       },
-  //     )..show();
-  //   }
-  // }
-
   login(
     String mobileNumber,
     String password,
   ) async {
+    setState(() {
+      isLoading = true;
+    });
     if (mobileNumber.isEmpty || password.isEmpty) {
+      setState(() {
+        isLoading = false;
+      });
       AwesomeDialog(
         context: context,
         dialogType: DialogType.info,
@@ -78,93 +60,119 @@ class _LoginScreenState extends State<LoginScreen> {
         btnOkColor: MyTheme.buttonColor,
         btnOkOnPress: () {},
       )..show();
-    }
-    // else if (password.length < 6) {
-    //   AwesomeDialog(
-    //     context: context,
-    //     dialogType: DialogType.error,
-    //     animType: AnimType.rightSlide,
-    //     title: 'Password must be at least 6 characters long',
-    //     btnOkColor: MyTheme.buttonColor,
-    //     btnOkOnPress: () {},
-    //   )..show();
-    //   return;
-    // }
-    try {
-      if (!isValidMobile(mobileNumber)) {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.error,
-          animType: AnimType.topSlide,
-          title: 'Invalid mobile number',
-          desc: 'Enter your right mobile number',
-          btnOkText: 'OK',
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {},
-        ).show();
-        return;
+    } else {
+      try {
+        setState(() {
+          isLoading = false;
+        });
+        if (!isValidMobile(mobileNumber)) {
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.topSlide,
+            title: 'Invalid mobile number',
+            desc: 'Enter your right mobile number',
+            btnOkText: 'OK',
+            btnOkColor: MyTheme.buttonColor,
+            btnOkOnPress: () {},
+          ).show();
+          return;
+        }
+        final Map<String, dynamic> reqBody = {
+          'mobileNumber': mobileNumber,
+          'password': password,
+        };
+
+        final response = await post(
+          Uri.parse('https://poralekha-server-chi.vercel.app/auth/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(reqBody),
+        );
+
+        print(response.statusCode);
+        print(response.body);
+
+        if (response.statusCode == 200) {
+          setState(() {
+            isLoading =
+                true; // Set isLoading to true before making the HTTP request
+          });
+          final data = json.decode(response.body);
+          final String? authToken = data['token'];
+
+          if (authToken == null) {
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.info,
+              animType: AnimType.topSlide,
+              title: data['msg'],
+              btnOkText: 'OK',
+              btnOkColor: MyTheme.buttonColor,
+              btnOkOnPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtpScreen(
+                      mobileNumber: mobileNumber,
+                    ),
+                  ),
+                );
+              },
+            ).show();
+          } else {
+            final Map<String, dynamic> user = data['user'];
+
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('authToken', authToken);
+            await prefs.setString("name", user["name"]);
+            await prefs.setString("mobileNumber", user["mobileNumber"]);
+            await prefs.setBool("isAdmin", user["isAdmin"]);
+            await prefs.setString("address", user["address"] ?? "");
+            await prefs.setInt("age", user["age"] ?? 0);
+            await prefs.setString("class", user["class"] ?? "");
+            await prefs.setString("gender", user["gender"] ?? "");
+            await prefs.setString("img", user["img"] ?? "");
+            await prefs.setString("role", user["role"]);
+            await prefs.setBool("isVerified", user["isVerified"]);
+            await prefs.setString("_id", user["_id"]);
+
+            if (user["class"] == null || user["class"] == "") {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ClassListScreen(),
+                ),
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainScreen(),
+                ),
+              );
+            }
+          }
+        } else {
+          final data = json.decode(response.body);
+          final errorMessage = data['msg'];
+          print("My msg${errorMessage}");
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.error,
+            animType: AnimType.topSlide,
+            title: errorMessage.toString(),
+            btnOkText: 'OK',
+            btnOkColor: MyTheme.buttonColor,
+            btnOkOnPress: () {},
+          ).show();
+        }
+      } catch (e) {
+        print(e.toString());
+        setState(() {
+          isLoading = false;
+        });
+        // Handle other exceptions
       }
-      final Map<String, dynamic> reqBody = {
-        'mobileNumber': mobileNumber,
-        'password': password,
-      };
-
-      final response = await post(
-        Uri.parse('https://poralekha-server-chi.vercel.app/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(reqBody),
-      );
-
-      print("status code ${response.statusCode}");
-
-      if (response.statusCode == 200) {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.success,
-          animType: AnimType.topSlide,
-          title: 'Account Created Successfully',
-          btnOkText: 'OK',
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MainScreen(),
-              ),
-            );
-          },
-        ).show();
-        final data = json.decode(response.body);
-        final String authToken = data['token'];
-        print(authToken);
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('authToken', authToken);
-      } else if (response.statusCode == 409) {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.error,
-          animType: AnimType.topSlide,
-          title: 'User Not Found',
-          desc: 'Please use right mobile number',
-          btnOkText: 'OK',
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {},
-        ).show();
-      } else if (response.statusCode == 400) {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.error,
-          animType: AnimType.topSlide,
-          title: 'Incorrect password',
-          btnOkText: 'OK',
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {},
-        ).show();
-      }
-    } catch (e) {
-      print(e.toString());
-      // Handle other exceptions
     }
   }
 
@@ -204,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   CommonTextField(
-                    controller: emailController,
+                    controller: ephoneController,
                     text: "Phone",
                     obscure: false,
                     suffixIcon: const Icon(IconsaxBold.sms),
@@ -238,37 +246,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     textInputType: TextInputType.text,
                   ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgetPasswordScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Forgot Password ?",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF7E59FD),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
                   SizedBox(height: screenHeight * 0.02),
                   RoundedButton(
                     title: "Login",
                     width: double.infinity,
                     onTap: () {
                       login(
-                        emailController.text.toString(),
+                        ephoneController.text.toString(),
                         passwordController.text.toString(),
                       );
                     },

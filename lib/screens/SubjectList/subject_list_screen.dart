@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/SubjectList/ChapterList/chapter_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SubjectListScreen extends StatefulWidget {
   const SubjectListScreen({Key? key}) : super(key: key);
@@ -13,6 +14,10 @@ class SubjectListScreen extends StatefulWidget {
 }
 
 class _SubjectListScreenState extends State<SubjectListScreen> {
+  late String _id;
+  late String name;
+  late String Class;
+  late bool isAdmin;
   Stream<QuerySnapshot<Map<String, dynamic>>>? _subjectsStream;
   List<Color> _tileColors = [
     const Color(0xFFFE7B33),
@@ -31,17 +36,17 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   }
 
   void loadSubjectList() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final userData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      final className = userData.get('class') as String;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('authToken');
+    _id = prefs.getString('_id') ?? "";
+    name = prefs.getString('name') ?? "";
+    Class = prefs.getString('class') ?? "";
+    isAdmin = prefs.getBool('isAdmin') ?? false;
+    if (authToken != null) {
       setState(() {
         _subjectsStream = FirebaseFirestore.instance
             .collection("subjects")
-            .where('class', isEqualTo: className)
+            .where('class', isEqualTo: Class)
             .snapshots();
       });
     }

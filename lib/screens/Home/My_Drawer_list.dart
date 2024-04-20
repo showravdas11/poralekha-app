@@ -5,7 +5,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/screens/AllLectures/AllLectures.dart';
 import 'package:poralekha_app/screens/AddLectures/AddLectures.dart';
 import 'package:poralekha_app/screens/AllSubjects/AllSubjects.dart';
-import 'package:poralekha_app/screens/ApproveUser/ApproveUser.dart';
 import 'package:poralekha_app/screens/AllStudents/AllStudents.dart';
 import 'package:poralekha_app/screens/ManageAdimin/ManageAdmin.dart';
 
@@ -22,15 +21,6 @@ class MyDrawerList extends StatelessWidget {
       ),
       child: Column(
         children: [
-          GestureDetector(
-            child: DrawerListMenu(
-              title: "Approve User".tr,
-              icon: Iconsax.user,
-            ),
-            onTap: () {
-              Get.to(ApproveUser());
-            },
-          ),
           // SizedBox(
           //   height: Get.height * 0.01,
           // ),

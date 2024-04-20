@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:ficonsax/ficonsax.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/screens/OtpScreen/OtpScreen.dart';
@@ -55,8 +54,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {},
         ).show();
+        Navigator.pop(dialogContext!);
         return;
       }
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          dialogContext = context;
+          return const AlertDialog(
+            backgroundColor: Colors.transparent,
+            content: SpinKitCircle(color: Colors.white, size: 50.0),
+          );
+        },
+      );
+
       final Map<String, dynamic> reqBody = {
         'name': name,
         'mobileNumber': mobileNumber,
@@ -89,7 +102,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           btnOkText: 'OK',
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) =>
@@ -104,17 +117,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('authToken', authToken);
-      } else if (response.statusCode == 409) {
+        Navigator.pop(dialogContext!);
+      } else {
+        final data = json.decode(response.body);
+        final errorMessage = data['msg'];
+        print("My msg${errorMessage}");
         AwesomeDialog(
           context: context,
           dialogType: DialogType.error,
           animType: AnimType.topSlide,
-          title: 'Mobile number already used',
-          desc: 'Please use another mobile number',
+          title: errorMessage.toString(),
           btnOkText: 'OK',
           btnOkColor: MyTheme.buttonColor,
           btnOkOnPress: () {},
         ).show();
+        Navigator.pop(dialogContext!);
       }
     } catch (e) {
       print(e.toString());

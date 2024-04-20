@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:poralekha_app/screens/Chat/ChatScreen.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatListScreen extends StatefulWidget {
   @override
@@ -15,6 +16,11 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? _chatroomsStream;
 
+  late String _id;
+  late String name;
+  late String Class;
+  late bool isAdmin;
+
   @override
   void initState() {
     super.initState();
@@ -22,13 +28,13 @@ class _ChatListScreenState extends State<ChatListScreen> {
   }
 
   void loadChatRooms() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final userData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      final isAdmin = userData.get('isAdmin') as bool;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('authToken');
+    _id = prefs.getString('_id') ?? "";
+    name = prefs.getString('name') ?? "";
+    Class = prefs.getString('class') ?? "";
+    isAdmin = prefs.getBool('isAdmin') ?? false;
+    if (authToken != null) {
       if (isAdmin) {
         setState(() {
           _chatroomsStream = FirebaseFirestore.instance
@@ -37,11 +43,11 @@ class _ChatListScreenState extends State<ChatListScreen> {
               .snapshots();
         });
       } else {
-        final className = userData.get('class') as String;
+        print("hamar class ${Class}");
         setState(() {
           _chatroomsStream = FirebaseFirestore.instance
               .collection("chats")
-              .where('name', isEqualTo: className)
+              .where('name', isEqualTo: Class)
               .snapshots();
         });
       }
@@ -50,6 +56,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('ChatRoomsStream: $_chatroomsStream');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

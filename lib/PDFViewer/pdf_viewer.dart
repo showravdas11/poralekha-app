@@ -32,7 +32,7 @@ class _PdfViewerState extends State<PdfViewer> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("PDF Viewer"),
+        title: const Text("Subject Pdf"),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: _pdfStream,

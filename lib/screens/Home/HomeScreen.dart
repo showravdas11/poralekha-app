@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   )
                 : Image.asset(
                     "assets/images/poralekha-splash-screen-logo.png",
-                    height: Get.height * 0.03,
+                    height: Get.height * 0.02,
                   )
           ],
         ),
@@ -147,30 +147,31 @@ class _HomeScreenState extends State<HomeScreen> {
                     Get.to(ProfileScreen());
                   },
                   child: CircleAvatar(
-                    backgroundImage: img != null || img != ""
-                        ? NetworkImage(img ?? "")
-                        : const AssetImage('assets/images/user.png')
-                            as ImageProvider,
-                  ),
+                      backgroundImage: img == null || img == ""
+                          ? const AssetImage('assets/images/user.png')
+                              as ImageProvider
+                          : NetworkImage(img ?? "")),
                 ),
               ],
             ),
           )
         ],
       ),
-      drawer: SizedBox(
-        width: Get.width * 0.60,
-        child: const Drawer(
-          backgroundColor: Color.fromARGB(255, 240, 248, 255),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              MyDrawerHeader(),
-              MyDrawerList(),
-            ],
-          ),
-        ),
-      ),
+      drawer: isAdmin == true
+          ? SizedBox(
+              width: Get.width * 0.60,
+              child: const Drawer(
+                backgroundColor: Color.fromARGB(255, 240, 248, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    MyDrawerHeader(),
+                    MyDrawerList(),
+                  ],
+                ),
+              ),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

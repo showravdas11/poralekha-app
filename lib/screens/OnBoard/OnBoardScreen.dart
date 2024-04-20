@@ -14,9 +14,6 @@ class OnBoardScreen extends StatefulWidget {
 }
 
 class _OnBoardScreenState extends State<OnBoardScreen> {
-  late Stream<QuerySnapshot> _usersStream;
-  final auth = FirebaseAuth.instance;
-
   late PageController _pageController;
   int _pageIndex = 0;
 
@@ -24,11 +21,6 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   void initState() {
     _pageController = PageController(initialPage: 0);
     super.initState();
-    User? user = FirebaseAuth.instance.currentUser;
-    _usersStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: user?.email)
-        .snapshots();
   }
 
   @override
@@ -246,126 +238,3 @@ class _OnboardContentState extends State<OnboardContent> {
     );
   }
 }
-
-// class LanguageSelection extends StatefulWidget {
-//   const LanguageSelection({Key? key}) : super(key: key);
-
-//   @override
-//   State<LanguageSelection> createState() => _LanguageSelectionState();
-// }
-
-// class _LanguageSelectionState extends State<LanguageSelection>
-//     with SingleTickerProviderStateMixin {
-//   late AnimationController _animationController;
-//   late Animation<Offset> _slideAnimation;
-
-//   bool isEnglishSelected = true;
-//   bool isRunningSelected = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _animationController = AnimationController(
-//       vsync: this,
-//       duration: Duration(milliseconds: 500),
-//     );
-
-//     _slideAnimation = Tween<Offset>(
-//       begin: Offset.zero,
-//       end: Offset(0.6, 0),
-//     ).animate(
-//       CurvedAnimation(
-//         parent: _animationController,
-//         curve: Curves.easeInOut,
-//       ),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _animationController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     final screenWidth = MediaQuery.of(context).size.width;
-
-//     return Container(
-//       width: screenWidth * 0.6,
-//       padding: EdgeInsets.symmetric(
-//           vertical: screenHeight * 0.010, horizontal: screenWidth * 0.03),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           ElevatedButton(
-//             onPressed: () {
-//               Get.updateLocale(const Locale('en', 'US'));
-//               setState(() {
-//                 isRunningSelected = true;
-//                 _animationController.reverse();
-//               });
-//             },
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: isRunningSelected
-//                   ? MyTheme.buttonColor
-//                   : MyTheme.buttonColor.withOpacity(0.6),
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//               ),
-//             ),
-//             child: Text(
-//               "English",
-//               style: TextStyle(
-//                 color: Colors.white,
-//                 fontSize: screenWidth * 0.04,
-//                 fontWeight: FontWeight.w500,
-//               ),
-//             ),
-//           ),
-//           SizedBox(
-//             width: 7,
-//           ),
-//           ElevatedButton(
-//             onPressed: () {
-//               Get.updateLocale(const Locale('bd', 'BAN'));
-//               setState(() {
-//                 isRunningSelected = false;
-//                 _animationController.forward();
-//               });
-//             },
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: isRunningSelected
-//                   ? MyTheme.buttonColor.withOpacity(0.6)
-//                   : MyTheme.buttonColor,
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//               ),
-//             ),
-//             child: Text(
-//               "বাংলা",
-//               style: TextStyle(
-//                 color: Colors.white,
-//                 fontSize: screenWidth * 0.04,
-//                 fontWeight: FontWeight.w500,
-//               ),
-//             ),
-//           ),
-//           // SlideTransition(
-//           //   position: _slideAnimation,
-//           //   child: Container(
-//           //     height: 40,
-//           //     width: 4,
-//           //     color: MyTheme.buttonColor,
-//           //   ),
-//           // ),
-//         ],
-//       ),
-//     );
-//   }
-// }

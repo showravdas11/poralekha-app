@@ -1,22 +1,26 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:poralekha_app/common/CommonTextField.dart';
 import 'package:poralekha_app/common/RoundedButton.dart';
 import 'package:poralekha_app/theme/myTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const UpdateProfileScreen({Key? key, required this.userData})
+  final Function()? onUpdateProfile;
+
+  const UpdateProfileScreen(
+      {Key? key, required this.userData, this.onUpdateProfile})
       : super(key: key);
 
   @override
@@ -30,11 +34,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   File? _selectedImage;
   BuildContext? dialogContext;
   String? selectGender;
-
-  // late Future<QuerySnapshot> _usersStream;
-  final auth = FirebaseAuth.instance;
-
-  int currentIndex = 0;
+  late String imageUrl; // Define imageUrl here
 
   @override
   void initState() {
@@ -44,57 +44,67 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     addressController.text = widget.userData['address'] ?? 'N/A';
     ageController.text = widget.userData['age']?.toString() ?? 'N/A';
     setState(() {
-      selectGender = widget.userData['gender'] ?? 'N/A';
+      selectGender = widget.userData['gender'] ?? null;
+      imageUrl = widget.userData['img'] ?? '';
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   //-----------------update user profile function--------------------//
   Future<void> _updateUserData() async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Upload image to Firebase Storage
-        String imagePath = 'profile_images/${user.uid}_profile.jpg';
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? authToken = prefs.getString('authToken');
+      print("my authToken${authToken}");
+      if (authToken != null) {
+        String imagePath = 'profile_images/${authToken}_profile.jpg';
         Reference storageReference =
             FirebaseStorage.instance.ref().child(imagePath);
-        String imageUrl = widget.userData['img'];
         if (_selectedImage != null) {
           await storageReference.putFile(_selectedImage!);
           imageUrl = await storageReference.getDownloadURL();
         }
 
-        // Update user data in Firebase Realtime Database
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({
+        Map<String, dynamic> updatedUserData = {
           'name': nameController.text,
           'gender': selectGender,
           'address': addressController.text,
           'age': ageController.text,
           'img': imageUrl,
-        });
-
-        Navigator.pop(dialogContext!);
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.success,
-          animType: AnimType.rightSlide,
-          title: 'Data Updated Successfully',
-          btnOkColor: MyTheme.buttonColor,
-          btnOkOnPress: () {
-            Navigator.pop(context);
+        };
+        String apiUrl =
+            'https://poralekha-server-chi.vercel.app/auth/update-profile';
+        var response = await http.put(
+          Uri.parse(apiUrl),
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json',
           },
-        ).show();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('User not logged in')),
+          body: jsonEncode(updatedUserData),
         );
+
+        if (response.statusCode == 200) {
+          prefs.setString('name', nameController.text);
+          prefs.setString('gender', selectGender!);
+          prefs.setString('address', addressController.text);
+          prefs.setString('age', ageController.text);
+          prefs.setString('img', imageUrl);
+          Navigator.pop(dialogContext!);
+          AwesomeDialog(
+            context: context,
+            dialogType: DialogType.success,
+            animType: AnimType.rightSlide,
+            title: 'Data Updated Successfully',
+            btnOkColor: MyTheme.buttonColor,
+            btnOkOnPress: () {
+              Navigator.pop(context);
+            },
+          ).show();
+          widget.onUpdateProfile?.call();
+        } else {
+          // Handle error
+          print('Request failed with status: ${response.statusCode}');
+          print('Request failed with status: ${response.body}');
+        }
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -119,31 +129,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   child: const Row(
                     children: [
                       Icon(
-                        Iconsax.gallery_add,
-                        size: 30,
-                        color: Color.fromARGB(255, 142, 36, 171),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Gallery",
-                        style: TextStyle(fontSize: 20),
-                      )
-                    ],
-                  ),
-                  onTap: () async {
-                    final pickedFile = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    Navigator.of(context).pop(File(pickedFile!.path));
-                  },
-                ),
-                const Padding(padding: EdgeInsets.all(8.0)),
-                GestureDetector(
-                  child: const Row(
-                    children: [
-                      Icon(
                         Icons.camera,
                         size: 30,
                         color: Color.fromARGB(255, 48, 96, 78),
@@ -160,6 +145,31 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   onTap: () async {
                     final pickedFile = await picker.pickImage(
                       source: ImageSource.camera,
+                    );
+                    Navigator.of(context).pop(File(pickedFile!.path));
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Iconsax.gallery_add,
+                        size: 30,
+                        color: Color.fromARGB(255, 142, 36, 171),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Gallery",
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  ),
+                  onTap: () async {
+                    final pickedFile = await picker.pickImage(
+                      source: ImageSource.gallery,
                     );
                     Navigator.of(context).pop(File(pickedFile!.path));
                   },
@@ -263,9 +273,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                   )
                                 : ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
-                                    child: widget.userData["img"] != ""
+                                    child: imageUrl.isNotEmpty
                                         ? Image.network(
-                                            widget.userData["img"]!,
+                                            imageUrl,
                                             fit: BoxFit.cover,
                                           )
                                         : Image.asset(
@@ -331,7 +341,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         textInputType: TextInputType.text,
                         obscure: false,
                         suffixIcon: const Icon(
-                          Iconsax.user,
+                          Icons.person,
                           color: Color(0xFF7E59FD),
                         ),
                       ),
@@ -410,7 +420,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         text: "Address",
                         textInputType: TextInputType.text,
                         obscure: false,
-                        suffixIcon: const Icon(Iconsax.location,
+                        suffixIcon: const Icon(Icons.location_on,
                             color: Color(0xFF7E59FD)),
                       ),
                       const SizedBox(height: 6),
@@ -432,7 +442,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         text: "Age",
                         textInputType: TextInputType.number,
                         obscure: false,
-                        suffixIcon: const Icon(Iconsax.calendar,
+                        suffixIcon: const Icon(Icons.calendar_today,
                             color: Color(0xFF7E59FD)),
                       ),
                     ],

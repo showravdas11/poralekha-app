@@ -1,9 +1,15 @@
+// import 'dart:convert';
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:poralekha_app/MainScreen/MainScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:poralekha_app/screens/WaitingScreen/WaitingScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart';
 
 class ClassListScreen extends StatefulWidget {
   const ClassListScreen({Key? key}) : super(key: key);
@@ -36,28 +42,34 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
   void updateClassInDatabase(String selectedClass) async {
     try {
-      User? user = FirebaseAuth.instance.currentUser;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? authToken = prefs.getString('authToken');
+      print("my authToken${authToken}");
 
-      if (user != null) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .update({'class': selectedClass});
-        final userData = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-        if (userData['isApproved'] == true) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MainScreen()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WaitingScreen()),
-          );
-        }
+      final Map<String, dynamic> selectClassBody = {
+        'class': selectedClass,
+      };
+      String apiUrl =
+          'https://poralekha-server-chi.vercel.app/auth/select-class';
+
+      final response = await put(
+        Uri.parse(apiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $authToken',
+        },
+        body: jsonEncode(selectClassBody),
+      );
+      if (response.statusCode == 200) {
+        print('Class updated successfully.');
+        await prefs.setString('class', selectedClass);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      } else {
+        print('Failed to update class. Status code: ${response.statusCode}');
+        print('Failed to update class. Status Body: ${response.body}');
       }
     } catch (error) {
       print("Error updating class: $error");
@@ -93,6 +105,9 @@ class _ClassListScreenState extends State<ClassListScreen> {
 
           List<String> classNames =
               snapshot.data!.docs.map((doc) => doc['name'] as String).toList();
+
+          snapshot.data!.docs.map((doc) => print(doc));
+          print(classNames);
 
           return Padding(
             padding: const EdgeInsets.all(10),

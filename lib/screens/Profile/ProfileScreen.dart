@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 import 'package:ficonsax/ficonsax.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:poralekha_app/screens/ChangePassword/ChangePasswordScreen.dart';
 import 'package:poralekha_app/screens/Login/LoginScreen.dart';
 import 'package:poralekha_app/screens/Payment/PaymentScreen.dart';
 import 'package:poralekha_app/screens/UpdateProfileScreen/UpdateProfile.dart';
@@ -22,17 +23,59 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late Stream<QuerySnapshot> _usersStream;
-  final auth = FirebaseAuth.instance;
+  String? name;
+  String? mobileNumber;
+  String? address;
+  String? gender;
+  int? age;
+  String? profileImageUrl;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    User? user = FirebaseAuth.instance.currentUser;
-    _usersStream = FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: user?.email)
-        .snapshots();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('authToken');
+    print("my token daw pls ${authToken}");
+    String apiUrl = 'https://poralekha-server-chi.vercel.app/auth/me';
+    // String bearerToken = 'authToken';
+    // print('my bearer token${bearerToken}');
+
+    try {
+      var response = await get(
+        Uri.parse(apiUrl),
+        headers: {'Authorization': 'Bearer $authToken'},
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        print("my datatatatta paiaiai${data}");
+        Map<String, dynamic> user = data["user"];
+        setState(() {
+          name = user['name'];
+          mobileNumber = user['mobileNumber'];
+          address = user['address'];
+          gender = user['gender'];
+          age = user['age'];
+          profileImageUrl = user['img'];
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -49,68 +92,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text(
           "Profile".tr,
           style: TextStyle(
-            fontSize:
-                screenWidth * 0.05, // Adjust font size based on screen width
+            fontSize: screenWidth * 0.05,
             fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: MyTheme.canvousColor,
       ),
-      body: StreamBuilder(
-        stream: _usersStream,
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text("Something Went Wrong"),
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text("No Data Found"),
-            );
-          }
-
-          var userData =
-              snapshot.data!.docs.first.data() as Map<String, dynamic>;
-
-          print("Data paisi${userData}");
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    ClipPath(
-                      clipper: BottomCurveClipper(),
-                      child: Container(
-                        width: double.infinity,
-                        height: 220,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7E59FD),
-                              Color(0xFF5B37B7),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      ClipPath(
+                        clipper: BottomCurveClipper(),
+                        child: Container(
+                          width: double.infinity,
+                          height: 220,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7E59FD),
+                                Color(0xFF5B37B7),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        alignment: Alignment.center,
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
                         child: Container(
+                          alignment: Alignment.center,
+                          child: Container(
                             width: 120,
                             height: 120,
                             decoration: BoxDecoration(
@@ -126,135 +144,146 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
-                              child: userData['img'] != ""
+                              child: profileImageUrl != null &&
+                                      profileImageUrl != ""
                                   ? Image.network(
-                                      userData['img'],
+                                      profileImageUrl!,
                                       fit: BoxFit.cover,
                                     )
                                   : Image.asset(
-                                      "assets/images/person-placeholder.jpg", // Provide a default image asset
+                                      "assets/images/person-placeholder.jpg",
                                       fit: BoxFit.cover,
                                     ),
-                            )),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: HeadingSection(
-                    title: "Personal Information".tr,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              UpdateProfileScreen(userData: userData),
+                            ),
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: HeadingSection(
+                      title: "Personal Information".tr,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UpdateProfileScreen(
+                              userData: {
+                                'name': name,
+                                'mobileNumber': mobileNumber,
+                                'address': address,
+                                'gender': gender,
+                                'age': age,
+                              },
+                              onUpdateProfile: fetchData,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ProfileMenu(
+                    title: "Name".tr,
+                    subTitle: name ?? '',
+                    icon: IconsaxBold.user,
+                  ),
+                  ProfileMenu(
+                    title: "Mobile Number".tr,
+                    subTitle: mobileNumber ?? '',
+                    icon: IconsaxBold.sms,
+                  ),
+                  ProfileMenu(
+                    title: "Address".tr,
+                    subTitle: address ?? '',
+                    icon: IconsaxBold.location,
+                  ),
+                  ProfileMenu(
+                    title: "Gender".tr,
+                    subTitle: gender ?? '',
+                    icon: IconsaxBold.man,
+                  ),
+                  ProfileMenu(
+                    title: "Age".tr,
+                    subTitle: age != null ? age.toString() : '',
+                    icon: IconsaxBold.calendar,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: HeadingSection(
+                      title: "Payment".tr,
+                      showActionButton: false,
+                    ),
+                  ),
+                  UtilitiesSection(
+                    title: "Payment".tr,
+                    subTitle: "Click Here".tr,
+                    icon: IconsaxBold.card,
+                    onPressed: () {
+                      Get.to(const PaymentScreen());
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: HeadingSection(
+                      title: "Utilities".tr,
+                      showActionButton: false,
+                    ),
+                  ),
+                  UtilitiesSection(
+                    title: "Language".tr,
+                    subTitle: Get.locale?.languageCode == 'en_US'
+                        ? 'English'.tr
+                        : 'বাংলা'.tr,
+                    icon: IconsaxBold.language_square,
+                    onPressed: () {
+                      Get.bottomSheet(
+                        const LanguageScreen(),
                       );
                     },
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ProfileMenu(
-                  title: "Name".tr,
-                  subTitle: userData['name'],
-                  icon: IconsaxBold.user,
-                ),
-                ProfileMenu(
-                  title: "E-mail".tr,
-                  subTitle: userData['email'],
-                  icon: IconsaxBold.sms,
-                ),
-                ProfileMenu(
-                  title: "Address".tr,
-                  subTitle: userData['address'],
-                  icon: IconsaxBold.location,
-                ),
-                ProfileMenu(
-                  title: "Gender".tr,
-                  subTitle: userData['gender'],
-                  icon: IconsaxBold.man,
-                ),
-                ProfileMenu(
-                  title: "Age".tr,
-                  subTitle: userData['age'].toString(),
-                  icon: IconsaxBold.calendar,
-                ),
-                // Add other ProfileMenu widgets as needed
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: HeadingSection(
-                    title: "Payment".tr,
-                    showActionButton: false,
+                  UtilitiesSection(
+                    title: "Change Password".tr,
+                    subTitle: "Click Here".tr,
+                    icon: IconsaxBold.password_check,
+                    onPressed: () {
+                      Get.to(const ChangePassScreen());
+                    },
                   ),
-                ),
+                  UtilitiesSection(
+                    title: "Log Out".tr,
+                    subTitle: "Logout".tr,
+                    icon: IconsaxBold.logout,
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      await prefs.remove('authToken');
 
-                UtilitiesSection(
-                  title: "Payment".tr,
-                  subTitle: "Click Here".tr,
-                  icon: IconsaxBold.card,
-                  onPressed: () {
-                    Get.to(const PaymentScreen());
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: HeadingSection(
-                    title: "Utilities".tr,
-                    showActionButton: false,
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                      );
+                    },
                   ),
-                ),
-
-                UtilitiesSection(
-                  title: "Language".tr,
-                  subTitle: Get.locale?.languageCode == 'en_US'
-                      ? 'English'.tr
-                      : 'বাংলা'.tr,
-                  icon: IconsaxBold.language_square,
-                  onPressed: () {
-                    Get.bottomSheet(
-                      const LanguageScreen(),
-                    );
-                  },
-                ),
-
-                UtilitiesSection(
-                  title: "Log Out".tr,
-                  subTitle: "Logout".tr,
-                  icon: IconsaxBold.logout,
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.remove('authToken');
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                    );
-                  },
-                ),
-
-                const SizedBox(
-                  height: 10,
-                ),
-              ],
+                  const SizedBox(
+                    height: 10,
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
     );
   }
 }

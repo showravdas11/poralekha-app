@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatRoomName;
@@ -17,11 +21,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final _messageController = TextEditingController();
   bool _isSending = false;
   String _msg = "";
-  DocumentSnapshot<Map<String, dynamic>>? userData;
   ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   int _perPage = 15;
   List<Map<String, dynamic>> _messages = [];
+
+  late String _id;
+  late String name;
+  late bool isAdmin;
 
   @override
   void initState() {
@@ -40,51 +47,11 @@ class _ChatScreenState extends State<ChatScreen> {
   // }
 
   void _fetchUserData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final userDataDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      setState(() {
-        userData = userDataDoc;
-      });
-    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _id = prefs.getString('_id') ?? "";
+    name = prefs.getString('name') ?? "";
+    isAdmin = prefs.getBool('isAdmin') ?? false;
   }
-
-  // void _getMessages() async {
-  //   print("hello");
-  //   if (_isLoadingMore) return;
-  //   setState(() {
-  //     _isLoadingMore = true;
-  //   });
-
-  //   final user = FirebaseAuth.instance.currentUser;
-  //   final collectionRef = FirebaseFirestore.instance
-  //       .collection('chats')
-  //       .doc(widget.chatRoomName)
-  //       .collection('messages');
-
-  //   QuerySnapshot querySnapshot;
-
-  //   if (_messages.isEmpty) {
-  //     querySnapshot = await collectionRef
-  //         .orderBy('createdAt', descending: true)
-  //         .limit(_perPage)
-  //         .get();
-  //   } else {
-  //     querySnapshot = await collectionRef
-  //         .orderBy('createdAt', descending: true)
-  //         .startAfterDocument(_messages.last)
-  //         .limit(_perPage)
-  //         .get();
-  //   }
-
-  //   setState(() {
-  //     _isLoadingMore = false;
-  //     _messages.addAll(querySnapshot.docs);
-  //   });
-  // }
 
   void _sendMessage() async {
     final messageText = _messageController.text.trim();
@@ -94,19 +61,12 @@ class _ChatScreenState extends State<ChatScreen> {
       return;
     }
 
-    // TODO: get user information only once
-    final user = FirebaseAuth.instance.currentUser;
-    final userData = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .get();
-
     final data = {
       'text': messageText,
       'createdAt': Timestamp.now(),
-      'userId': user.uid,
-      'name': userData['name'],
-      'isAdmin': userData['isAdmin']
+      'userId': _id,
+      'name': name,
+      'isAdmin': isAdmin
     };
 
     setState(() {
@@ -187,8 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           return MessageBubble(
                             message['text'],
                             message['name'],
-                            message['userId'] ==
-                                FirebaseAuth.instance.currentUser!.uid,
+                            message['userId'] == _id,
                             message['createdAt'],
                             isAdmin: message['isAdmin'],
                             isSending: _isSending && index == 0,
